@@ -2,6 +2,22 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
+<script>
+/* ── Scroll reset aggressivo: DEVE girare prima di qualunque libreria ──
+   Il browser ripristina la posizione molto presto: se lo disattiviamo
+   in fondo alla pagina è già troppo tardi. */
+if('scrollRestoration' in history) history.scrollRestoration='manual';
+/* prima che il browser salvi la posizione, riportalo in cima */
+window.addEventListener('beforeunload',function(){window.scrollTo(0,0);});
+/* alcuni browser (bfcache) ripristinano su pageshow: intercetta anche quello */
+window.addEventListener('pageshow',function(e){
+  /* se hardScrollTop esiste già (script principale caricato) usa quello:
+     azzera anche lo stato interno di Lenis, non solo lo scroll nativo */
+  if(typeof window.hardScrollTop==='function'){ window.hardScrollTop(); return; }
+  window.scrollTo(0,0);
+  if(window.lenisRef) window.lenisRef.scrollTo(0,{immediate:true,force:true});
+});
+</script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M12 34L32 16l20 18v14H12z' fill='%23F5A623'/%3E%3Ccircle cx='32' cy='10' r='5' fill='%23F4740B'/%3E%3C/svg%3E">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>REALHOME — Il sole non manda bollette</title>
@@ -1280,9 +1296,36 @@ const FX = !reduceMotion;
 let lenis = null;
 /* al reload si riparte sempre dall'hero: niente ripristino della
    posizione (che oltretutto falsava i trigger a metà pagina) */
-if('scrollRestoration' in history)history.scrollRestoration='manual';
+/* scrollRestoration + beforeunload + pageshow vivono già nel <head>
+   (devono girare prima delle librerie). Qui resta solo il reset "tardivo":
+   una volta che Lenis/ScrollTrigger esistono, vanno riportati a zero anche loro,
+   altrimenti riscrivono la posizione dopo il nostro scrollTo(0,0) iniziale. */
 window.scrollTo(0,0);
-window.addEventListener('pageshow',()=>{window.scrollTo(0,0);if(window.lenisRef)window.lenisRef.scrollTo(0,{immediate:true,force:true});});
+
+function hardScrollTop(){
+  window.scrollTo(0,0);
+  if(document.scrollingElement) document.scrollingElement.scrollTop=0;
+  if(window.lenisRef){
+    const l=window.lenisRef;
+    l.stop();                                   // ferma l'inerzia in corso
+    /* CRUCIALE: azzera lo stato interno, altrimenti al frame successivo
+       Lenis riscrive scrollTop col suo target memorizzato e vanifica il reset */
+    l.animatedScroll = 0;
+    l.targetScroll   = 0;
+    l.scrollTo(0,{immediate:true,force:true,lock:true});
+    l.start();
+  }
+  if(window.ScrollTrigger){
+    ScrollTrigger.clearScrollMemory();          // svuota la memoria di scroll di GSAP
+    ScrollTrigger.refresh();                    // ricalcola i trigger sulla nuova posizione
+  }
+}
+window.hardScrollTop = hardScrollTop;   // esposta: la usa anche il pageshow nel <head>
+window.addEventListener('load',()=>{
+  hardScrollTop();
+  requestAnimationFrame(hardScrollTop);   // secondo giro: batte eventuali ripristini tardivi
+  setTimeout(hardScrollTop,120);          // rete di sicurezza su mobile/bfcache
+});
 
 let scrollVel = 0;
 if (FX && window.Lenis){
@@ -1294,6 +1337,11 @@ if (FX && window.Lenis){
     touchMultiplier: 1.4
   });
   window.lenisRef = lenis;
+  /* appena esiste, Lenis parte da zero: il suo stato interno non deve
+     ereditare la posizione che il browser aveva prima del reload */
+  lenis.scrollTo(0,{immediate:true,force:true});
+  lenis.animatedScroll = 0;
+  lenis.targetScroll   = 0;
   lenis.on('scroll', e => { scrollVel = e.velocity; ScrollTrigger.update(); });
   gsap.ticker.add(time => lenis.raf(time * 1000));
   gsap.ticker.lagSmoothing(0);
