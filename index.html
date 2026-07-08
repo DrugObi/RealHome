@@ -1,0 +1,1765 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M12 34L32 16l20 18v14H12z' fill='%23F5A623'/%3E%3Ccircle cx='32' cy='10' r='5' fill='%23F4740B'/%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>REALHOME — Il sole non manda bollette</title>
+<meta name="description" content="Fotovoltaico chiavi in mano con pratica GSE inclusa e detrazione fiscale 50%. Calcola il tuo risparmio: preventivo gratuito.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Instrument+Serif:ital@0;1&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   REALHOME — "UNA GIORNATA DI SOLE" (Engine v6)
+   Il sito è l'arco di una giornata solare. Lo scroll è il tempo:
+   NOTTE (hero, la batteria lavora) → PRIME LUCI (come funziona)
+   → ALBA (sezione pinnata: il sole sorge, la pagina si accende)
+   → GIORNO (servizi, numeri, prove, simulatore)
+   → ORA D'ORO (preventivo) → di nuovo NOTTE (footer).
+   Ogni sezione porta un orario: la struttura È la narrazione.
+   ============================================================ */
+:root{
+  /* la giornata */
+  --notte:#070C16;          /* cielo notturno, quasi nero blu */
+  --notte-2:#0C1626;        /* superficie notte */
+  --predawn:#0B1526;        /* prime luci */
+  --giorno:#F6F1E6;         /* carta calda, pieno giorno */
+  --giorno-2:#FFFDF7;       /* superficie giorno */
+  --ink:#101822;            /* inchiostro */
+  --sole:#F5A623;           /* L'accento. Uno solo. */
+  --fiamma:#F4740B;         /* scintilla dal logo — usata col contagocce */
+  --verde:#3AA76A;
+  --muted-d:#8B98AB;        /* testo attenuato su notte */
+  --muted-l:#5E6672;        /* testo attenuato su giorno */
+  --line-d:rgba(255,255,255,.10);
+  --line-l:rgba(16,24,34,.12);
+  --ease:cubic-bezier(.22,.61,.21,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html.lenis{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+::selection{background:var(--sole);color:var(--notte)}
+body{
+  font-family:'Instrument Sans',system-ui,sans-serif;
+  color:var(--ink);background:var(--notte);
+  line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+img{display:block;max-width:100%}
+.wrap{max-width:1200px;margin:0 auto;padding:0 32px}
+
+/* ---- tipografia: Bricolage per la voce, Instrument Serif per il cuore ---- */
+h1,h2,h3{font-family:'Bricolage Grotesque',sans-serif;font-weight:750;line-height:1.02;letter-spacing:-.028em}
+h1 em,h2 em,.serif{font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;letter-spacing:-.01em}
+.kicker{
+  font-family:'Instrument Sans',sans-serif;font-weight:600;font-size:.78rem;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--sole);
+  display:inline-flex;align-items:center;gap:.7em;
+}
+.kicker::before{content:'';width:26px;height:1px;background:var(--sole);display:inline-block}
+.kicker .ora{color:inherit;font-variant-numeric:tabular-nums;opacity:.95}
+.kicker .sep{opacity:.4}
+
+/* reveal testo per righe */
+.tr .mask{display:block;overflow:hidden;padding-bottom:.1em;margin-bottom:-.1em}
+.tr .lineIn{display:block;will-change:transform}
+
+/* ---- cursore: puntino solare ---- */
+#cursor{position:fixed;top:0;left:0;width:7px;height:7px;border-radius:50%;background:var(--sole);z-index:99;pointer-events:none;transform:translate(-50%,-50%);will-change:transform;opacity:.9;display:none;box-shadow:0 0 12px rgba(245,166,35,.55)}
+body.fxon #cursor{display:block}
+
+/* ---- sipario di navigazione ---- */
+#curtain{position:fixed;inset:0;z-index:200;background:var(--notte);transform:translateY(101%);pointer-events:none;display:flex;align-items:center;justify-content:center}
+#curtain .word{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;color:#F6F1E6;font-size:1.25rem;letter-spacing:.08em;opacity:0}
+#curtain .word b{color:var(--sole)}
+
+/* ============================================================
+   NAV — vive di notte, si veste di giorno
+   ============================================================ */
+#nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:22px 0;transition:padding .45s var(--ease),background .45s var(--ease),border-color .45s var(--ease)}
+#nav .wrap{display:flex;align-items:center;justify-content:space-between;max-width:1320px}
+#nav .logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:#F6F1E6;transition:color .45s var(--ease)}
+#nav.nav-day .logo{color:var(--ink)}
+#nav .word{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.06rem;letter-spacing:.05em;color:#F6F1E6;transition:color .45s var(--ease)}
+#nav .word b{color:var(--sole);font-weight:800}
+.nav-links{display:flex;align-items:center;gap:34px;list-style:none}
+.nav-links a{font-size:.92rem;font-weight:500;color:#DCE3ED;text-decoration:none;transition:color .3s}
+.nav-links a:hover{color:var(--sole)}
+.nav-cta{border:1px solid var(--sole);color:var(--sole)!important;padding:9px 20px;border-radius:100px;transition:all .3s var(--ease)!important}
+.nav-cta:hover{background:var(--sole);color:var(--notte)!important}
+#nav.shrunk{padding:12px 0;background:rgba(7,12,22,.82);backdrop-filter:blur(14px);border-bottom:1px solid var(--line-d)}
+/* di giorno */
+#nav.nav-day .word{color:var(--ink)}
+#nav.nav-day .nav-links a{color:#39424E}
+#nav.nav-day .nav-links a:hover{color:var(--fiamma)}
+#nav.nav-day .nav-cta{border-color:var(--ink);color:var(--ink)!important}
+#nav.nav-day .nav-cta:hover{background:var(--ink);color:var(--giorno)!important}
+#nav.nav-day.shrunk{background:rgba(246,241,230,.85);border-bottom:1px solid var(--line-l)}
+
+/* ============================================================
+   H 03:47 — NOTTE · HERO
+   La casa va avanti anche adesso: la batteria alimenta tutto.
+   ============================================================ */
+.hero{position:relative;min-height:100svh;background:radial-gradient(120% 90% at 50% -10%, #0D1930 0%, var(--notte) 55%);display:flex;flex-direction:column;justify-content:center;overflow:hidden;padding:140px 0 0}
+#particles{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.hero .wrap{position:relative;z-index:2}
+.hero .kicker{margin-bottom:26px}
+.hero h1{font-size:clamp(3rem,7.6vw,6.6rem);color:#F6F1E6;max-width:12ch}
+.hero h1 em{color:var(--sole)}
+.hero p.lead{margin:30px 0 38px;font-size:1.12rem;color:var(--muted-d);max-width:52ch}
+.ctas{display:flex;gap:14px;flex-wrap:wrap}
+.btn{position:relative;display:inline-flex;align-items:center;justify-content:center;padding:16px 30px;border-radius:100px;font-family:'Instrument Sans',sans-serif;font-weight:600;font-size:.98rem;text-decoration:none;border:none;cursor:pointer;transition:transform .35s var(--ease),box-shadow .35s var(--ease),background .3s,color .3s;overflow:hidden}
+.btn span{position:relative;z-index:1}
+.btn-accent{background:var(--sole);color:var(--notte)}
+.btn-accent:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(245,166,35,.32)}
+.btn-ghost{background:transparent;color:#F6F1E6;border:1px solid rgba(246,241,230,.28)}
+.btn-ghost:hover{border-color:var(--sole);color:var(--sole);transform:translateY(-2px)}
+/* varianti giorno */
+.btn-ink{background:var(--ink);color:var(--giorno)}
+.btn-ink:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(16,24,34,.22)}
+
+.hero-media{position:relative;margin-top:64px;height:54vh;min-height:340px;overflow:hidden}
+.hero-media img,.hero-media canvas.liquid{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.hero-media::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,var(--notte) 0%,rgba(7,12,22,0) 26%,rgba(7,12,22,0) 70%,rgba(7,12,22,.55) 100%);pointer-events:none}
+.hero-badges{position:absolute;left:0;right:0;bottom:0;z-index:3;display:flex;gap:10px;flex-wrap:wrap;padding:0 32px 26px;max-width:1200px;margin:0 auto}
+.hero-badges span{font-size:.82rem;font-weight:500;color:#EDEAE0;background:rgba(7,12,22,.55);border:1px solid var(--line-d);backdrop-filter:blur(10px);padding:9px 16px;border-radius:100px}
+.hero-badges b{color:var(--sole);font-weight:700}
+/* hero spotlight reveal */
+.hero-reveal{position:relative;width:100%;height:100%;overflow:hidden;cursor:crosshair}
+.hr-layer{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.hr-base{z-index:1}
+.hr-top{z-index:2;--mx:50%;--my:38%;--r:150px;
+  -webkit-mask-image:radial-gradient(circle var(--r) at var(--mx) var(--my),#000 0%,#000 62%,transparent 100%);
+          mask-image:radial-gradient(circle var(--r) at var(--mx) var(--my),#000 0%,#000 62%,transparent 100%)}
+.hr-top::after{content:'';position:absolute;left:var(--mx);top:var(--my);width:calc(var(--r)*2);height:calc(var(--r)*2);transform:translate(-50%,-50%);border-radius:50%;pointer-events:none;box-shadow:0 0 40px 4px rgba(245,166,35,.35);opacity:0;transition:opacity .35s}
+.hero-reveal:hover .hr-top::after{opacity:1}
+.hr-hint{position:absolute;z-index:3;left:50%;bottom:16px;transform:translateX(-50%);font-family:'Instrument Sans',sans-serif;font-size:.74rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#fff;background:rgba(7,12,22,.55);border:1px solid var(--line-d);backdrop-filter:blur(8px);padding:8px 16px;border-radius:100px;transition:opacity .4s;pointer-events:none}
+.hero-reveal:hover .hr-hint{opacity:0}
+@media (hover:none){.hr-top{-webkit-mask-image:none;mask-image:none}.hr-hint{display:none}}
+/* orologio di bordo */
+.hero-hud{position:absolute;top:112px;right:32px;z-index:3;text-align:right;font-variant-numeric:tabular-nums}
+.hero-hud .hh-time{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:1.05rem;color:#F6F1E6;letter-spacing:.04em}
+.hero-hud .hh-lbl{font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted-d)}
+.hero-hud .hh-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--verde);margin-right:7px;box-shadow:0 0 10px rgba(58,167,106,.8);animation:pulse 2.2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+
+/* ---- marquee ---- */
+.marquee{overflow:hidden;white-space:nowrap;user-select:none;pointer-events:none}
+.marquee .m-track{display:inline-flex;will-change:transform}
+.marquee .m-track span{display:inline-block;font-family:'Bricolage Grotesque',sans-serif;font-weight:780;line-height:1;padding-right:.6em;letter-spacing:-.02em}
+.marquee.m-notte{background:var(--notte);padding:56px 0 20px;border-bottom:1px solid var(--line-d)}
+.marquee.m-notte span{font-size:clamp(3rem,8.5vw,7.4rem);color:#F6F1E6} /* pieno, solido, pulito */
+.marquee.m-notte b{color:var(--sole);font-weight:780}
+.marquee.m-hz{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);z-index:0;opacity:.5}
+.marquee.m-hz span{font-size:clamp(9rem,26vw,22rem);color:transparent;-webkit-text-stroke:1px var(--line-l);opacity:.15}
+
+/* ============================================================
+   H 05:58 — PRIME LUCI · COME FUNZIONA (blueprint al buio)
+   ============================================================ */
+.how{background:linear-gradient(180deg,var(--notte) 0%,var(--predawn) 40%,#0E1B30 100%);padding:48px 0;color:#EDEAE0}
+.how h2{font-size:clamp(2.4rem,5vw,4.2rem);color:#F6F1E6;margin:14px 0 34px;max-width:16ch}
+.how h2 em{color:var(--sole)}
+.how-grid{display:grid;grid-template-columns:.9fr 1.4fr;gap:56px;align-items:center}
+.steps{display:flex;flex-direction:column;gap:8px}
+.step{padding:22px 24px;border-left:2px solid var(--line-d);opacity:.34;transition:opacity .5s var(--ease),border-color .5s var(--ease),background .5s var(--ease)}
+.step.active{opacity:1;border-color:var(--sole);background:rgba(245,166,35,.05)}
+.step .n{font-size:.72rem;letter-spacing:.2em;color:var(--sole);font-weight:600}
+.step h3{font-size:1.28rem;margin:8px 0 6px;color:#F6F1E6;font-weight:700}
+.step p{font-size:.94rem;color:var(--muted-d)}
+.diagram{width:100%;height:auto;shape-rendering:geometricPrecision;text-rendering:geometricPrecision}
+.diagram .rail{fill:none;stroke:rgba(255,255,255,.10);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.diagram .energy{fill:none;stroke-width:2.6;stroke-linecap:round}
+.diagram .stream{fill:none;stroke-width:1.6;stroke-linecap:round;stroke-dasharray:4 34;animation:streamMove 1.15s linear infinite;opacity:.9}
+@keyframes streamMove{to{stroke-dashoffset:-38}}
+.diagram .glass{fill:rgba(255,255,255,.03);stroke:rgba(255,255,255,.4);stroke-width:1.2}
+.diagram .stroke{fill:none;stroke:rgba(255,255,255,.5);stroke-width:1.2;stroke-linecap:square;stroke-linejoin:miter}
+.diagram .label{font-family:'Instrument Sans',sans-serif;font-size:11px;letter-spacing:.22em;fill:rgba(246,241,230,.55);text-anchor:middle;font-weight:600}
+.diagram .ring{fill:none;stroke:var(--sole)}
+.diagram #core{fill:url(#coreGrad)}
+.diagram .ring-b{animation:spin 14s linear infinite;transform-origin:96px 92px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.diagram #panel-cells rect{fill:url(#cellGrad);stroke:#7FB0FF;stroke-width:.5;opacity:.92}
+.diagram #invGlow{fill:url(#invGrad);opacity:0}
+.diagram #battFill{fill:url(#battGrad)}
+.diagram .win{fill:url(#winGrad);opacity:0}
+
+/* ============================================================
+   H 06:47 — L'ALBA · la firma della pagina
+   Il sole sorge mentre scorri: la notte diventa giorno,
+   la bolletta tramonta.
+   ============================================================ */
+.alba{position:relative;background:var(--notte)}
+.alba-pin{position:relative;height:100svh;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.alba-sky{position:absolute;inset:0}
+.sky-notte{background:linear-gradient(180deg,#070C16 0%,#0B1526 60%,#14203A 100%)}
+.sky-fuoco{background:linear-gradient(180deg,#131B33 0%,#4A2E4A 34%,#B4552D 66%,#F5A623 100%);opacity:0}
+.sky-giorno{background:linear-gradient(180deg,#F6F1E6 0%,#FBEED2 55%,#F7D89A 100%);opacity:0}
+.alba-sun{position:absolute;left:50%;bottom:-58vh;transform:translateX(-50%);width:52vmin;height:52vmin;border-radius:50%;
+  background:radial-gradient(circle at 50% 42%,#FFF3D2 0%,#FFD061 34%,var(--sole) 62%,rgba(245,166,35,0) 74%);
+  filter:blur(1px);will-change:transform}
+.alba-skyline{position:absolute;left:0;right:0;bottom:-2px;width:100%;height:auto;z-index:3}
+.alba-copy{position:relative;z-index:4;text-align:center;color:#F6F1E6;padding:0 24px}
+.alba-copy h2{font-size:clamp(2.8rem,7vw,6rem);max-width:14ch;margin:20px auto 0}
+.alba-copy h2 em{display:block;font-size:.72em;margin-top:.18em}
+.alba-meter{position:relative;z-index:4;margin-top:36px;display:inline-flex;align-items:baseline;gap:12px;font-variant-numeric:tabular-nums}
+.alba-meter .lbl{font-size:.76rem;letter-spacing:.18em;text-transform:uppercase;opacity:.75;font-weight:600}
+.alba-meter b{font-family:'Bricolage Grotesque',sans-serif;font-weight:750;font-size:clamp(1.6rem,3.4vw,2.6rem);letter-spacing:-.02em}
+.alba-hint{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);z-index:4;font-size:.74rem;letter-spacing:.2em;text-transform:uppercase;color:currentColor;opacity:.55}
+
+/* ============================================================
+   IL GIORNO — carta calda
+   ============================================================ */
+.day{background:var(--giorno);color:var(--ink)}
+.day .kicker{color:var(--fiamma)}
+.day .kicker::before{background:var(--fiamma)}
+
+/* H 08:30 — approccio */
+.approach{padding:48px 0}
+.approach .wrap{display:grid;grid-template-columns:1.15fr .85fr;gap:70px;align-items:end}
+.approach h2{font-size:clamp(2.6rem,5.6vw,4.6rem)}
+.approach h2 em{color:var(--fiamma)}
+.approach p{font-size:1.08rem;color:var(--muted-l);margin-bottom:30px}
+
+/* H 10:15 — servizi orizzontali */
+#servizi{background:var(--giorno)}
+.services-head{padding:40px 0 70px}
+.services-head h2{font-size:clamp(2.6rem,5.6vw,4.6rem);margin:18px 0 18px}
+.services-head .sub{font-size:1.05rem;color:var(--muted-l);max-width:52ch}
+.hz{position:relative;height:100svh;overflow:hidden;background:var(--giorno)}
+.hz-track{position:relative;z-index:1;display:flex;height:100%;will-change:transform}
+.panel{position:relative;flex:0 0 100vw;width:100vw;height:100%;display:grid;grid-template-columns:.9fr 1.1fr;gap:48px;align-items:center;padding:90px 6vw 70px}
+.panel .p-num{position:absolute;top:8vh;right:5vw;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(6rem,15vw,12rem);line-height:1;color:transparent;-webkit-text-stroke:1px var(--line-l);opacity:.15;pointer-events:none;letter-spacing:-.03em}
+.panel h3{font-size:clamp(2.2rem,4.4vw,3.6rem);margin:16px 0 18px}
+.panel h3 .grad{font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;color:var(--fiamma)}
+.panel p{font-size:1.04rem;color:var(--muted-l);max-width:44ch}
+.p-tags{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}
+.p-tags span{font-size:.8rem;font-weight:600;padding:8px 15px;border-radius:100px;border:1px solid var(--line-l);color:#39424E}
+.p-tags .hot{background:var(--sole);border-color:var(--sole);color:var(--notte)}
+.p-media{position:relative;height:66vh;min-height:320px;overflow:hidden;border-radius:14px}
+.p-media img{width:100%;height:100%;object-fit:cover;will-change:transform}
+.m-cap{position:absolute;left:16px;bottom:14px;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:#fff;background:rgba(16,24,34,.55);backdrop-filter:blur(8px);padding:8px 14px;border-radius:100px}
+/* pannelli notturni alternati: il ritmo giorno/notte continua anche qui */
+.panel.dark,.panel.deep{color:#F6F1E6}
+.panel.dark{background:var(--notte-2)}
+.panel.deep{background:var(--notte)}
+.panel.dark h3,.panel.deep h3{color:#F6F1E6}
+.panel.dark p,.panel.deep p{color:var(--muted-d)}
+
+.panel.dark .p-tags span,.panel.deep .p-tags span{border-color:var(--line-d);color:#DCE3ED}
+.panel.dark .p-tags .hot,.panel.deep .p-tags .hot{color:var(--notte);border-color:var(--sole)}
+.panel.dark .kicker,.panel.deep .kicker{color:var(--sole)}
+.panel.dark .kicker::before,.panel.deep .kicker::before{background:var(--sole)}
+.hz-ui{position:absolute;left:6vw;bottom:34px;z-index:5;display:flex;align-items:center;gap:18px}
+.hz-count{font-variant-numeric:tabular-nums;font-weight:600;font-size:.88rem;color:var(--ink);mix-blend-mode:difference;filter:invert(0)}
+.hz-count,.hz-hint{color:#808a96;mix-blend-mode:normal}
+.hz-bar{width:150px;height:2px;background:rgba(16,24,34,.15);overflow:hidden;border-radius:2px}
+.hz-bar i{display:block;height:100%;background:var(--fiamma);transform-origin:left;transform:scaleX(0)}
+.hz-hint{font-size:.74rem;letter-spacing:.2em;text-transform:uppercase;font-weight:600}
+
+/* H 12:00 — i numeri · IL CONTATORE SOLARE
+   Quattro bande editoriali a tutta larghezza. Ogni cifra nasce come
+   contorno vuoto e si RIEMPIE DI SOLE mentre scorri (scrub GSAP,
+   avanti e indietro come l'alba). Sotto ogni banda, una linea di
+   misura si estende fino al proprio valore con una testa luminosa.
+   All'hover la banda si inverte in notte e un bagliore segue il
+   cursore: il quadrante si attiva al tocco. */
+.stats{padding:48px 0}
+.stats h2{font-size:clamp(2.4rem,5vw,4.2rem);margin:14px 0 38px}
+.stats-rail{border-top:1px solid var(--line-l)}
+.band{position:relative;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);
+  align-items:center;gap:clamp(28px,6vw,90px);
+  padding:58px clamp(8px,2vw,28px) 64px;border-bottom:1px solid var(--line-l);overflow:hidden;
+  transition:background .45s var(--ease)}
+.band-glow{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .45s var(--ease);
+  background:radial-gradient(360px circle at var(--mx,50%) var(--my,50%),rgba(245,166,35,.16),transparent 65%)}
+.band-tag{position:absolute;top:22px;left:clamp(8px,2vw,28px);display:inline-flex;align-items:center;gap:8px;
+  font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:.64rem;letter-spacing:.15em;font-weight:500;color:var(--muted-l);opacity:.75;
+  transition:color .45s var(--ease),opacity .45s var(--ease)}
+/* — la cifra monumentale a doppio strato: contorno + oro rivelato — */
+.band-num{position:relative;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;
+  font-size:clamp(4.4rem,11vw,10rem);line-height:.94;letter-spacing:-.01em;font-variant-numeric:tabular-nums;
+  user-select:none}
+.bn-ghost{display:block;color:transparent;-webkit-text-stroke:1.5px rgba(16,24,34,.22);
+  transition:-webkit-text-stroke-color .45s var(--ease)}
+.bn-fill{position:absolute;inset:0;display:block;
+  background:linear-gradient(120deg,var(--fiamma) 0%,var(--sole) 55%,#FFD98A 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 0 18px rgba(245,166,35,.28));
+  clip-path:inset(-25% 100% -25% 0)}
+.band-copy h3{font-size:clamp(1.15rem,1.7vw,1.5rem);margin-bottom:10px;transition:color .45s var(--ease)}
+.band-copy p{font-size:.96rem;max-width:44ch;color:var(--muted-l);transition:color .45s var(--ease)}
+/* — la linea di misura con testa luminosa — */
+.band-meter{position:absolute;left:clamp(8px,2vw,28px);right:clamp(8px,2vw,28px);bottom:26px;height:2px;background:rgba(16,24,34,.08);transition:background .45s var(--ease)}
+.bm-fill{position:absolute;left:0;top:0;bottom:0;width:0%;background:linear-gradient(90deg,var(--fiamma),var(--sole))}
+.bm-dot{position:absolute;top:50%;left:0%;width:9px;height:9px;margin:-4.5px 0 0 -4.5px;border-radius:50%;
+  background:var(--sole);box-shadow:0 0 14px rgba(245,166,35,.85)}
+/* — attivazione notte (solo dispositivi con hover reale) — */
+@media (hover:hover) and (pointer:fine){
+  .band:hover{background:var(--notte)}
+  .band:hover .band-glow{opacity:1}
+  .band:hover .band-tag{color:var(--sole);opacity:1}
+  .band:hover .bn-ghost{-webkit-text-stroke-color:rgba(246,241,230,.22)}
+  .band:hover .bn-fill{filter:drop-shadow(0 0 26px rgba(245,166,35,.5))}
+  .band:hover .band-copy h3{color:#F6F1E6}
+  .band:hover .band-copy p{color:var(--muted-d)}
+  .band:hover .band-meter{background:rgba(255,255,255,.12)}
+}
+
+/* H 14:20 — caso studio */
+.casestudy{padding:48px 0;background:var(--giorno)}
+.casestudy h2{font-size:clamp(2.4rem,5vw,4.2rem);margin:18px 0 14px}
+.cs-sub{color:var(--muted-l);max-width:56ch;margin-bottom:52px;font-size:1.04rem}
+/* — LA SCENA, ricostruita: confronto PRIMA/DOPO trascinabile —
+   Nessun pin, nessuna coreografia fragile: un solo valore p (0→1)
+   guida tutto. La foto "dopo" (a colori, sole attivo) viene rivelata
+   da un divisore trascinabile; muovendolo, la bolletta scende in
+   tempo reale, i pannelli si contano, la batteria si carica.
+   All'ingresso in viewport il confronto si gioca da solo una volta. */
+.cs-live{position:relative}
+.cs-cine2{display:grid;grid-template-columns:1.08fr .92fr;gap:22px;align-items:stretch;
+  background:var(--notte);color:#F6F1E6;border-radius:18px;padding:22px}
+.cs-stage2{position:relative;border-radius:12px;overflow:hidden;min-height:460px;
+  cursor:ew-resize;touch-action:pan-y;user-select:none;-webkit-user-select:none;isolation:isolate}
+.st-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+.st-before{filter:grayscale(1) brightness(.6) saturate(.55)}
+.st-after{filter:saturate(1.08) brightness(1.03);clip-path:inset(0 100% 0 0);will-change:clip-path}
+/* il divisore col sole: la maniglia del confronto */
+.st-divider{position:absolute;top:0;bottom:0;left:0%;width:2px;margin-left:-1px;z-index:3;
+  background:linear-gradient(180deg,rgba(255,217,138,.15),var(--sole),rgba(255,217,138,.15));
+  box-shadow:0 0 14px rgba(245,166,35,.55);will-change:left;pointer-events:none}
+.st-divider b{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(circle at 38% 32%,#FFF3D2,var(--sole) 72%);color:var(--notte);
+  font-size:.7rem;font-weight:800;box-shadow:0 0 22px rgba(245,166,35,.85),0 4px 14px rgba(0,0,0,.35)}
+.st-tag{position:absolute;top:12px;z-index:2;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;
+  font-weight:700;padding:7px 12px;border-radius:100px;background:rgba(6,10,18,.6);
+  border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.st-ta{left:12px;color:#FF9C82}
+.st-tb{right:12px;color:var(--sole)}
+/* la bolletta: scende sotto il dito */
+.cs-bigbill{position:absolute;left:12px;bottom:12px;z-index:2;display:flex;flex-direction:column;gap:4px;
+  padding:14px 18px 13px;border-radius:13px;background:rgba(6,10,18,.6);border:1px solid rgba(255,255,255,.14);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);pointer-events:none;
+  transition:border-color .5s var(--ease),box-shadow .5s var(--ease)}
+.bb-label{font-size:.58rem;letter-spacing:.24em;text-transform:uppercase;font-weight:600;color:rgba(246,241,230,.66)}
+.cs-bigbill b{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;line-height:1;letter-spacing:-.03em;
+  font-size:clamp(1.9rem,3.2vw,2.9rem);color:#FF7A59;font-variant-numeric:tabular-nums;white-space:nowrap}
+.bb-save{font-size:.78rem;font-weight:700;color:#7FE0B0;opacity:0;transform:translateY(6px);
+  transition:opacity .4s var(--ease),transform .4s var(--ease);white-space:nowrap}
+.cs-live.done .bb-save{opacity:1;transform:none}
+.cs-live.done .cs-bigbill{border-color:rgba(127,224,176,.5);box-shadow:0 0 30px rgba(87,200,138,.25)}
+/* colonna comparativa */
+.cs-vs{display:flex;flex-direction:column;gap:14px;justify-content:center;min-width:0}
+.vs-card{position:relative;border:1px solid var(--line-d);border-radius:14px;padding:22px 24px 20px;
+  transition:border-color .45s var(--ease),box-shadow .45s var(--ease),opacity .45s var(--ease)}
+.vs-tag{display:block;font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;font-weight:600;margin-bottom:12px}
+.vs-bill{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.vs-bill b{font-family:'Bricolage Grotesque',sans-serif;font-weight:780;font-size:clamp(1.8rem,3vw,2.5rem);letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap}
+.vs-bill span{font-size:.8rem;letter-spacing:.06em;color:var(--muted-d)}
+.vs-rows{display:flex;flex-direction:column}
+.vs-row{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:9px 0;border-top:1px solid var(--line-d);font-size:.86rem;color:var(--muted-d)}
+.vs-row b{color:#F6F1E6;font-weight:600;font-size:.9rem;font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right}
+.vs-prima{background:rgba(255,255,255,.025)}
+.vs-prima .vs-tag{color:#FF7A59}
+.vs-prima .vs-bill b{color:#FF7A59}
+.vs-dopo{--ign:0;background:linear-gradient(135deg,rgba(245,166,35,calc(.03 + .07*var(--ign))),rgba(255,255,255,.02));
+  border-color:rgba(245,166,35,calc(.14 + .5*var(--ign)));
+  box-shadow:0 0 calc(40px*var(--ign)) rgba(245,166,35,calc(.14*var(--ign)))}
+.vs-dopo .vs-tag{color:var(--sole)}
+.vs-dopo .vs-bill b{color:#F6F1E6}
+.vs-row.batt b{display:none}
+.cc-batt{flex:1;max-width:210px;height:10px;border:1px solid rgba(255,255,255,.25);border-radius:6px;overflow:hidden}
+.cc-batt i{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--sole),#7FE0B0)}
+.cs-drag-hint{font-size:.74rem;letter-spacing:.08em;color:var(--muted-d);text-align:center;margin-top:2px;
+  opacity:0;transition:opacity .6s var(--ease)}
+.cs-live.ready .cs-drag-hint{opacity:1}
+.cs-cap{font-family:'Instrument Sans',sans-serif;font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;
+  font-weight:600;color:var(--muted-l);text-align:center;margin-top:14px}
+.cs-results{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:40px;position:relative;z-index:5}
+.cs-res{background:var(--giorno-2);border:1px solid var(--line-l);border-radius:16px;padding:28px 26px}
+.cs-res-n span{font-family:'Bricolage Grotesque',sans-serif;font-weight:780;font-size:clamp(1.9rem,3.2vw,2.6rem);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.cs-res-n.up span{color:var(--verde)}
+.cs-res h4{font-size:1rem;margin:10px 0 6px}
+.cs-res p{font-size:.9rem;color:var(--muted-l)}
+.cs-return{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px}
+.cs-ret{border:1px dashed rgba(16,24,34,.25);border-radius:16px;padding:26px}
+.cs-ret-k{font-size:.74rem;letter-spacing:.18em;text-transform:uppercase;font-weight:600;color:var(--fiamma)}
+.cs-ret-n span{font-family:'Bricolage Grotesque',sans-serif;font-weight:780;font-size:clamp(1.8rem,3vw,2.4rem);font-variant-numeric:tabular-nums}
+.cs-ret p{font-size:.92rem;color:var(--muted-l);margin-top:6px}
+
+/* H 16:05 — iter GSE */
+.turnkey{padding:48px 0;background:var(--giorno)}
+.turnkey h2{font-size:clamp(2.4rem,5vw,4.2rem);margin:18px 0 14px}
+.tk-sub{color:var(--muted-l);max-width:58ch;margin-bottom:56px;font-size:1.04rem}
+.tk-grid{display:grid;grid-template-columns:1fr 4px;gap:40px;max-width:820px}
+.tk-steps{display:flex;flex-direction:column;gap:14px}
+.tk-step{display:flex;gap:22px;align-items:flex-start;background:var(--giorno-2);border:1px solid var(--line-l);border-radius:16px;padding:26px;opacity:.45;transform:translateX(-6px);transition:all .5s var(--ease)}
+.tk-step.on{opacity:1;transform:none;border-color:rgba(245,166,35,.5);box-shadow:0 10px 34px rgba(16,24,34,.06)}
+.tk-ico{flex:0 0 auto;width:52px}
+.tk-ico svg{width:52px;height:52px}
+.tk-ico .l{fill:none;stroke:var(--fiamma);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.tk-ico .d{fill:var(--sole)}
+.tk-n{font-size:.72rem;letter-spacing:.2em;font-weight:600;color:var(--fiamma)}
+.tk-step h3{font-size:1.18rem;margin:6px 0 6px}
+.tk-step p{font-size:.94rem;color:var(--muted-l)}
+.tk-rail{position:relative;background:rgba(16,24,34,.1);border-radius:4px}
+.tk-rail-fill{position:absolute;top:0;left:0;right:0;height:0%;background:linear-gradient(180deg,var(--sole),var(--fiamma));border-radius:4px}
+
+/* H 17:30 — simulatore */
+.calc{padding:48px 0;background:var(--giorno)}
+.calc h2{font-size:clamp(2.4rem,5vw,4.2rem);margin:0 0 14px}
+.calc .intro{color:var(--muted-l);max-width:58ch;margin-bottom:32px;font-size:1.04rem}
+.calc-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:60px;align-items:start}
+.slider-label{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px}
+.slider-label span:first-child{font-weight:600}
+.slider-value{font-family:'Bricolage Grotesque',sans-serif;font-weight:780;font-size:1.9rem;color:var(--fiamma);font-variant-numeric:tabular-nums}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:6px;outline:none;
+  background:linear-gradient(90deg,var(--sole) var(--fill,16%),rgba(16,24,34,.12) var(--fill,16%))}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:var(--giorno-2);border:3px solid var(--fiamma);cursor:pointer;box-shadow:0 4px 14px rgba(244,116,11,.35);transition:transform .2s}
+input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.12)}
+input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;background:var(--giorno-2);border:3px solid var(--fiamma);cursor:pointer}
+.slider-hint{font-size:.84rem;color:var(--muted-l);margin-top:10px}
+.bars{margin-top:38px;display:flex;flex-direction:column;gap:14px}
+.bar-row{display:grid;grid-template-columns:120px 1fr;align-items:center;gap:14px;font-size:.88rem;font-weight:600}
+.bar-track{background:rgba(16,24,34,.07);border-radius:8px;overflow:hidden}
+.bar{padding:10px 14px;font-size:.82rem;font-weight:700;color:#fff;white-space:nowrap;border-radius:8px;font-variant-numeric:tabular-nums}
+.bar-old{background:#39424E}
+.bar-new{background:linear-gradient(90deg,var(--verde),#57C88A);min-width:120px}
+.calc-note{margin-top:30px;font-size:.8rem;color:var(--muted-l);line-height:1.6}
+.res-list{display:flex;flex-direction:column;border:1px solid var(--line-l);border-radius:16px;overflow:hidden;background:var(--giorno-2)}
+.res{display:flex;justify-content:space-between;align-items:baseline;padding:20px 26px;border-bottom:1px solid var(--line-l)}
+.res:last-child{border-bottom:0}
+.res .lbl{font-size:.9rem;color:var(--muted-l);font-weight:500}
+.res .val{font-family:'Bricolage Grotesque',sans-serif;font-weight:780;font-size:1.5rem;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.res.save{background:rgba(58,167,106,.1)}
+.res.save .val{color:var(--verde);font-size:1.8rem}
+
+/* H 18:10 — impatto */
+.impact{padding:48px 0;background:var(--giorno)}
+.impact h2{font-size:clamp(2.4rem,5vw,4.2rem);margin:18px 0 12px}
+.impact .sub{color:var(--muted-l);margin-bottom:32px;font-size:1.02rem}
+.imp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.imp{background:var(--giorno-2);border:1px solid var(--line-l);border-radius:16px;padding:30px 26px}
+.imp .ico{width:54px;margin-bottom:16px}
+.imp .big{font-family:'Bricolage Grotesque',sans-serif;font-weight:780;font-size:clamp(1.9rem,3.2vw,2.5rem);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.imp .big i{font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;font-size:.6em;color:var(--muted-l)}
+.imp h3{font-size:1rem;margin:8px 0 6px}
+.imp p{font-size:.9rem;color:var(--muted-l)}
+
+/* H 19:00 — recensioni: griglia pulita, stabile, leggibile */
+.reviews{position:relative;padding:48px 0;background:var(--giorno)}
+.reviews-head h2{font-size:clamp(2.4rem,5vw,4.2rem);margin:18px 0 10px}
+.reviews-sub{color:var(--muted-l);font-size:1rem}
+.reviews-sub em{opacity:.75}
+.reviews-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:52px;align-items:stretch}
+.rev-card{background:var(--giorno-2);border:1px solid var(--line-l);border-radius:16px;padding:26px 26px 24px;min-height:220px;
+  display:flex;flex-direction:column;box-shadow:0 12px 32px rgba(16,24,34,.06)}
+.rev-stars{color:var(--sole);letter-spacing:.14em;font-size:.9rem;margin-bottom:12px}
+.rev-card p{font-size:.94rem;line-height:1.6;color:#2A323D}
+.rev-card cite{display:flex;align-items:center;gap:10px;margin-top:auto;padding-top:16px;font-style:normal;font-size:.82rem;font-weight:600;color:var(--muted-l)}
+.av{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--notte);color:var(--sole);font-size:.66rem;font-weight:700;letter-spacing:.05em;flex:0 0 auto}
+.av::after{content:attr(data-mono)}
+.rev-card.mini{background:var(--notte);border-color:transparent;align-items:center;justify-content:center;text-align:center}
+.rev-card.mini .rev-big{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:2.8rem;color:var(--sole);letter-spacing:-.03em}
+.rev-card.mini p{color:var(--muted-d);font-size:.9rem}
+
+/* ============================================================
+   H 19:42 — L'ORA D'ORO · preventivo
+   ============================================================ */
+.contact{position:relative;overflow:hidden;padding:48px 0 72px;background:
+  linear-gradient(180deg,var(--giorno) 0%,#F7D89A 18%,var(--sole) 46%,#D96A2B 74%,#25203B 100%);color:var(--notte)}
+/* il sole che tramonta dietro il form — gemello dell'alba */
+.tram-sun{position:absolute;left:16%;top:-4vh;width:36vmin;height:36vmin;border-radius:50%;z-index:0;pointer-events:none;
+  background:radial-gradient(circle at 50% 42%,#FFF3D2 0%,#FFD061 34%,var(--sole) 62%,rgba(245,166,35,0) 74%);
+  filter:blur(1px);will-change:transform}
+.tram-skyline{position:absolute;left:0;right:0;bottom:-2px;width:100%;height:auto;z-index:1;pointer-events:none}
+.contact .wrap{display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:start;position:relative;z-index:2}
+.contact .kicker{color:var(--notte)}
+.contact .kicker::before{background:var(--notte)}
+.contact h2{font-size:clamp(2.8rem,6vw,5rem);margin:18px 0 20px}
+.contact h2 em{color:#fff}
+.contact .sub{font-size:1.08rem;color:rgba(16,24,34,.78);max-width:44ch}
+.c-info{margin-top:44px;display:flex;flex-direction:column;gap:22px;font-size:.96rem;color:rgba(16,24,34,.85)}
+.c-info b{display:block;font-size:.74rem;letter-spacing:.2em;text-transform:uppercase;margin-bottom:6px;color:var(--notte)}
+.form-card{background:rgba(255,253,247,.94);backdrop-filter:blur(10px);border-radius:20px;padding:36px 34px;box-shadow:0 30px 80px rgba(16,24,34,.28)}
+.field{margin-bottom:18px}
+.field label{display:block;font-size:.8rem;font-weight:600;letter-spacing:.06em;margin-bottom:8px;color:#39424E}
+.field input,.field select{width:100%;padding:14px 16px;font-family:'Instrument Sans',sans-serif;font-size:1rem;border:1px solid var(--line-l);border-radius:10px;background:#fff;color:var(--ink);outline:none;transition:border-color .3s,box-shadow .3s}
+.field input:focus,.field select:focus{border-color:var(--fiamma);box-shadow:0 0 0 3px rgba(244,116,11,.14)}
+.form-ok{display:none;margin-top:16px;padding:14px 16px;border-radius:10px;background:rgba(58,167,106,.14);color:#1E6B3A;font-weight:600;font-size:.94rem}
+.form-note{margin-top:14px;font-size:.78rem;color:var(--muted-l)}
+
+/* ============================================================
+   H 23:59 — FOOTER · di nuovo notte
+   ============================================================ */
+footer{background:var(--notte);color:var(--muted-d);padding:100px 0;width:100%}
+footer .wrap{display:flex;flex-direction:column;gap:60px} /* separazione geometrica netta tra brand e blocco legale */
+.footer-top{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:start}
+.footer-bottom{border-top:1px solid var(--line-d);padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+.flogo{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.flogo .word{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;color:#F6F1E6;letter-spacing:.05em}
+.flogo .word b{color:var(--sole)}
+footer p{font-size:.85rem;line-height:1.7}
+.f-claim{font-family:'Instrument Serif',serif;font-style:italic;font-size:1.35rem;color:#DCE3ED;margin-bottom:18px;line-height:1.35}
+.f-claim b{color:var(--sole);font-style:normal;font-family:'Bricolage Grotesque',sans-serif;font-weight:750}
+.disclaimer{font-size:.74rem!important;opacity:.75;max-width:60ch}
+
+/* ---- utilità reveal ---- */
+.fx{will-change:transform,opacity}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width:980px){
+  .wrap{padding:0 22px}
+  .hero{padding-top:120px}
+  .hero-hud{display:none}
+  .hero-media{height:48vh;margin-top:46px}
+  .how-grid{grid-template-columns:1fr;gap:40px}
+  .approach .wrap{grid-template-columns:1fr;gap:34px}
+  /* servizi: verticale */
+  .hz{height:auto;overflow:visible}
+  .hz-track{display:block;transform:none!important}
+  .panel{width:100%;height:auto;grid-template-columns:1fr;gap:26px;padding:70px 22px}
+  .panel .p-num{position:static;font-size:5rem;margin-bottom:-10px;display:block}
+  .p-media{height:56vw;min-height:280px}
+  .hz-ui,.marquee.m-hz{display:none}
+  /* contatore solare: le bande passano in colonna */
+  .band{grid-template-columns:1fr;gap:20px;padding:56px 4px 58px;align-items:start}
+  .band-tag{left:4px;top:20px}
+  .band-num{font-size:clamp(3.6rem,17vw,5.4rem)}
+  .band-meter{left:4px;right:4px;bottom:22px}
+  .band-copy p{max-width:none}
+  /* — caso studio mobile: colonna pulita, confronto touch — */
+  .cs-cine2{grid-template-columns:1fr;gap:16px;padding:12px 12px 18px}
+  .cs-stage2{min-height:0;aspect-ratio:4/3}
+  .cs-bigbill{left:8px;bottom:8px;padding:11px 14px 10px}
+  .cs-bigbill b{font-size:clamp(1.5rem,7.5vw,2rem)}
+  .st-divider b{width:40px;height:40px}
+  .vs-card{padding:18px 18px 16px;border-radius:12px}
+  .cs-results,.cs-return{grid-template-columns:1fr}
+  .tk-grid{grid-template-columns:1fr}
+  .tk-rail{display:none}
+  .calc-grid{grid-template-columns:1fr;gap:44px}
+  .imp-grid{grid-template-columns:1fr}
+  /* recensioni: griglia in colonna singola */
+  .reviews-grid{grid-template-columns:1fr;gap:16px;margin-top:36px}
+  .rev-card{min-height:0}
+  .contact .wrap{grid-template-columns:1fr;gap:44px}
+  .footer-top{grid-template-columns:1fr;gap:30px}
+  .footer-bottom{flex-direction:column;align-items:flex-start}
+  .nav-links li:not(:last-child){display:none}
+  .alba-copy h2 em{font-size:.78em}
+  .marquee.m-notte{padding:40px 0 14px}
+  .stats,.casestudy,.turnkey,.calc,.reviews{padding-top:40px;padding-bottom:40px}
+  .contact{padding:40px 0 56px}
+  .form-card{padding:28px 22px}
+}
+
+/* ============ smartphone stretti ============ */
+@media (max-width:560px){
+  .wrap{padding:0 16px}
+  .hero h1{font-size:clamp(2.5rem,11.5vw,3rem)}
+  .hero-badges{padding:0 16px 20px;gap:8px}
+  .badge{font-size:.7rem;padding:8px 12px}
+  .kicker{font-size:.68rem;letter-spacing:.16em}
+  .band{padding:48px 2px 54px}
+  .band-tag{left:2px}
+  .band-meter{left:2px;right:2px}
+  .vs-bill b{font-size:1.9rem}
+  .cs-results,.cs-return{gap:12px}
+  .cs-res,.cs-ret{padding:22px 20px}
+  .ctas{flex-direction:column}
+  .ctas .btn{width:100%;justify-content:center}
+  .btn{padding:15px 24px}
+  #nav .logo span{font-size:.95rem}
+  .footer-top{gap:24px}
+}
+@media (prefers-reduced-motion: reduce){
+  .diagram .stream{animation:none}
+  .hero-hud .hh-dot{animation:none}
+}
+</style>
+</head>
+<body>
+
+<div id="cursor" aria-hidden="true"></div>
+<div id="curtain" aria-hidden="true"><div class="word">REAL<b>HOME</b></div></div>
+
+<nav id="nav">
+  <div class="wrap">
+    <a class="logo" href="#top" aria-label="REALHOME home">
+      <svg width="38" height="34" viewBox="0 0 44 40" fill="none" aria-hidden="true">
+        <g fill="#F5A623"><path d="M22 0l2.6 7.4-5.2 0z"/><path d="M9.5 4.6l6 5.2-4.4 2.8z"/><path d="M34.5 4.6l-1.6 8-4.4-2.8z"/><path d="M2 14.5l7.6 2.4-2.6 4.6z"/><path d="M42 14.5l-5 7-2.6-4.6z"/></g>
+        <path d="M6 30 L22 16 L38 30" stroke="#F4740B" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <path d="M13 32.5h18M13 36.5h18" stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity=".9"/>
+      </svg>
+      <span class="word">REAL<b>HOME</b></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#come-funziona" data-nav>Come funziona</a></li>
+      <li><a href="#servizi" data-nav>Servizi</a></li>
+      <li><a href="#risparmio" data-nav>Simulatore</a></li>
+      <li><a class="nav-cta" href="#preventivo" data-nav>Preventivo gratuito</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ============ H 03:47 · NOTTE ============ -->
+<header class="hero" id="top" data-theme="notte">
+  <canvas id="particles" aria-hidden="true"></canvas>
+  <div class="hero-hud fx" aria-hidden="true">
+    <div class="hh-time"><span class="hh-dot"></span>03:47</div>
+    <div class="hh-lbl">La batteria alimenta la casa</div>
+  </div>
+  <div class="wrap">
+    <span class="kicker fx"><span class="ora">H 03:47</span><span class="sep">·</span>Fotovoltaico · Pompe di calore · Ristrutturazioni · Case da zero</span>
+    <h1 class="tr">Il sole non manda bollette. <em>Il tuo tetto nemmeno.</em></h1>
+    <p class="lead fx">Sono le 3 di notte e questa casa va avanti con l'energia raccolta ieri. Fotovoltaico chiavi in mano: pratica GSE inclusa, detrazione fiscale del 50%. Tu accendi la luce, al resto pensiamo noi.</p>
+    <div class="ctas fx">
+      <a class="btn btn-accent" href="#preventivo" data-nav><span>Richiedi il preventivo gratuito</span></a>
+      <a class="btn btn-ghost" href="#risparmio" data-nav><span>Calcola il tuo risparmio</span></a>
+    </div>
+  </div>
+  <div class="hero-media">
+    <div class="hero-reveal" id="heroReveal">
+      <img class="hr-layer hr-base" src="hero-prima.webp" alt="Villa moderna con tetto senza fotovoltaico" fetchpriority="high">
+      <img class="hr-layer hr-top" id="hrTop" src="hero-dopo.webp" alt="La stessa villa con impianto fotovoltaico REALHOME All-Black" aria-hidden="true">
+      <span class="hr-hint" aria-hidden="true">Muovi il mouse sul tetto</span>
+    </div>
+    <div class="hero-badges">
+      <span>✓ Pratica <b>GSE</b> inclusa</span>
+      <span>✓ Detrazione <b>50%</b> fotovoltaico</span>
+      <span>✓ <b>65%</b> infissi e pompe di calore</span>
+    </div>
+  </div>
+</header>
+
+<!-- marquee notturno velocity-reactive -->
+<div class="marquee m-notte" data-marquee data-speed-base="0.55" aria-hidden="true">
+  <div class="m-track">
+    <span>Il sole non manda bollette <b>·</b> Energia tua <b>·</b> Autonomia <b>·</b> </span>
+    <span>Il sole non manda bollette <b>·</b> Energia tua <b>·</b> Autonomia <b>·</b> </span>
+  </div>
+</div>
+
+<!-- ============ H 05:58 · PRIME LUCI — COME FUNZIONA ============ -->
+<section class="how" id="come-funziona" data-theme="notte">
+  <div class="wrap">
+    <span class="kicker"><span class="ora">H 05:58</span><span class="sep">·</span>Prime luci</span>
+    <h2 class="tr">Dal sole alla tua <em>presa di corrente.</em></h2>
+    <div class="how-grid">
+      <div class="steps">
+        <div class="step" data-step="0">
+          <span class="n">01 — IL SOLE</span>
+          <h3>La luce colpisce il pannello</h3>
+          <p>Le celle fotovoltaiche trasformano i fotoni in corrente continua. Funziona anche con il cielo velato.</p>
+        </div>
+        <div class="step" data-step="1">
+          <span class="n">02 — L'INVERTER</span>
+          <h3>L'energia viene convertita</h3>
+          <p>L'inverter trasforma la corrente continua in alternata, pronta per gli elettrodomestici di casa.</p>
+        </div>
+        <div class="step" data-step="2">
+          <span class="n">03 — CASA E BATTERIA</span>
+          <h3>Consumi ora, accumuli per dopo</h3>
+          <p>L'energia alimenta la casa in tempo reale; quella in eccesso carica la batteria per la sera e la notte.</p>
+        </div>
+      </div>
+      <svg class="diagram" viewBox="0 0 760 470" xmlns="http://www.w3.org/2000/svg" aria-label="Schema del flusso di energia dal sole alla casa">
+        <defs>
+          <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+            <feGaussianBlur stdDeviation="3.4" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <linearGradient id="flowGrad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#F5A623"/>
+            <stop offset=".55" stop-color="#FFD98A"/>
+            <stop offset="1" stop-color="#3FA9FF"/>
+          </linearGradient>
+          <radialGradient id="coreGrad" cx=".5" cy=".5" r=".5">
+            <stop offset="0" stop-color="#FFF4D6"/>
+            <stop offset=".5" stop-color="#F5A623"/>
+            <stop offset="1" stop-color="#F5A623" stop-opacity="0"/>
+          </radialGradient>
+          <linearGradient id="cellGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#2E6BD6"/>
+            <stop offset="1" stop-color="#0E2C63"/>
+          </linearGradient>
+          <radialGradient id="invGrad" cx=".5" cy=".5" r=".6">
+            <stop offset="0" stop-color="#FFD98A"/>
+            <stop offset="1" stop-color="#F5A623" stop-opacity="0"/>
+          </radialGradient>
+          <linearGradient id="battGrad" x1="0" y1="1" x2="0" y2="0">
+            <stop offset="0" stop-color="#F5A623"/>
+            <stop offset="1" stop-color="#7FE0B0"/>
+          </linearGradient>
+          <radialGradient id="winGrad" cx=".5" cy=".4" r=".7">
+            <stop offset="0" stop-color="#FFE7B0"/>
+            <stop offset="1" stop-color="#F5A623"/>
+          </radialGradient>
+        </defs>
+
+        <g id="reactor">
+          <circle class="ring ring-a" cx="96" cy="92" r="46" stroke-width="1" stroke-opacity=".35"/>
+          <circle class="ring ring-b" cx="96" cy="92" r="34" stroke-width="1.2" stroke-opacity=".5" stroke-dasharray="3 7"/>
+          <circle class="ring ring-c" cx="96" cy="92" r="24" stroke-width="1.4" stroke-opacity=".7"/>
+          <circle id="core" cx="96" cy="92" r="16"/>
+          <g id="rays" stroke="#F5A623" stroke-width="1.4" stroke-linecap="round" stroke-opacity=".8">
+            <path d="M96 30v-12M96 154v12M158 92h12M22 92h12M140 48l9-9M43 136l-9 9M140 136l9 9M43 48l-9-9"/>
+          </g>
+        </g>
+
+        <path class="rail" d="M120 112 C 172 155, 198 171, 250 214"/>
+        <path id="flow0" class="energy" d="M120 112 C 172 155, 198 171, 250 214" stroke="url(#flowGrad)"/>
+        <path class="stream" d="M120 112 C 172 155, 198 171, 250 214" stroke="#FFE9B0"/>
+
+        <g id="panelG">
+          <g transform="translate(236,196) skewX(-16)">
+            <rect class="glass" x="0" y="0" width="126" height="66" rx="3"/>
+            <g id="panel-cells">
+              <rect x="6" y="6" width="34" height="24" rx="1"/><rect x="46" y="6" width="34" height="24" rx="1"/><rect x="86" y="6" width="34" height="24" rx="1"/>
+              <rect x="6" y="36" width="34" height="24" rx="1"/><rect x="46" y="36" width="34" height="24" rx="1"/><rect x="86" y="36" width="34" height="24" rx="1"/>
+            </g>
+          </g>
+          <path class="stroke" d="M290 264 L290 292"/>
+          <text class="label" x="290" y="308">PANNELLO</text>
+        </g>
+
+        <path class="rail" d="M353 229 C 388 232, 423 252, 458 255"/>
+        <path id="flow1" class="energy" d="M353 229 C 388 232, 423 252, 458 255" stroke="url(#flowGrad)"/>
+        <path class="stream" d="M353 229 C 388 232, 423 252, 458 255" stroke="#BFE4FF"/>
+
+        <g id="invG">
+          <rect class="glass" x="458" y="214" width="66" height="86" rx="4"/>
+          <rect id="invGlow" x="462" y="218" width="58" height="78" rx="3"/>
+          <circle id="invLed" cx="491" cy="236" r="4.5" fill="#F5A623" filter="url(#glow)"/>
+          <path class="stroke" d="M472 258h40M472 272h40M472 286h26"/>
+          <text class="label" x="491" y="320">INVERTER</text>
+        </g>
+
+        <path class="rail" d="M524 250 C 557 238, 591 238, 624 250"/>
+        <path id="flow2" class="energy" d="M524 250 C 557 238, 591 238, 624 250" stroke="url(#flowGrad)"/>
+        <path class="stream" d="M524 250 C 557 238, 591 238, 624 250" stroke="#FFE9B0"/>
+
+        <path class="rail" d="M491 300 L491 336 Q491 344 499 344 L524 344"/>
+        <path id="flow3" class="energy" d="M491 300 L491 336 Q491 344 499 344 L524 344" stroke="url(#flowGrad)"/>
+        <path class="stream" d="M491 300 L491 336 Q491 344 499 344 L524 344" stroke="#9BE9C4"/>
+
+        <g id="battG">
+          <rect class="glass" x="524" y="316" width="52" height="74" rx="4"/>
+          <rect class="stroke" x="540" y="308" width="20" height="8" rx="2"/>
+          <clipPath id="battClip"><rect x="528" y="320" width="44" height="66" rx="2"/></clipPath>
+          <g clip-path="url(#battClip)"><rect id="battFill" x="528" y="320" width="44" height="66"/></g>
+          <text class="label" x="550" y="408">ACCUMULO</text>
+        </g>
+
+        <g id="houseG">
+          <path class="stroke" d="M624 250 L692 196 L760 250"/>
+          <rect class="glass" x="640" y="250" width="104" height="92"/>
+          <rect class="win" id="winA" x="656" y="268" width="26" height="24" rx="1"/>
+          <rect class="win" id="winB" x="702" y="268" width="26" height="24" rx="1"/>
+          <rect class="stroke" x="680" y="304" width="24" height="38"/>
+          <text class="label" x="692" y="360">CASA</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ============ H 06:47 · L'ALBA — la firma ============ -->
+<section class="alba" id="alba" data-theme="notte" aria-label="L'alba: il sole sorge e la bolletta tramonta">
+  <div class="alba-pin" id="albaPin">
+    <div class="alba-sky sky-notte"></div>
+    <div class="alba-sky sky-fuoco" id="skyFuoco"></div>
+    <div class="alba-sky sky-giorno" id="skyGiorno"></div>
+    <div class="alba-sun" id="albaSun" aria-hidden="true"></div>
+    <svg class="alba-skyline" viewBox="0 0 1440 180" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 180 L0 120 L90 120 L90 96 L150 60 L210 96 L210 120 L340 120 L340 84 L420 40 L500 84 L500 120 L640 120 L640 104 L700 74 L760 104 L760 120 L900 120 L900 88 L980 46 L1060 88 L1060 120 L1190 120 L1190 100 L1250 68 L1310 100 L1310 120 L1440 120 L1440 180 Z" fill="#101822"/>
+      <g fill="#F5A623" opacity=".9">
+        <rect x="386" y="58" width="26" height="14" transform="skewX(-14)"/>
+        <rect x="948" y="64" width="26" height="14" transform="skewX(-14)"/>
+      </g>
+    </svg>
+    <div class="alba-copy" id="albaCopy">
+      <span class="kicker" id="albaKicker"><span class="ora">H 06:47</span><span class="sep">·</span>L'alba</span>
+      <h2>Poi sorge il sole. <em>E la bolletta tramonta.</em></h2>
+      <div class="alba-meter" id="albaMeter">
+        <span class="lbl">Bolletta mensile</span>
+        <b id="albaEuro">180,00 €</b>
+      </div>
+    </div>
+    <span class="alba-hint" id="albaHint">Scorri per far sorgere il sole</span>
+  </div>
+</section>
+
+<!-- ============ IL GIORNO ============ -->
+
+<!-- H 08:30 · approccio -->
+<section class="approach day" data-theme="giorno">
+  <div class="wrap">
+    <div>
+      <span class="kicker fx"><span class="ora">H 08:30</span><span class="sep">·</span>Si comincia</span>
+      <h2 class="tr">Tu firmi. <em>Al resto pensiamo noi.</em></h2>
+    </div>
+    <div class="fx">
+      <p>Analisi dei consumi. Dimensionamento dell'impianto. Installazione certificata. Pratica GSE e detrazioni fiscali. Un solo interlocutore, dall'inizio alla fine. È il modo REALHOME di fare le cose: semplice per te, perché è rigoroso per noi.</p>
+      <a class="btn btn-ink" href="#come-funziona" data-nav><span>Scopri come funziona</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- H 10:15 · servizi -->
+<section id="servizi" class="day" data-theme="giorno">
+  <div class="services-head">
+    <div class="wrap">
+      <span class="kicker fx"><span class="ora">H 10:15</span><span class="sep">·</span>I quattro mondi</span>
+      <h2 class="tr">Tutta la casa. <em>Un'unica squadra.</em></h2>
+      <p class="sub fx">Continua a scorrere: i nostri quattro mondi ti passano davanti, uno alla volta, a tutto schermo.</p>
+    </div>
+  </div>
+
+  <div class="hz" id="hz">
+    <div class="marquee m-hz" data-marquee data-speed-base="0.35" aria-hidden="true">
+      <div class="m-track">
+        <span>Realhome Energy • </span>
+        <span>Realhome Energy • </span>
+      </div>
+    </div>
+
+    <div class="hz-track" id="hzTrack">
+
+      <article class="panel">
+        <span class="p-num" aria-hidden="true">01</span>
+        <div class="p-body">
+          <span class="kicker">Servizio 01</span>
+          <h3>Pannelli <span class="grad">fotovoltaici</span></h3>
+          <p>Impianti su misura con accumulo e monitoraggio. Abbatti fino all'80% della bolletta e rientri dell'investimento in 4–6 anni.</p>
+          <div class="p-tags"><span class="hot">Pratica GSE inclusa</span><span>Detrazione 50%</span><span>Accumulo</span></div>
+        </div>
+        <div class="p-media">
+          <div class="zoom"><img src="https://d8j0ntlcm91z4.cloudfront.net/user_37wLEcgtT99OWtuf2iqxdzZdDOJ/hf_20260702_211944_56a070a1-3993-4d9d-8d8d-7f0be7f5efb4.png" alt="Pannelli fotovoltaici monocristallini su tetto"></div>
+          <div class="m-cap">Pannelli fotovoltaici</div>
+        </div>
+      </article>
+
+      <article class="panel dark">
+        <span class="p-num" aria-hidden="true">02</span>
+        <div class="p-body">
+          <span class="kicker">Servizio 02</span>
+          <h3>Pompe di <span class="grad">calore</span></h3>
+          <p>Riscaldamento e raffrescamento ad alta efficienza. Abbinata al fotovoltaico, azzera quasi del tutto la spesa per il gas.</p>
+          <div class="p-tags"><span class="hot">Detrazione 65%</span><span>Caldo + freddo</span><span>Addio gas</span></div>
+        </div>
+        <div class="p-media">
+          <div class="zoom"><img loading="lazy" src="https://d8j0ntlcm91z4.cloudfront.net/user_37wLEcgtT99OWtuf2iqxdzZdDOJ/hf_20260702_211244_e21c1895-5d92-4fc0-bb10-332db5aaf294.png" alt="Pompa di calore moderna installata su facciata"></div>
+          <div class="m-cap">Pompe di calore</div>
+        </div>
+      </article>
+
+      <article class="panel">
+        <span class="p-num" aria-hidden="true">03</span>
+        <div class="p-body">
+          <span class="kicker">Servizio 03</span>
+          <h3>Ristrutturazioni e <span class="grad">infissi</span></h3>
+          <p>Rinnoviamo la tua casa chiavi in mano: isolamento, serramenti di nuova generazione, riqualificazione completa.</p>
+          <div class="p-tags"><span class="hot">Detrazione 65% infissi</span><span>Isolamento</span><span>Chiavi in mano</span></div>
+        </div>
+        <div class="p-media">
+          <div class="zoom"><img loading="lazy" src="https://d8j0ntlcm91z4.cloudfront.net/user_37wLEcgtT99OWtuf2iqxdzZdDOJ/hf_20260702_211251_2d55a016-f03c-481a-8912-34e7944f10e5.png" alt="Soggiorno ristrutturato con nuovi infissi a tutta altezza"></div>
+          <div class="m-cap">Ristrutturazioni e infissi</div>
+        </div>
+      </article>
+
+      <article class="panel deep">
+        <span class="p-num" aria-hidden="true">04</span>
+        <div class="p-body">
+          <span class="kicker">Servizio 04</span>
+          <h3>Case da <span class="grad">zero</span></h3>
+          <p>Progettiamo e costruiamo la tua nuova casa: efficiente, moderna, già predisposta per l'indipendenza energetica.</p>
+          <div class="p-tags"><span class="hot">Chiavi in mano</span><span>Classe A4</span><span>Fotovoltaico integrato</span></div>
+        </div>
+        <div class="p-media">
+          <div class="zoom"><img loading="lazy" src="https://d8j0ntlcm91z4.cloudfront.net/user_37wLEcgtT99OWtuf2iqxdzZdDOJ/hf_20260702_211259_78f15a9e-7e15-4c33-ae10-b4598a5c828b.png" alt="Casa moderna di nuova costruzione con fotovoltaico integrato"></div>
+          <div class="m-cap">Case da zero</div>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="hz-ui">
+      <span class="hz-count" id="hzCount">01 / 04</span>
+      <div class="hz-bar"><i id="hzBar"></i></div>
+      <span class="hz-hint">Scorri</span>
+    </div>
+  </div>
+</section>
+
+<!-- H 12:00 · i numeri -->
+<section class="stats day" id="numeri" data-theme="giorno">
+  <div class="wrap">
+    <span class="kicker fx"><span class="ora">H 12:00</span><span class="sep">·</span>Mezzogiorno pieno</span>
+    <h2 class="tr">I numeri parlano <em>chiaro.</em></h2>
+    <div class="stats-rail">
+
+      <article class="band" data-target="80" data-prefix="−" data-suffix="%" data-frac=".80">
+        <span class="band-glow" aria-hidden="true"></span>
+        <span class="band-tag">[ DATI // 01 ]</span>
+        <div class="band-num" aria-hidden="true"><span class="bn-ghost">−0%</span><span class="bn-fill">−0%</span></div>
+        <div class="band-copy">
+          <h3>Bolletta elettrica</h3>
+          <p>Grazie all'autoconsumo copri la quasi totalità dei consumi diurni e notturni. È la voce che sparisce dal bilancio di casa.</p>
+        </div>
+        <div class="band-meter" aria-hidden="true"><i class="bm-fill"></i><b class="bm-dot"></b></div>
+      </article>
+
+      <article class="band" data-target="50" data-suffix="%" data-frac=".50">
+        <span class="band-glow" aria-hidden="true"></span>
+        <span class="band-tag">[ FISCO // 02 ]</span>
+        <div class="band-num" aria-hidden="true"><span class="bn-ghost">0%</span><span class="bn-fill">0%</span></div>
+        <div class="band-copy">
+          <h3>Detrazione fotovoltaico</h3>
+          <p>Lo Stato ti rimborsa metà dell'impianto in dieci anni. La pratica la seguiamo noi, dall'inizio alla fine.</p>
+        </div>
+        <div class="band-meter" aria-hidden="true"><i class="bm-fill"></i><b class="bm-dot"></b></div>
+      </article>
+
+      <article class="band" data-target="65" data-suffix="%" data-frac=".65">
+        <span class="band-glow" aria-hidden="true"></span>
+        <span class="band-tag">[ FISCO // 03 ]</span>
+        <div class="band-num" aria-hidden="true"><span class="bn-ghost">0%</span><span class="bn-fill">0%</span></div>
+        <div class="band-copy">
+          <h3>Infissi e pompe di calore</h3>
+          <p>Detrazione maggiorata se riqualifichi anche il resto della casa. Un solo cantiere, un solo interlocutore.</p>
+        </div>
+        <div class="band-meter" aria-hidden="true"><i class="bm-fill"></i><b class="bm-dot"></b></div>
+      </article>
+
+      <article class="band" data-target="6" data-prefix="4–" data-frac=".30">
+        <span class="band-glow" aria-hidden="true"></span>
+        <span class="band-tag">[ RIENTRO // 04 ]</span>
+        <div class="band-num" aria-hidden="true"><span class="bn-ghost">4–0</span><span class="bn-fill">4–0</span></div>
+        <div class="band-copy">
+          <h3>Anni di rientro</h3>
+          <p>Un impianto dimensionato correttamente (dai 6 kW ai 9 kW) diventa un guadagno netto dopo il rientro.</p>
+        </div>
+        <div class="band-meter" aria-hidden="true"><i class="bm-fill"></i><b class="bm-dot"></b></div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- H 14:20 · caso studio -->
+<section class="casestudy day" id="caso-studio" data-theme="giorno">
+  <div class="wrap">
+    <span class="kicker fx"><span class="ora">H 14:20</span><span class="sep">·</span>Caso studio — Modena</span>
+    <h2 class="tr">La famiglia Bianchi, <em>prima e dopo.</em></h2>
+    <p class="cs-sub fx">Quattro persone, una villetta in provincia di Modena. Questi sono i numeri reali del loro impianto.</p>
+
+    <div class="cs-live fx" id="csLive">
+      <div class="cs-cine2">
+        <div class="cs-stage2" id="csStage">
+          <img class="st-img st-before" src="casa-prima.webp" alt="" aria-hidden="true" loading="lazy">
+          <img class="st-img st-after" id="stAfter" src="casa-dopo.webp" alt="La villetta Bianchi con l'impianto fotovoltaico attivo" loading="lazy">
+          <div class="st-divider" id="stDiv" aria-hidden="true"><b>&#10096;&thinsp;&#10097;</b></div>
+          <span class="st-tag st-ta">Prima</span>
+          <span class="st-tag st-tb">Con REALHOME</span>
+          <div class="cs-bigbill" aria-hidden="true">
+            <span class="bb-label">Bolletta mensile</span>
+            <b id="bbVal">180,00&nbsp;&euro;</b>
+            <span class="bb-save" id="bbSave">+155,00 &euro; liberati ogni mese</span>
+          </div>
+        </div>
+        <div class="cs-vs">
+          <div class="vs-card vs-prima" id="vsPrima">
+            <span class="vs-tag">Prima &middot; Rete al 100%</span>
+            <div class="vs-bill"><b>180,00&nbsp;&euro;</b><span>/ mese di bolletta</span></div>
+            <div class="vs-rows">
+              <div class="vs-row"><span>Nucleo familiare</span><b>4 persone &middot; 6.000 kWh/anno</b></div>
+              <div class="vs-row"><span>Autonomia energetica</span><b>0%</b></div>
+              <div class="vs-row"><span>Dipendenza dalla rete</span><b>100%</b></div>
+            </div>
+          </div>
+          <div class="vs-card vs-dopo" id="vsDopo">
+            <span class="vs-tag">Dopo &middot; Con REALHOME</span>
+            <div class="vs-bill"><b id="ccBill">180,00&nbsp;&euro;</b><span>/ mese di bolletta</span></div>
+            <div class="vs-rows">
+              <div class="vs-row"><span>Autonomia energetica</span><b id="ccAuto">0%</b></div>
+              <div class="vs-row"><span>Pannelli installati</span><b id="ccPan">0 / 16</b></div>
+              <div class="vs-row batt"><span>Accumulo 14 kWh</span><div class="cc-batt"><i id="ccBatt"></i></div></div>
+            </div>
+          </div>
+          <p class="cs-drag-hint" id="dragHint">&#10096; Trascina il sole sulla foto: la bolletta scende sotto il tuo dito &#10097;</p>
+        </div>
+      </div>
+      <p class="cs-cap">Villetta Bianchi &middot; Modena &middot; Impianto 6 kW &middot; Accumulo 14 kWh</p>
+    </div>
+
+    <div class="cs-results">
+      <div class="cs-res fx"><div class="cs-res-n"><span data-cs-count="25" data-cs-dec="2" data-cs-suffix=" €">0,00 €</span></div><h4>Bolletta mensile</h4><p>Solo la quota fissa. Il resto lo produce il tetto.</p></div>
+      <div class="cs-res fx"><div class="cs-res-n up"><span data-cs-count="155" data-cs-dec="2" data-cs-prefix="+" data-cs-suffix=" €">0,00 €</span></div><h4>Risparmio netto / mese</h4><p>Da 180 € a 25 €: 155 € che restano in tasca.</p></div>
+      <div class="cs-res fx"><div class="cs-res-n"><span data-cs-count="85" data-cs-suffix="%">0%</span></div><h4>Autonomia energetica</h4><p>La quota di consumi coperta dall'impianto e dall'accumulo.</p></div>
+    </div>
+
+    <div class="cs-return">
+      <div class="cs-ret fx">
+        <span class="cs-ret-k">Recupero fiscale 50%</span>
+        <div class="cs-ret-n"><span data-cs-count="9900" data-cs-suffix=" €">0 €</span></div>
+        <p><b>990 €/anno</b> di sconti sulle tasse, per 10 anni.</p>
+      </div>
+      <div class="cs-ret fx">
+        <span class="cs-ret-k">Scambio sul Posto — GSE</span>
+        <div class="cs-ret-n"><span data-cs-count="300" data-cs-suffix=" €">0 €</span></div>
+        <p>Guadagno extra annuo per l'energia immessa in rete.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- H 16:05 · iter GSE -->
+<section class="turnkey day" id="iter-gse" data-theme="giorno">
+  <div class="wrap">
+    <span class="kicker fx"><span class="ora">H 16:05</span><span class="sep">·</span>Chiavi in mano</span>
+    <h2 class="tr">La burocrazia? <em>La azzeriamo noi.</em></h2>
+    <p class="tk-sub fx">Dal primo modulo all'ultimo bonifico del GSE: quattro passaggi che gestiamo internamente, mentre tu segui tutto in trasparenza.</p>
+
+    <div class="tk-grid">
+      <div class="tk-steps">
+        <article class="tk-step" data-tk="0">
+          <div class="tk-ico" aria-hidden="true">
+            <svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="24" class="l"/><path class="l" d="M20 30l7 7 14-14"/></svg>
+          </div>
+          <div><span class="tk-n">01</span><h3>Gestione integrata</h3><p>Tutto l'iter burocratico con il GSE lo seguiamo internamente. Tu non tocchi un modulo.</p></div>
+        </article>
+        <article class="tk-step" data-tk="1">
+          <div class="tk-ico" aria-hidden="true">
+            <svg viewBox="0 0 60 60"><path class="l" d="M12 40V20h16v20M32 40V28h16v12"/><path class="l" d="M8 44h44"/><circle cx="20" cy="30" r="2.5" class="d"/><circle cx="40" cy="34" r="2.5" class="d"/></svg>
+          </div>
+          <div><span class="tk-n">02</span><h3>Iter di connessione</h3><p>Richiesta di connessione alla rete locale e-distribuzione tramite Modello Unico.</p></div>
+        </article>
+        <article class="tk-step" data-tk="2">
+          <div class="tk-ico" aria-hidden="true">
+            <svg viewBox="0 0 60 60"><rect x="12" y="18" width="36" height="24" rx="2" class="l"/><path class="l" d="M12 26h36"/><circle cx="19" cy="22" r="1.6" class="d"/><path class="l" d="M18 34h12"/></svg>
+          </div>
+          <div><span class="tk-n">03</span><h3>Attivazione SSP / RID</h3><p>Configuriamo la pratica per la remunerazione: bonifico bancario diretto sul tuo conto.</p></div>
+        </article>
+        <article class="tk-step" data-tk="3">
+          <div class="tk-ico" aria-hidden="true">
+            <svg viewBox="0 0 60 60"><circle cx="24" cy="26" r="9" class="l"/><path class="l" d="M31 33l8 8-4 4-8-8"/><path class="l" d="M20 26h8M24 22v8" /></svg>
+          </div>
+          <div><span class="tk-n">04</span><h3>Tracciamento trasparente</h3><p>Ti consegniamo le credenziali del portale GSE: monitori i pagamenti quando vuoi.</p></div>
+        </article>
+      </div>
+      <div class="tk-rail" aria-hidden="true"><span class="tk-rail-fill" id="tkFill"></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- H 17:30 · simulatore -->
+<section class="calc day" id="risparmio" data-theme="giorno">
+  <div class="wrap">
+    <span class="kicker fx"><span class="ora">H 17:30</span><span class="sep">·</span>Fai i conti</span>
+    <h2 class="tr">Il tuo impianto, <em>calcolato in tempo reale.</em></h2>
+    <p class="intro fx">Imposta la tua spesa media in bolletta: il simulatore dimensiona l'impianto e stima risparmio ed emissioni evitate, all'istante.</p>
+    <div class="calc-grid">
+      <div class="fx">
+        <div class="slider-label"><span>Bolletta mensile</span><span class="slider-value" id="billVal">120 €</span></div>
+        <input type="range" id="bill" min="50" max="500" step="10" value="120" aria-label="Bolletta elettrica mensile in euro">
+        <p class="slider-hint">Da 50 € a 500 € al mese · media famiglia italiana: 100–130 €</p>
+        <div class="bars" aria-hidden="true">
+          <div class="bar-row"><span>Oggi</span><div class="bar-track"><div class="bar bar-old" id="barOld" style="width:100%">1.440 €/anno</div></div></div>
+          <div class="bar-row"><span>Con REALHOME</span><div class="bar-track"><div class="bar bar-new" id="barNew" style="width:18%">216 €/anno</div></div></div>
+        </div>
+        <p class="calc-note">Stime indicative: prezzo energia 0,30 €/kWh, resa 1.200 kWh/kWp anno, pannelli da 450 W, autoconsumo medio 85%. Il dimensionamento preciso arriva col sopralluogo gratuito.</p>
+      </div>
+      <div class="fx">
+        <div class="res-list" role="status" aria-live="polite">
+          <div class="res"><span class="lbl">Pannelli consigliati</span><span class="val"><span id="nPanels">7</span> <span style="font-size:.55em;font-weight:600">da 450 W</span></span></div>
+          <div class="res"><span class="lbl">Potenza impianto</span><span class="val" id="kwVal">3,3 kW</span></div>
+          <div class="res save"><span class="lbl">Risparmio annuo stimato</span><span class="val" id="saveY">1.224 €</span></div>
+          <div class="res"><span class="lbl">Risparmio in 20 anni</span><span class="val" id="save20">24.480 €</span></div>
+          <div class="res"><span class="lbl">CO₂ evitata ogni anno</span><span class="val" id="co2Val">1,4 t</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- H 18:10 · impatto -->
+<section class="impact day" id="impatto" data-theme="giorno">
+  <div class="wrap">
+    <span class="kicker fx"><span class="ora">H 18:10</span><span class="sep">·</span>Impatto ambientale</span>
+    <h2 class="tr">Il tuo risparmio, <em>tradotto in pianeta.</em></h2>
+    <p class="sub fx">I valori si aggiornano in base alla bolletta che hai impostato nel simulatore qui sopra.</p>
+    <div class="imp-grid">
+      <div class="imp fx">
+        <div class="ico" aria-hidden="true">
+          <svg viewBox="0 0 64 64" fill="none"><path d="M32 58V34" stroke="#101822" stroke-width="4" stroke-linecap="round"/><path d="M32 40c-9 0-17-7-17-17 0-8 6-15 17-17 11 2 17 9 17 17 0 10-8 17-17 17z" fill="#3AA76A"/><path d="M32 34c-5-1-8-4-9-8" stroke="#1E6B3A" stroke-width="3" stroke-linecap="round"/></svg>
+        </div>
+        <div class="big"><span id="trees">70</span> <i>alberi</i></div>
+        <h3>Piantati ogni anno, virtualmente</h3>
+        <p>La CO₂ che il tuo impianto evita equivale al lavoro annuale di questi alberi adulti.</p>
+      </div>
+      <div class="imp fx">
+        <div class="ico" aria-hidden="true">
+          <svg viewBox="0 0 64 64" fill="none"><path d="M10 40h44l-6-14c-1-3-3-4-6-4H22c-3 0-5 1-6 4l-6 14z" fill="#101822"/><rect x="8" y="38" width="48" height="12" rx="4" fill="#F4740B"/><circle cx="20" cy="50" r="6" fill="#101822" stroke="#F6F1E6" stroke-width="2"/><circle cx="44" cy="50" r="6" fill="#101822" stroke="#F6F1E6" stroke-width="2"/><path d="M28 20l-3 8M39 20l3 8" stroke="#F5A623" stroke-width="3" stroke-linecap="round"/></svg>
+        </div>
+        <div class="big"><span id="kmev">11.700</span> <i>km</i></div>
+        <h3>Di auto a benzina evitati</h3>
+        <p>Le stesse emissioni di questi chilometri percorsi ogni anno con un'auto a benzina.</p>
+      </div>
+      <div class="imp fx">
+        <div class="ico" aria-hidden="true">
+          <svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="24" stroke="#101822" stroke-width="4"/><path d="M32 14v18l12 8" stroke="#F4740B" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="big"><span id="co2kg">1.400</span> <i>kg CO₂</i></div>
+        <h3>In meno nell'atmosfera, ogni anno</h3>
+        <p>Per oltre 20 anni di vita dell'impianto: un lascito concreto, non uno slogan.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- H 19:00 · recensioni -->
+<section class="reviews day" id="recensioni" data-theme="giorno">
+  <div class="reviews-head wrap">
+    <span class="kicker fx"><span class="ora">H 19:00</span><span class="sep">·</span>Recensioni</span>
+    <h2 class="tr">Parola di chi <em>l'ha già fatto.</em></h2>
+    <p class="reviews-sub fx"><em>(Testi segnaposto — verranno sostituiti con recensioni reali.)</em></p>
+  </div>
+
+  <div class="wrap">
+    <div class="reviews-grid">
+
+      <article class="rev-card txt fx">
+        <div class="rev-stars">★★★★★</div>
+        <p>"Bolletta crollata dal primo mese. La pratica GSE l'hanno seguita loro dall'inizio alla fine: io non ho firmato nulla di complicato."</p>
+        <cite><span class="av" data-mono="LM"></span>Luca M. — Modena</cite>
+      </article>
+
+      <article class="rev-card txt fx">
+        <div class="rev-stars">★★★★★</div>
+        <p>"Un solo interlocutore per tutto: sopralluogo, installazione, detrazione. In quattro anni l'impianto si sarà ripagato da solo."</p>
+        <cite><span class="av" data-mono="AR"></span>Anna R. — Carpi</cite>
+      </article>
+
+      <article class="rev-card mini fx">
+        <div class="rev-big">−80%</div>
+        <p>in bolletta il primo anno</p>
+      </article>
+
+      <article class="rev-card txt fx">
+        <div class="rev-stars">★★★★★</div>
+        <p>"Squadra puntuale e pulita. Ci hanno consegnato le credenziali del portale GSE: vedo i bonifici arrivare da solo."</p>
+        <cite><span class="av" data-mono="GT"></span>Giorgio T. — Sassuolo</cite>
+      </article>
+
+      <article class="rev-card txt fx">
+        <div class="rev-stars">★★★★★</div>
+        <p>"Autonomia oltre l'80%: di sera consumiamo quello che l'accumulo ha caricato di giorno. Consigliatissimi."</p>
+        <cite><span class="av" data-mono="SP"></span>Sara P. — Modena</cite>
+      </article>
+
+      <article class="rev-card txt fx">
+        <div class="rev-stars">★★★★★</div>
+        <p>"Dal sopralluogo all'allaccio in rete non abbiamo mai dovuto rincorrere nessuno. Tutto tracciato, tutto puntuale."</p>
+        <cite><span class="av" data-mono="MV"></span>Marco V. — Formigine</cite>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ H 19:42 · L'ORA D'ORO — preventivo ============ -->
+<section class="contact" id="preventivo" data-theme="oro">
+  <div class="tram-sun" id="tramSun" aria-hidden="true"></div>
+  <svg class="tram-skyline" viewBox="0 0 1440 180" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0 180 L0 120 L90 120 L90 96 L150 60 L210 96 L210 120 L340 120 L340 84 L420 40 L500 84 L500 120 L640 120 L640 104 L700 74 L760 104 L760 120 L900 120 L900 88 L980 46 L1060 88 L1060 120 L1190 120 L1190 100 L1250 68 L1310 100 L1310 120 L1440 120 L1440 180 Z" fill="#070C16"/>
+    <g fill="#F5A623" opacity=".85">
+      <rect x="386" y="58" width="26" height="14" transform="skewX(-14)"/>
+      <rect x="948" y="64" width="26" height="14" transform="skewX(-14)"/>
+    </g>
+  </svg>
+  <div class="wrap">
+    <div>
+      <span class="kicker fx"><span class="ora">H 19:42</span><span class="sep">·</span>L'ora d'oro</span>
+      <h2 class="tr">Il primo passo <em>è gratis.</em></h2>
+      <p class="sub fx">Sopralluogo e analisi dei consumi, senza impegno. Ti ricontattiamo entro 24 ore con un preventivo su misura.</p>
+      <div class="c-info fx">
+        <div><b>Contatti</b>Telefono · Email<br>Indirizzo sede</div>
+        <div><b>Orari</b>Lun – Ven 9:00 – 18:00</div>
+      </div>
+    </div>
+    <div class="form-card fx">
+      <div class="field"><label for="fname">Nome e cognome</label><input id="fname" type="text" autocomplete="name" placeholder="Mario Rossi"></div>
+      <div class="field"><label for="fphone">Telefono</label><input id="fphone" type="tel" autocomplete="tel" placeholder="333 123 4567"></div>
+      <div class="field"><label for="fcity">Comune dell'immobile</label><input id="fcity" type="text" placeholder="Brescia"></div>
+      <div class="field"><label for="fint">Cosa ti interessa</label>
+        <select id="fint">
+          <option>Fotovoltaico</option><option>Fotovoltaico + pompa di calore</option><option>Ristrutturazione / infissi</option><option>Casa da zero</option>
+        </select>
+      </div>
+      <button class="btn btn-ink" style="width:100%" onclick="submitLead()"><span>Voglio il preventivo gratuito</span></button>
+      <div class="form-ok" id="formOk">✓ Richiesta inviata! Ti ricontatteremo entro 24 ore.</div>
+      <p class="form-note">Inviando accetti l'informativa privacy. Nessuno spam, solo il tuo preventivo.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ H 23:59 · di nuovo notte ============ -->
+<footer data-theme="notte">
+  <div class="wrap">
+    <div class="footer-top">
+      <div>
+        <div class="flogo">
+          <svg width="30" height="27" viewBox="0 0 44 40" fill="none" aria-hidden="true">
+            <g fill="#F5A623"><path d="M22 0l2.6 7.4-5.2 0z"/><path d="M9.5 4.6l6 5.2-4.4 2.8z"/><path d="M34.5 4.6l-1.6 8-4.4-2.8z"/><path d="M2 14.5l7.6 2.4-2.6 4.6z"/><path d="M42 14.5l-5 7-2.6-4.6z"/></g>
+            <path d="M6 30 L22 16 L38 30" stroke="#F4740B" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <path d="M13 32.5h18M13 36.5h18" stroke="#F6F1E6" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+          <span class="word">REAL<b>HOME</b></span>
+        </div>
+      </div>
+      <div>
+        <p class="f-claim"><span class="kicker" style="display:block;margin-bottom:10px"><span class="ora">H 23:59</span><span class="sep">·</span>Fine giornata</span>Domani il sole sorge di nuovo. <b>Gratis.</b></p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>P.IVA 00000000000 · © 2026 REALHOME SRL</p>
+      <p class="disclaimer">Le percentuali di detrazione fiscale indicate sono soggette alla normativa vigente e possono variare in base alla tipologia di immobile e alle leggi di bilancio. Risparmi, dimensionamenti ed equivalenze ambientali sono stime indicative: il calcolo preciso viene fornito con il preventivo personalizzato.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.3.24/dist/lenis.min.js"></script>
+<script>
+/* ============================================================
+   REALHOME — Engine v6 "Una giornata di sole"
+   Base collaudata dell'Engine v5 (Lenis, GSAP, showcase
+   orizzontale, marquee velocity-reactive) + due novità:
+   - ALBA: sezione pinnata in cui il sole sorge con lo scroll
+     e la pagina passa dalla notte al giorno.
+   - NAV camaleonte: legge il data-theme della sezione corrente.
+   ============================================================ */
+gsap.registerPlugin(ScrollTrigger);
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const finePointer  = window.matchMedia('(pointer: fine)').matches;
+const FX = !reduceMotion;
+
+/* ---------- 1. LENIS ---------- */
+let lenis = null;
+/* al reload si riparte sempre dall'hero: niente ripristino della
+   posizione (che oltretutto falsava i trigger a metà pagina) */
+if('scrollRestoration' in history)history.scrollRestoration='manual';
+window.scrollTo(0,0);
+window.addEventListener('pageshow',()=>{window.scrollTo(0,0);if(window.lenisRef)window.lenisRef.scrollTo(0,{immediate:true,force:true});});
+
+let scrollVel = 0;
+if (FX && window.Lenis){
+  lenis = new Lenis({
+    duration: 1.05,
+    easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    smoothWheel: true,
+    wheelMultiplier: 1,
+    touchMultiplier: 1.4
+  });
+  window.lenisRef = lenis;
+  lenis.on('scroll', e => { scrollVel = e.velocity; ScrollTrigger.update(); });
+  gsap.ticker.add(time => lenis.raf(time * 1000));
+  gsap.ticker.lagSmoothing(0);
+}
+
+/* ---------- 2. cielo stellato dell'hero ---------- */
+if (FX && window.THREE) (function(){
+  const cv=document.getElementById('particles');
+  const renderer=new THREE.WebGLRenderer({canvas:cv,alpha:true,antialias:true});
+  const scene=new THREE.Scene();
+  const cam=new THREE.PerspectiveCamera(60,1,.1,100); cam.position.z=8;
+  const N=560,pos=new Float32Array(N*3);
+  for(let i=0;i<N;i++){pos[i*3]=(Math.random()-.5)*24;pos[i*3+1]=(Math.random()-.5)*13;pos[i*3+2]=(Math.random()-.5)*8}
+  const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  /* stelle bianche fitte + pulviscolo ambra rado: la notte prima dell'alba */
+  const stars=new THREE.Points(geo,new THREE.PointsMaterial({color:0xEDEAE0,size:.035,transparent:true,opacity:.75}));scene.add(stars);
+  const dust=new THREE.Points(geo.clone(),new THREE.PointsMaterial({color:0xF5A623,size:.055,transparent:true,opacity:.28}));dust.rotation.z=1.3;scene.add(dust);
+  const m={x:0,y:0};
+  window.addEventListener('mousemove',e=>{m.x=e.clientX/innerWidth-.5;m.y=e.clientY/innerHeight-.5},{passive:true});
+  function size(){const r=cv.parentElement.getBoundingClientRect();renderer.setSize(r.width,r.height,false);cam.aspect=r.width/r.height;cam.updateProjectionMatrix()}
+  size();window.addEventListener('resize',size);
+  (function loop(t){stars.rotation.y=t*.00003+m.x*.22;stars.rotation.x=m.y*.15;dust.rotation.y=-t*.000025+m.x*.14;
+    cam.position.x+=(m.x*1.1-cam.position.x)*.04;cam.position.y+=(-m.y*.7-cam.position.y)*.04;
+    renderer.render(scene,cam);requestAnimationFrame(loop)})(0);
+})();
+
+/* ---------- 3. hero spotlight (mouse-tracking reveal) ---------- */
+(function heroSpotlight(){
+  const box=document.getElementById('heroReveal');
+  const top=document.getElementById('hrTop');
+  if(!box||!top) return;
+  if(!window.matchMedia('(hover:hover)').matches) return;
+  let tx=50,ty=38,raf=null;
+  function apply(){top.style.setProperty('--mx',tx+'%');top.style.setProperty('--my',ty+'%');raf=null;}
+  box.addEventListener('mousemove',e=>{
+    const r=box.getBoundingClientRect();
+    tx=((e.clientX-r.left)/r.width)*100;
+    ty=((e.clientY-r.top)/r.height)*100;
+    if(!raf) raf=requestAnimationFrame(apply);
+  },{passive:true});
+  const setR=()=>top.style.setProperty('--r',Math.max(110,box.clientWidth*0.13)+'px');
+  setR(); addEventListener('resize',setR);
+})();
+
+/* ---------- 4. text reveal + fade ---------- */
+function splitLines(el){const p=el.innerHTML.split(/<br\s*\/?>/i);
+  el.innerHTML=p.map(x=>`<span class="mask"><span class="lineIn">${x}</span></span>`).join('');
+  return el.querySelectorAll('.lineIn')}
+if (FX){
+  document.querySelectorAll('.tr').forEach(el=>{
+    const lines=splitLines(el);gsap.set(lines,{yPercent:112});
+    gsap.to(lines,{yPercent:0,duration:1.15,ease:'power4.out',stagger:.12,scrollTrigger:{trigger:el,start:'top 86%',once:true}})});
+  gsap.utils.toArray('.fx').forEach(el=>{
+    gsap.from(el,{y:36,opacity:0,duration:1,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 88%',once:true}})});
+}
+
+/* ---------- 5. counters generici ---------- */
+if (FX){
+  document.querySelectorAll('.pct[data-count]').forEach(el=>{
+    if(el.closest('.band')) return;
+    const t=+el.dataset.count,pre=el.dataset.prefix||'',suf=el.dataset.suffix||'',o={v:0};
+    ScrollTrigger.create({trigger:el,start:'top 85%',once:true,
+      onEnter:()=>gsap.to(o,{v:t,duration:1.8,ease:'power2.out',onUpdate:()=>{el.textContent=pre+Math.round(o.v)+suf}})})});
+}
+
+/* ---------- 5b. I NUMERI: reveal + count-up + tilt + torcia ---------- */
+(function contatoreSolare(){
+  /* IL CONTATORE SOLARE — le cifre si riempiono di sole con lo scroll.
+     Ogni banda ha due strati di testo perfettamente registrati:
+     .bn-ghost (contorno vuoto) e .bn-fill (oro), rivelato da un
+     clip-path che avanza con il progresso. La linea di misura si
+     estende fino al valore della banda con la testa luminosa.
+     Tutto in scrub: torna indietro e la luce si ritira. */
+  const bands=[...document.querySelectorAll('.band')];
+  if(!bands.length) return;
+  bands.forEach((band,i)=>{
+    const tgt=+band.dataset.target, pre=band.dataset.prefix||'', suf=band.dataset.suffix||'';
+    const frac=+band.dataset.frac;
+    const ghost=band.querySelector('.bn-ghost'), fill=band.querySelector('.bn-fill');
+    const meter=band.querySelector('.bm-fill'), dot=band.querySelector('.bm-dot');
+    const set=p=>{
+      const txt=pre+Math.round(tgt*p)+suf;
+      ghost.textContent=txt; fill.textContent=txt;
+      fill.style.clipPath='inset(-25% '+((1-p)*100).toFixed(2)+'% -25% 0)';
+      const w=(frac*p*100).toFixed(2)+'%';
+      meter.style.width=w; dot.style.left=w;
+      dot.style.opacity=p>0.02?1:0;
+    };
+    if(!FX){set(1);return;}
+    set(0);
+    ScrollTrigger.create({
+      trigger:band,start:'top 88%',end:'top 34%',scrub:.6,
+      onUpdate:self=>set(self.progress)
+    });
+  });
+  /* il bagliore segue il cursore dentro la banda attivata */
+  if(finePointer){
+    bands.forEach(band=>{
+      const glow=band.querySelector('.band-glow');
+      band.addEventListener('pointermove',e=>{
+        const r=band.getBoundingClientRect();
+        glow.style.setProperty('--mx',((e.clientX-r.left)/r.width*100).toFixed(1)+'%');
+        glow.style.setProperty('--my',((e.clientY-r.top)/r.height*100).toFixed(1)+'%');
+      });
+    });
+  }
+})();
+
+/* ---------- 5c. CASO STUDIO — la trasformazione in diretta ----------
+   Come per l'alba: la card si pinna e lo scroll installa l'impianto.
+   I 16 pannelli si accendono uno a uno, la bolletta scende da
+   180,00 € a 25,00 € cambiando colore, l'autonomia sale, la
+   batteria si carica. Mobile / reduced-motion: scena già compiuta. */
+(function bianchiLive(){
+  /* IL CONFRONTO VIVO — un solo valore p (0\u21921) guida tutto:
+     la foto a colori viene rivelata dal divisore, la bolletta scende,
+     i pannelli si contano, la batteria si carica, la card DOPO si
+     accende. p arriva o dal dito (drag, mouse o touch) o dalla demo
+     automatica al primo ingresso in viewport. Zero pin, zero fragilita'. */
+  const live=document.getElementById('csLive');
+  if(live){
+    const TOT=16;
+    const stage=document.getElementById('csStage');
+    const after=document.getElementById('stAfter');
+    const divi=document.getElementById('stDiv');
+    const bill=document.getElementById('ccBill');
+    const auto=document.getElementById('ccAuto');
+    const pan=document.getElementById('ccPan');
+    const batt=document.getElementById('ccBatt');
+    const bbVal=document.getElementById('bbVal');
+    const vsPrima=document.getElementById('vsPrima');
+    const vsDopo=document.getElementById('vsDopo');
+    const fmt=v=>v.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2})+' \u20ac';
+    const colBill=gsap.utils.interpolate('#FF7A59','#57C88A');
+    function setP(v){
+      const p=Math.max(0,Math.min(1,v));
+      after.style.clipPath='inset(0 '+((1-p)*100).toFixed(2)+'% 0 0)';
+      divi.style.left=(p*100).toFixed(2)+'%';
+      const eur=180-155*p, col=colBill(p);
+      bill.textContent=fmt(eur); bill.style.color=col;
+      bbVal.textContent=fmt(eur); bbVal.style.color=col;
+      auto.textContent=Math.round(85*p)+'%';
+      pan.textContent=Math.round(TOT*p)+' / '+TOT;
+      batt.style.width=(p*100).toFixed(1)+'%';
+      vsPrima.style.opacity=(1-p*.4).toFixed(3);
+      vsDopo.style.setProperty('--ign',p.toFixed(3));
+      live.classList.toggle('done',p>.92);
+    }
+    /* — drag: il confronto sotto il dito — */
+    let dragging=false;
+    const fromEvent=e=>{const r=stage.getBoundingClientRect();setP((e.clientX-r.left)/r.width)};
+    stage.addEventListener('pointerdown',e=>{dragging=true;try{stage.setPointerCapture(e.pointerId)}catch(_){ }fromEvent(e)});
+    stage.addEventListener('pointermove',e=>{if(dragging)fromEvent(e)});
+    stage.addEventListener('pointerup',()=>{dragging=false});
+    stage.addEventListener('pointercancel',()=>{dragging=false});
+    /* — demo automatica al primo ingresso in viewport — */
+    setP(0);
+    const demo=()=>{const o={v:0};
+      gsap.to(o,{v:1,duration:2.6,ease:'power2.inOut',
+        onUpdate:()=>{if(!dragging)setP(o.v)},
+        onComplete:()=>live.classList.add('ready')});
+    };
+    if(!FX){setP(1);live.classList.add('ready');}
+    else if('IntersectionObserver' in window){
+      const io=new IntersectionObserver(es=>{es.forEach(en=>{if(en.isIntersecting){io.disconnect();demo();}})},{threshold:.4});
+      io.observe(stage);
+    } else {demo();}
+  }
+  /* count-up dei risultati sottostanti (invariato) */
+  const nums=[...document.querySelectorAll('[data-cs-count]')];
+  if(!nums.length) return;
+  const fmt2=(v,dec)=>v.toLocaleString('it-IT',{minimumFractionDigits:dec,maximumFractionDigits:dec});
+  nums.forEach(el=>{
+    const t=+el.dataset.csCount, dec=+(el.dataset.csDec||0), pre=el.dataset.csPrefix||'', suf=el.dataset.csSuffix||'', o={v:0};
+    if(!FX){el.textContent=pre+fmt2(t,dec)+suf;return;}
+    ScrollTrigger.create({trigger:el,start:'top 88%',once:true,
+      onEnter:()=>gsap.to(o,{v:t,duration:1.9,ease:'power2.out',onUpdate:()=>{el.textContent=pre+fmt2(o.v,dec)+suf}})});
+  });
+})();
+
+/* ---------- 5d. ITER GSE ---------- */
+(function turnkey(){
+  const steps=[...document.querySelectorAll('.tk-step')];
+  const fill=document.getElementById('tkFill');
+  if(!steps.length) return;
+  if(!FX){steps.forEach(s=>s.classList.add('on'));if(fill)fill.style.height='100%';return;}
+  const grid=document.querySelector('.tk-grid');
+  gsap.timeline({scrollTrigger:{trigger:grid,start:'top 70%',end:'bottom 75%',scrub:1,
+    onUpdate:self=>{
+      const p=self.progress;
+      if(fill)fill.style.height=(p*100).toFixed(1)+'%';
+      const active=Math.min(steps.length-1,Math.floor(p*steps.length+0.15));
+      steps.forEach((s,i)=>s.classList.toggle('on',i<=active));
+    }}});
+})();
+
+/* ---------- 5e. RECENSIONI: griglia statica, nessun movimento ----------
+   (Il vecchio parallax fluttuante è stato rimosso: le card ora vivono
+   in una griglia CSS pulita e si rivelano con il fade .fx standard.) */
+
+/* ---------- 6. nav: shrink + camaleonte giorno/notte ---------- */
+const nav=document.getElementById('nav');
+ScrollTrigger.create({start:60,onEnter:()=>nav.classList.add('shrunk'),onLeaveBack:()=>nav.classList.remove('shrunk')});
+/* la nav legge il tema della sezione che tocca il bordo alto */
+document.querySelectorAll('[data-theme]').forEach(sec=>{
+  const day = sec.dataset.theme==='giorno' || sec.dataset.theme==='oro';
+  ScrollTrigger.create({
+    trigger:sec,start:'top 70px',end:'bottom 70px',
+    onToggle:self=>{ if(self.isActive) nav.classList.toggle('nav-day', day); }
+  });
+});
+
+/* ---------- 7. infografica "come funziona" ---------- */
+(function how(){
+  const paths=['#flow0','#flow1','#flow2','#flow3'].map(s=>document.querySelector(s));
+  const streams=[...document.querySelectorAll('.diagram .stream')];
+  const steps=[...document.querySelectorAll('.step')];
+  function setStep(i){steps.forEach((s,k)=>s.classList.toggle('active',k<=i))}
+  if(!FX){setStep(2);return}
+  paths.forEach(p=>{const L=p.getTotalLength();p.style.strokeDasharray=L;p.style.strokeDashoffset=L});
+  gsap.set('#reactor',{scale:.55,opacity:0,transformOrigin:'96px 92px'});
+  gsap.set(['#invLed','#winA','#winB','#invGlow'],{opacity:0});
+  gsap.set('#battFill',{scaleY:0,transformOrigin:'center bottom'});
+  const tl=gsap.timeline({scrollTrigger:{trigger:'.how',start:'top 62%',end:'bottom 55%',scrub:1},defaults:{ease:'none'}});
+  tl.call(setStep,[0])
+    .to('#reactor',{scale:1,opacity:1,duration:.8})
+    .to('#rays',{rotation:26,transformOrigin:'96px 92px',duration:1.6},'<')
+    .to(paths[0],{strokeDashoffset:0,duration:1},'-=.5')
+    .add(()=>setStep(1))
+    .to(paths[1],{strokeDashoffset:0,duration:1})
+    .to('#invGlow',{opacity:.85,duration:.4},'<+.3')
+    .to('#invLed',{opacity:1,duration:.3})
+    .add(()=>setStep(2))
+    .to(paths[2],{strokeDashoffset:0,duration:1})
+    .to(['#winA','#winB'],{opacity:1,duration:.5,stagger:.15},'-=.3')
+    .to(paths[3],{strokeDashoffset:0,duration:.8},'-=.6')
+    .to('#battFill',{scaleY:1,duration:.9})
+    .to('#invLed',{opacity:.5,repeat:3,yoyo:true,duration:.15});
+  let cur=1;
+  gsap.ticker.add(()=>{
+    const v=Math.min(Math.abs(scrollVel||0),40);
+    const target=1+v*0.12;
+    cur+=(target-cur)*0.12;
+    streams.forEach(s=>s.style.animationDuration=(1.15/cur).toFixed(3)+'s');
+  });
+})();
+
+/* ============ 7b. L'ALBA — il sole sorge con lo scroll ============
+   Sezione pinnata per ~1.6 viewport. Mentre resta ferma:
+   - il disco solare sale da sotto l'orizzonte;
+   - i tre cieli (notte → fuoco → giorno) si fondono in sequenza;
+   - il testo passa da chiaro a inchiostro quando il cielo si accende;
+   - il contatore della bolletta scende da 180,00 € a 25,00 €.
+   Mobile / reduced-motion: niente pin, scena "alba compiuta". */
+(function alba(){
+  const pin=document.getElementById('albaPin');
+  const sun=document.getElementById('albaSun');
+  const fuoco=document.getElementById('skyFuoco');
+  const giorno=document.getElementById('skyGiorno');
+  const copy=document.getElementById('albaCopy');
+  const kicker=document.getElementById('albaKicker');
+  const hint=document.getElementById('albaHint');
+  const euro=document.getElementById('albaEuro');
+  if(!pin) return;
+  const fmt=v=>v.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2})+' €';
+
+  if(!FX){
+    /* scena statica: alba compiuta, colori da giorno */
+    fuoco.style.opacity=.35; giorno.style.opacity=1;
+    sun.style.transform='translateX(-50%) translateY(-78vh)';
+    copy.style.color='#101822';
+    kicker.style.color='#F4740B';
+    euro.textContent=fmt(25);
+    if(hint) hint.style.display='none';
+    return;
+  }
+
+  const o={v:180};
+  const tl=gsap.timeline({
+    scrollTrigger:{trigger:pin,start:'top top',end:'+=160%',scrub:1,pin:true,anticipatePin:1},
+    defaults:{ease:'none'}
+  });
+  tl
+    /* 0 → .45: il cielo prende fuoco, il sole spunta */
+    .to(fuoco,{opacity:1,duration:.45},0)
+    .to(sun,{y:'-40vh',duration:.45},0)
+    /* .35 → .8: arriva il giorno, il sole sale alto */
+    .to(giorno,{opacity:1,duration:.45},.35)
+    .to(sun,{y:'-86vh',duration:.55},.45)
+    /* il testo si tinge d'inchiostro quando il cielo è chiaro */
+    .to(copy,{color:'#101822',duration:.25},.5)
+    .to(kicker,{color:'#F4740B',duration:.25},.5)
+    .to(hint,{opacity:0,duration:.2},.55)
+    /* la bolletta tramonta: 180 → 25 € */
+    .to(o,{v:25,duration:.9,onUpdate:()=>{euro.textContent=fmt(o.v)}},0.05);
+})();
+
+/* ============ 7c. IL TRAMONTO — chiusura del cerchio ============
+   Nella sezione preventivo il sole scende dietro lo stesso skyline
+   dell'alba mentre la sezione attraversa lo schermo. Nessun pin:
+   solo uno scrub leggero, funziona ovunque. */
+(function tramonto(){
+  const s=document.getElementById('tramSun');
+  if(!s || !FX) return;
+  gsap.fromTo(s,{y:'-6vh'},{y:'72vh',ease:'none',
+    scrollTrigger:{trigger:'.contact',start:'top bottom',end:'bottom top',scrub:1}});
+})();
+
+/* ============ 8. SERVIZI — horizontal scroll showcase ============ */
+(function servicesHZ(){
+  const hz=document.getElementById('hz');
+  const track=document.getElementById('hzTrack');
+  const panels=gsap.utils.toArray('.panel');
+  const medias=gsap.utils.toArray('.p-media');
+  const imgs=medias.map(m=>m.querySelector('img'));
+  const count=document.getElementById('hzCount');
+  const bar=document.getElementById('hzBar');
+  const pad=n=>String(n).padStart(2,'0');
+
+  if(!FX){
+    medias.forEach(m=>m.style.clipPath='inset(0 0 0 0)');
+    imgs.forEach(i=>i.style.transform='scale(1.02)');
+    return;
+  }
+
+  const mm=gsap.matchMedia();
+
+  mm.add('(min-width: 981px)',()=>{
+    const dist=()=>track.scrollWidth-window.innerWidth;
+
+    const tween=gsap.to(track,{
+      x:()=>-dist(),
+      ease:'none',
+      scrollTrigger:{
+        trigger:hz,
+        pin:true,
+        scrub:1,
+        start:'top top',
+        end:()=>'+='+dist(),
+        invalidateOnRefresh:true,
+        anticipatePin:1,
+        onUpdate:self=>{
+          bar.style.transform=`scaleX(${self.progress})`;
+          const i=Math.min(panels.length-1,Math.round(self.progress*(panels.length-1)));
+          count.textContent=pad(i+1)+' / '+pad(panels.length);
+        }
+      }
+    });
+
+    gsap.set(medias[0],{clipPath:'inset(0 100% 0 0)'});
+    gsap.set(imgs[0],{scale:1.28});
+    gsap.timeline({scrollTrigger:{trigger:hz,start:'top 70%',end:'top top',scrub:1}})
+      .to(medias[0],{clipPath:'inset(0 0% 0 0)',ease:'none'},0)
+      .to(imgs[0],{scale:1,ease:'none'},0);
+
+    panels.slice(1).forEach((p,k)=>{
+      const media=medias[k+1],img=imgs[k+1];
+      gsap.set(media,{clipPath:'inset(0 100% 0 0)'});
+      gsap.set(img,{scale:1.28});
+      gsap.timeline({scrollTrigger:{
+        containerAnimation:tween,trigger:p,start:'left 85%',end:'left 15%',scrub:1
+      }})
+        .to(media,{clipPath:'inset(0 0% 0 0)',ease:'none'},0)
+        .to(img,{scale:1,ease:'none'},0);
+      gsap.fromTo(p.querySelector('.p-num'),{xPercent:14},{xPercent:-8,ease:'none',
+        scrollTrigger:{containerAnimation:tween,trigger:p,start:'left right',end:'right left',scrub:1}});
+    });
+
+    return ()=>{
+      medias.forEach(m=>gsap.set(m,{clearProps:'clipPath'}));
+      imgs.forEach(i=>gsap.set(i,{clearProps:'transform'}));
+      gsap.set(track,{clearProps:'transform'});
+    };
+  });
+
+  mm.add('(max-width: 980px)',()=>{
+    medias.forEach((m,k)=>{
+      gsap.set(m,{clipPath:'inset(0 0 100% 0)'});
+      gsap.set(imgs[k],{scale:1.18});
+      gsap.timeline({scrollTrigger:{trigger:m,start:'top 85%',end:'top 40%',scrub:1}})
+        .to(m,{clipPath:'inset(0 0 0% 0)',ease:'none'},0)
+        .to(imgs[k],{scale:1.04,ease:'none'},0);
+    });
+    return ()=>{
+      medias.forEach(m=>gsap.set(m,{clearProps:'clipPath'}));
+      imgs.forEach(i=>gsap.set(i,{clearProps:'transform'}));
+    };
+  });
+})();
+
+/* ============ 9. MARQUEE velocity-reactive ============ */
+if (FX)(function marquees(){
+  const tracks=[...document.querySelectorAll('[data-marquee] .m-track')];
+  if(!tracks.length)return;
+  const state=tracks.map(t=>({el:t,x:0,w:0,base:+t.parentElement.dataset.speedBase||.5,boost:0}));
+  function measure(){state.forEach(s=>{s.w=s.el.children[0].getBoundingClientRect().width})}
+  measure();window.addEventListener('resize',measure);
+  window.addEventListener('load',measure);
+  gsap.ticker.add(()=>{
+    const v=Math.min(Math.abs(scrollVel),60);
+    state.forEach(s=>{
+      s.boost+=((v*.06)-s.boost)*.08;
+      s.x-=s.base+s.boost;
+      if(s.w>0&&s.x<=-s.w)s.x+=s.w;
+      s.el.style.transform=`translate3d(${s.x}px,0,0)`;
+    });
+    scrollVel*=.92;
+  });
+})();
+
+/* ---------- 10. cursore ---------- */
+if (FX && finePointer)(function(){
+  const cur=document.getElementById('cursor');
+  if(!cur) return;
+  document.body.classList.add('fxon');
+  const cx=gsap.quickTo(cur,'x',{duration:.12,ease:'power2.out'}),
+        cy=gsap.quickTo(cur,'y',{duration:.12,ease:'power2.out'});
+  window.addEventListener('mousemove',e=>{cx(e.clientX);cy(e.clientY)},{passive:true});
+  window.addEventListener('mousedown',()=>gsap.to(cur,{scale:1.6,duration:.15}));
+  window.addEventListener('mouseup',()=>gsap.to(cur,{scale:1,duration:.2}));
+})();
+
+/* ---------- 11. curtain transitions ---------- */
+if (FX){
+  const curtain=document.getElementById('curtain'),word=curtain.querySelector('.word');
+  document.querySelectorAll('[data-nav]').forEach(a=>{
+    a.addEventListener('click',e=>{
+      const target=document.querySelector(a.getAttribute('href'));if(!target)return;
+      e.preventDefault();
+      gsap.timeline()
+        .to(curtain,{y:'0%',duration:.55,ease:'power4.inOut'})
+        .to(word,{opacity:1,duration:.2},'-=.2')
+        .add(()=>{
+          if(lenis)lenis.scrollTo(target,{offset:-80,immediate:true,force:true});
+          else{const y=target.getBoundingClientRect().top+window.scrollY-80;window.scrollTo({top:y,behavior:'instant'})}
+        })
+        .to(word,{opacity:0,duration:.2,delay:.1})
+        .to(curtain,{y:'-101%',duration:.6,ease:'power4.inOut'})
+        .set(curtain,{y:'101%'});
+    });
+  });
+}
+
+/* ---------- 12. simulatore + impatto ---------- */
+const bill=document.getElementById('bill');
+const PRICE=0.30, YIELD=1200, PANEL_W=0.45, SELF=0.85, CO2_KWH=0.35, TREE_KG=20, CAR_KG_KM=0.12;
+const fmtEur=n=>Math.round(n).toLocaleString('it-IT')+' €';
+const fmtInt=n=>Math.round(n).toLocaleString('it-IT');
+const state={y:0,pv:0,saveY:0,save20:0,panels:0,kw:0,co2:0,trees:0,km:0};
+const E=id=>document.getElementById(id);
+const els={billVal:E('billVal'),barOld:E('barOld'),barNew:E('barNew'),nPanels:E('nPanels'),kwVal:E('kwVal'),
+  saveY:E('saveY'),save20:E('save20'),co2Val:E('co2Val'),trees:E('trees'),kmev:E('kmev'),co2kg:E('co2kg')};
+function render(){
+  els.barOld.textContent=fmtEur(state.y)+'/anno';
+  els.barNew.textContent=fmtEur(state.pv)+'/anno';
+  els.nPanels.textContent=Math.round(state.panels);
+  els.kwVal.textContent=(Math.round(state.kw*10)/10).toLocaleString('it-IT')+' kW';
+  els.saveY.textContent=fmtEur(state.saveY);
+  els.save20.textContent=fmtEur(state.save20);
+  els.co2Val.textContent=(Math.round(state.co2*10)/10).toLocaleString('it-IT')+' t';
+  els.trees.textContent=fmtInt(state.trees);
+  els.kmev.textContent=fmtInt(state.km);
+  els.co2kg.textContent=fmtInt(state.co2*1000);
+}
+function compute(m){
+  const y=m*12, kwh=y/PRICE, kw=kwh/YIELD, panels=Math.ceil(kw/PANEL_W);
+  const saveY=y*SELF, pv=y-saveY, co2kg=kwh*SELF*CO2_KWH;
+  return {y,pv,saveY,save20:saveY*20,panels,kw,co2:co2kg/1000,trees:co2kg/TREE_KG,km:co2kg/CAR_KG_KM};
+}
+function update(){
+  const m=+bill.value;
+  bill.style.setProperty('--fill',((m-50)/450*100)+'%');
+  els.billVal.textContent=fmtEur(m);
+  const t=compute(m);
+  if(!FX){Object.assign(state,t);render();return}
+  gsap.to(state,{...t,duration:.75,ease:'power3.out',overwrite:true,onUpdate:render});
+}
+Object.assign(state,compute(120));
+bill.style.setProperty('--fill',((120-50)/450*100)+'%');
+render();
+bill.addEventListener('input',update);
+function submitLead(){document.getElementById('formOk').style.display='block'}
+
+/* ---------- 13. refresh dopo il load ---------- */
+/* I pin vengono creati nello script in un ordine diverso da quello del
+   documento: senza sort() il caso studio calcola l'aggancio senza lo
+   spacer dei servizi orizzontali e si pinna in mezzo alla sezione
+   sbagliata. sort() riordina i trigger per posizione reale. */
+ScrollTrigger.sort();
+ScrollTrigger.refresh();
+window.addEventListener('load',()=>{ScrollTrigger.sort();ScrollTrigger.refresh();});
+</script>
+</body>
+</html>
