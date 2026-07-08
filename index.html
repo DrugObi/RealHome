@@ -124,18 +124,13 @@ body.fxon #cursor{display:block}
 .hero-badges{position:absolute;left:0;right:0;bottom:0;z-index:3;display:flex;gap:10px;flex-wrap:wrap;padding:0 32px 26px;max-width:1200px;margin:0 auto}
 .hero-badges span{font-size:.82rem;font-weight:500;color:#EDEAE0;background:rgba(7,12,22,.55);border:1px solid var(--line-d);backdrop-filter:blur(10px);padding:9px 16px;border-radius:100px}
 .hero-badges b{color:var(--sole);font-weight:700}
-/* hero spotlight reveal */
-.hero-reveal{position:relative;width:100%;height:100%;overflow:hidden;cursor:crosshair}
+/* hero liquid reveal (dual-texture shader) */
+.hero-reveal{position:relative;width:100%;height:100%;overflow:hidden}
 .hr-layer{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
 .hr-base{z-index:1}
-.hr-top{z-index:2;--mx:50%;--my:38%;--r:150px;
-  -webkit-mask-image:radial-gradient(circle var(--r) at var(--mx) var(--my),#000 0%,#000 62%,transparent 100%);
-          mask-image:radial-gradient(circle var(--r) at var(--mx) var(--my),#000 0%,#000 62%,transparent 100%)}
-.hr-top::after{content:'';position:absolute;left:var(--mx);top:var(--my);width:calc(var(--r)*2);height:calc(var(--r)*2);transform:translate(-50%,-50%);border-radius:50%;pointer-events:none;box-shadow:0 0 40px 4px rgba(245,166,35,.35);opacity:0;transition:opacity .35s}
-.hero-reveal:hover .hr-top::after{opacity:1}
-.hr-hint{position:absolute;z-index:3;left:50%;bottom:16px;transform:translateX(-50%);font-family:'Instrument Sans',sans-serif;font-size:.74rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#fff;background:rgba(7,12,22,.55);border:1px solid var(--line-d);backdrop-filter:blur(8px);padding:8px 16px;border-radius:100px;transition:opacity .4s;pointer-events:none}
-.hero-reveal:hover .hr-hint{opacity:0}
-@media (hover:none){.hr-top{-webkit-mask-image:none;mask-image:none}.hr-hint{display:none}}
+.hr-top{z-index:2;opacity:0}                 /* nascosto: la fusione avviene nel canvas WebGL */
+.hero-reveal canvas.liquid{position:absolute;inset:0;z-index:3;width:100%;height:100%;display:block}
+@media (hover:none){.hr-top{opacity:0}}      /* touch: mostra il "prima" statico (nessuno shader) */
 /* orologio di bordo */
 .hero-hud{position:absolute;top:112px;right:32px;z-index:3;text-align:right;font-variant-numeric:tabular-nums}
 .hero-hud .hh-time{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:1.05rem;color:#F6F1E6;letter-spacing:.04em}
@@ -624,9 +619,8 @@ footer p{font-size:.85rem;line-height:1.7}
   </div>
   <div class="hero-media">
     <div class="hero-reveal" id="heroReveal">
-      <img class="hr-layer hr-base" src="hero-prima.webp" alt="Villa moderna con tetto senza fotovoltaico" fetchpriority="high">
-      <img class="hr-layer hr-top" id="hrTop" src="hero-dopo.webp" alt="La stessa villa con impianto fotovoltaico REALHOME All-Black" aria-hidden="true">
-      <span class="hr-hint" aria-hidden="true">Muovi il mouse sul tetto</span>
+      <img class="hr-layer hr-base" id="hrPrima" crossorigin="anonymous" src="hero-prima.webp" alt="Villa moderna con impianto fotovoltaico REALHOME al crepuscolo" fetchpriority="high">
+      <img class="hr-layer hr-top" id="hrDopo" crossorigin="anonymous" src="hero-dopo.webp" alt="" aria-hidden="true">
     </div>
     <div class="hero-badges">
       <span>✓ Pratica <b>GSE</b> inclusa</span>
@@ -1295,22 +1289,59 @@ if (FX && window.THREE) (function(){
     renderer.render(scene,cam);requestAnimationFrame(loop)})(0);
 })();
 
-/* ---------- 3. hero spotlight (mouse-tracking reveal) ---------- */
-(function heroSpotlight(){
+/* ---------- 3. hero liquid ripple reveal (dual-texture shader) ---------- */
+if (FX && window.THREE) (function(){
   const box=document.getElementById('heroReveal');
-  const top=document.getElementById('hrTop');
-  if(!box||!top) return;
-  if(!window.matchMedia('(hover:hover)').matches) return;
-  let tx=50,ty=38,raf=null;
-  function apply(){top.style.setProperty('--mx',tx+'%');top.style.setProperty('--my',ty+'%');raf=null;}
-  box.addEventListener('mousemove',e=>{
-    const r=box.getBoundingClientRect();
-    tx=((e.clientX-r.left)/r.width)*100;
-    ty=((e.clientY-r.top)/r.height)*100;
-    if(!raf) raf=requestAnimationFrame(apply);
-  },{passive:true});
-  const setR=()=>top.style.setProperty('--r',Math.max(110,box.clientWidth*0.13)+'px');
-  setR(); addEventListener('resize',setR);
+  const imgA=document.getElementById('hrPrima');   // prima (tetto pulito)
+  const imgB=document.getElementById('hrDopo');    // dopo (pannelli)
+  if(!box||!imgA||!imgB) return;
+  if(!window.matchMedia('(hover:hover)').matches) return;   // touch: resta statico
+
+  const VERT=`varying vec2 vUv;void main(){vUv=uv;gl_Position=vec4(position,1.0);}`;
+  // increspatura ad anello attorno al mouse; la stessa onda pilota sia la
+  // distorsione UV sia la miscela prima->dopo (effetto "acqua che rivela")
+  const FRAG=`precision mediump float;
+  uniform sampler2D uA,uB;uniform float uTime,uHover;uniform vec2 uMouse,uScale;varying vec2 vUv;
+  void main(){
+    vec2 uv=(vUv-.5)*uScale+.5;
+    float d=distance(vUv,uMouse);
+    float wave=sin(d*24.0-uTime*4.2)*smoothstep(.55,0.,d);
+    uv+=normalize(vUv-uMouse+.0001)*wave*.016*uHover;
+    vec4 a=texture2D(uA,clamp(uv,.002,.998));
+    vec4 b=texture2D(uB,clamp(uv,.002,.998));
+    // rivelazione morbida: disco attorno al mouse + spinta dell'onda
+    float reveal=smoothstep(.42,.05,d)+wave*.35;
+    reveal=clamp(reveal*uHover,0.,1.);
+    gl_FragColor=mix(a,b,reveal);
+  }`;
+
+  const loader=new THREE.TextureLoader();loader.crossOrigin='anonymous';
+  let loaded=0,texA,texB;
+  function ready(){
+    if(loaded<2) return;
+    texA.minFilter=texB.minFilter=THREE.LinearFilter;
+    const cv=document.createElement('canvas');cv.className='liquid';
+    const renderer=new THREE.WebGLRenderer({canvas:cv,antialias:true});
+    const scene=new THREE.Scene(),cam=new THREE.OrthographicCamera(-1,1,1,-1,0,1);
+    const uni={uA:{value:texA},uB:{value:texB},uTime:{value:0},uHover:{value:0},
+      uMouse:{value:new THREE.Vector2(.5,.5)},uScale:{value:new THREE.Vector2(1,1)}};
+    scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2,2),
+      new THREE.ShaderMaterial({uniforms:uni,vertexShader:VERT,fragmentShader:FRAG})));
+    const ia=texA.image.width/texA.image.height;
+    function size(){const r=box.getBoundingClientRect();if(!r.width)return;
+      renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+      renderer.setSize(r.width,r.height,false);
+      const pa=r.width/r.height;uni.uScale.value.set(ia>pa?pa/ia:1,ia>pa?1:ia/pa);}
+    size();addEventListener('resize',size);
+    box.appendChild(cv);imgA.style.visibility='hidden';
+    box.addEventListener('mouseenter',()=>gsap.to(uni.uHover,{value:1,duration:.7,ease:'power2.out'}));
+    box.addEventListener('mouseleave',()=>gsap.to(uni.uHover,{value:0,duration:1.0,ease:'power2.out'}));
+    box.addEventListener('mousemove',e=>{const r=cv.getBoundingClientRect();
+      uni.uMouse.value.set((e.clientX-r.left)/r.width,1-(e.clientY-r.top)/r.height);},{passive:true});
+    (function loop(t){uni.uTime.value=t*.001;renderer.render(scene,cam);requestAnimationFrame(loop);})(0);
+  }
+  texA=loader.load(imgA.src,()=>{loaded++;ready();});
+  texB=loader.load(imgB.src,()=>{loaded++;ready();});
 })();
 
 /* ---------- 4. text reveal + fade ---------- */
