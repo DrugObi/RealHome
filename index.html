@@ -612,7 +612,7 @@ footer p{font-size:.85rem;line-height:1.7}
   .hero-hud .hh-dot{animation:none}
 }
 /* ============================================
-   VER-2026-07-09-V6 — blocco modifiche v4
+   VER-2026-07-09-V7 — blocco modifiche v4
    ============================================ */
 
 /* clipping discendenti (.tr / footer) */
@@ -660,32 +660,39 @@ footer p{font-size:.85rem;line-height:1.7}
 @media(max-width:980px){.stage{padding:40px 22px 30px}.stg-chips{grid-template-columns:repeat(2,1fr)}.stg-orb{top:-42px}}
 @media(max-width:560px){.stg-chips{grid-template-columns:1fr}.stg-hero{font-size:clamp(2.8rem,14vw,3.6rem)}.cmp{min-width:130px;padding:10px 16px}}
 
-/* iter gse — v6 fascicoli e timbri */
-.dsk{position:relative;max-width:880px;min-height:420px}
-.dsk-ghost{position:absolute;top:-36px;right:-8px;z-index:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:780;font-size:clamp(9rem,22vw,16rem);line-height:1;color:transparent;-webkit-text-stroke:2px rgba(16,24,34,.10);pointer-events:none;user-select:none;font-variant-numeric:tabular-nums}
-.dsk-stack{position:relative;z-index:1;max-width:620px;min-height:330px}
-.dossier{position:absolute;top:0;left:0;right:0;background:var(--giorno-2);border:1px solid var(--line-l);border-radius:18px;padding:32px 34px 30px;box-shadow:0 18px 50px -18px rgba(16,24,34,.2);will-change:transform,opacity}
-.dossier::before{content:'';position:absolute;top:0;left:28px;width:110px;height:6px;border-radius:0 0 6px 6px;background:linear-gradient(90deg,var(--sole),var(--fiamma))}
-.dss-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.dossier .tk-ico{width:44px}
-.dossier .tk-ico svg{width:44px;height:44px}
-.dossier h3{font-size:1.25rem;margin:4px 0 8px}
-.dossier p{font-size:.95rem;color:var(--muted-l);max-width:46ch}
-.stamp{position:absolute;right:28px;bottom:22px;padding:8px 18px;border:3px solid var(--verde);border-radius:8px;color:var(--verde);font-family:'Bricolage Grotesque',sans-serif;font-weight:780;font-size:1.02rem;letter-spacing:.14em;text-transform:uppercase;transform:rotate(-12deg);opacity:0;mix-blend-mode:multiply;pointer-events:none;will-change:transform,opacity}
-.dsk-meta{position:absolute;right:0;top:10px;bottom:10px;z-index:2;display:flex;flex-direction:column;align-items:center;gap:14px}
-.dsk-count{font-size:.8rem;color:var(--muted-l);font-weight:600;font-variant-numeric:tabular-nums}
-.dsk-count b{color:var(--ink);font-size:1.05rem}
-.dsk-rail{flex:1;width:4px;background:rgba(16,24,34,.1);border-radius:4px;position:relative}
-.dsk-rail span{position:absolute;top:0;left:0;right:0;height:0%;background:linear-gradient(180deg,var(--sole),var(--fiamma));border-radius:4px}
-/* fallback statico (reduced-motion) e flusso mobile */
-.dsk.static,.dsk.flow{min-height:0}
-.dsk.static .dossier,.dsk.flow .dossier{position:static;margin-bottom:16px}
-.dsk.static .stamp{opacity:1}
-.dsk.static .dsk-ghost,.dsk.flow .dsk-ghost,.dsk.static .dsk-meta,.dsk.flow .dsk-meta{display:none}
-@media(max-width:980px){.dsk-ghost{display:none}.dossier{padding:26px 22px 24px}.stamp{right:16px;bottom:14px;font-size:.88rem;padding:6px 14px}}
+/* iter gse — v7 archivio split-screen */
+.gse-split{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:center;min-height:64vh}
+.gse-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.gse-step{position:relative;display:flex;gap:18px;align-items:flex-start;padding:20px 22px 20px 28px;border-radius:14px;opacity:.35;will-change:transform,opacity}
+.gse-step .mk{position:absolute;left:0;top:18px;bottom:18px;width:3px;border-radius:3px;background:linear-gradient(180deg,var(--sole),var(--fiamma));transform:scaleY(0);transform-origin:top}
+.gse-step .tk-ico{flex:0 0 auto;width:40px}
+.gse-step .tk-ico svg{width:40px;height:40px}
+.gse-step h3{font-size:1.15rem;margin:4px 0 6px}
+.gse-step p{font-size:.92rem;color:var(--muted-l);max-width:44ch}
+.arch{position:relative;width:min(400px,100%);margin:0 auto;min-height:420px}
+.arch-n{position:absolute;top:-22px;right:-4px;font-family:'Bricolage Grotesque',sans-serif;font-weight:780;font-size:5.4rem;line-height:1;color:transparent;-webkit-text-stroke:2px rgba(16,24,34,.12);font-variant-numeric:tabular-nums;pointer-events:none;user-select:none}
+.arch-glow{position:absolute;left:50%;top:52%;width:340px;height:340px;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(245,166,35,.16),transparent 65%);pointer-events:none}
+.arch-cab{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);width:300px;padding:14px;border:1px solid var(--line-l);border-radius:20px;background:var(--giorno-2);box-shadow:0 30px 70px -28px rgba(16,24,34,.3);will-change:transform}
+.drawer{position:relative;height:62px;margin:10px 0;border:1px solid var(--line-l);border-radius:12px;background:linear-gradient(180deg,#FFFDF7,#F1EADB);box-shadow:inset 0 -3px 0 rgba(16,24,34,.05);will-change:transform}
+.drawer .hnd{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:46px;height:8px;border-radius:8px;background:rgba(16,24,34,.18)}
+.drawer .tab{position:absolute;right:12px;top:9px;font-size:.58rem;letter-spacing:.12em;font-weight:700;text-transform:uppercase;color:var(--muted-l);opacity:.55}
+.arch-doc{position:absolute;left:0;top:0;width:132px;padding:12px 14px;background:#fff;border:1px solid var(--line-l);border-radius:10px;box-shadow:0 16px 34px rgba(16,24,34,.18);opacity:0;will-change:transform,opacity;z-index:3}
+.arch-doc b{font-size:.6rem;letter-spacing:.14em;color:var(--fiamma);font-weight:700}
+.arch-doc .ln{display:block;height:5px;border-radius:3px;background:rgba(16,24,34,.12);margin-top:7px}
+.arch-doc .ln.s{width:60%}
+.dust{position:absolute;left:0;top:0;width:7px;height:7px;border-radius:50%;background:var(--sole);opacity:0;pointer-events:none;z-index:4}
+/* fallback statico + mobile */
+.gse-split.static .gse-step{opacity:1}
+.gse-split.static .gse-step .mk{transform:scaleY(1)}
+.gse-split.static .drawer .tab{color:var(--fiamma);opacity:1}
+@media(max-width:980px){
+  .gse-split{grid-template-columns:1fr;min-height:0;gap:0}
+  .arch{display:none}
+  .gse-step{opacity:1;padding:18px 16px 18px 24px}
+}
 
 /* BADGE DI VERIFICA DEPLOY — ELIMINARE DOPO IL TEST */
-body::after{content:'VER-2026-07-09-V6'!important;position:fixed!important;bottom:8px!important;left:8px!important;z-index:99999!important;font:600 11px/1 monospace!important;color:#fff!important;background:#c0392b!important;padding:4px 8px!important;border-radius:4px!important;pointer-events:none!important}
+body::after{content:'VER-2026-07-09-V7'!important;position:fixed!important;bottom:8px!important;left:8px!important;z-index:99999!important;font:600 11px/1 monospace!important;color:#fff!important;background:#c0392b!important;padding:4px 8px!important;border-radius:4px!important;pointer-events:none!important}
 </style>
 </head>
 <body>
@@ -1129,31 +1136,47 @@ body::after{content:'VER-2026-07-09-V6'!important;position:fixed!important;botto
     <span class="kicker fx"><span class="ora">H 16:05</span><span class="sep">·</span>Chiavi in mano</span>
     <h2 class="tr">La burocrazia? <em>La azzeriamo noi.</em></h2>
     <p class="tk-sub fx">Dal primo modulo all'ultimo bonifico del GSE: quattro passaggi che gestiamo internamente, mentre tu segui tutto in trasparenza.</p>
-    <div class="dsk" id="dsk">
-      <div class="dsk-ghost" id="dskGhost" aria-hidden="true">01</div>
-      <div class="dsk-stack">
-        <article class="dossier" data-tk="0">
-          <div class="dss-top"><div class="tk-ico" aria-hidden="true"><svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="24" class="l"/><path class="l" d="M20 30l7 7 14-14"/></svg></div><span class="tk-n">PRATICA 01</span></div>
-          <h3>Gestione integrata</h3><p>Tutto l'iter burocratico con il GSE lo seguiamo internamente. Tu non tocchi un modulo.</p>
-          <div class="stamp" aria-hidden="true">Fatto ✓</div>
-        </article>
-        <article class="dossier" data-tk="1">
-          <div class="dss-top"><div class="tk-ico" aria-hidden="true"><svg viewBox="0 0 60 60"><path class="l" d="M12 40V20h16v20M32 40V28h16v12"/><path class="l" d="M8 44h44"/><circle cx="20" cy="30" r="2.5" class="d"/><circle cx="40" cy="34" r="2.5" class="d"/></svg></div><span class="tk-n">PRATICA 02</span></div>
-          <h3>Iter di connessione</h3><p>Richiesta di connessione alla rete locale e-distribuzione tramite Modello Unico.</p>
-          <div class="stamp" aria-hidden="true">Fatto ✓</div>
-        </article>
-        <article class="dossier" data-tk="2">
-          <div class="dss-top"><div class="tk-ico" aria-hidden="true"><svg viewBox="0 0 60 60"><rect x="12" y="18" width="36" height="24" rx="2" class="l"/><path class="l" d="M12 26h36"/><circle cx="19" cy="22" r="1.6" class="d"/><path class="l" d="M18 34h12"/></svg></div><span class="tk-n">PRATICA 03</span></div>
-          <h3>Attivazione SSP / RID</h3><p>Configuriamo la pratica per la remunerazione: bonifico bancario diretto sul tuo conto.</p>
-          <div class="stamp" aria-hidden="true">Fatto ✓</div>
-        </article>
-        <article class="dossier" data-tk="3">
-          <div class="dss-top"><div class="tk-ico" aria-hidden="true"><svg viewBox="0 0 60 60"><circle cx="24" cy="26" r="9" class="l"/><path class="l" d="M31 33l8 8-4 4-8-8"/><path class="l" d="M20 26h8M24 22v8"/></svg></div><span class="tk-n">PRATICA 04</span></div>
-          <h3>Tracciamento trasparente</h3><p>Ti consegniamo le credenziali del portale GSE: monitori i pagamenti quando vuoi.</p>
-          <div class="stamp" aria-hidden="true">Fatto ✓</div>
-        </article>
+    <div class="gse-split" id="gseSplit">
+      <ol class="gse-list">
+        <li class="gse-step" data-i="0"><span class="mk" aria-hidden="true"></span>
+          <div class="tk-ico" aria-hidden="true"><svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="24" class="l"/><path class="l" d="M20 30l7 7 14-14"/></svg></div>
+          <div><span class="tk-n">PRATICA 01</span><h3>Gestione integrata</h3><p>Tutto l'iter burocratico con il GSE lo seguiamo internamente. Tu non tocchi un modulo.</p></div>
+        </li>
+        <li class="gse-step" data-i="1"><span class="mk" aria-hidden="true"></span>
+          <div class="tk-ico" aria-hidden="true"><svg viewBox="0 0 60 60"><path class="l" d="M12 40V20h16v20M32 40V28h16v12"/><path class="l" d="M8 44h44"/><circle cx="20" cy="30" r="2.5" class="d"/><circle cx="40" cy="34" r="2.5" class="d"/></svg></div>
+          <div><span class="tk-n">PRATICA 02</span><h3>Iter di connessione</h3><p>Richiesta di connessione alla rete locale e-distribuzione tramite Modello Unico.</p></div>
+        </li>
+        <li class="gse-step" data-i="2"><span class="mk" aria-hidden="true"></span>
+          <div class="tk-ico" aria-hidden="true"><svg viewBox="0 0 60 60"><rect x="12" y="18" width="36" height="24" rx="2" class="l"/><path class="l" d="M12 26h36"/><circle cx="19" cy="22" r="1.6" class="d"/><path class="l" d="M18 34h12"/></svg></div>
+          <div><span class="tk-n">PRATICA 03</span><h3>Attivazione SSP / RID</h3><p>Configuriamo la pratica per la remunerazione: bonifico bancario diretto sul tuo conto.</p></div>
+        </li>
+        <li class="gse-step" data-i="3"><span class="mk" aria-hidden="true"></span>
+          <div class="tk-ico" aria-hidden="true"><svg viewBox="0 0 60 60"><circle cx="24" cy="26" r="9" class="l"/><path class="l" d="M31 33l8 8-4 4-8-8"/><path class="l" d="M20 26h8M24 22v8"/></svg></div>
+          <div><span class="tk-n">PRATICA 04</span><h3>Tracciamento trasparente</h3><p>Ti consegniamo le credenziali del portale GSE: monitori i pagamenti quando vuoi.</p></div>
+        </li>
+      </ol>
+      <div class="arch" aria-hidden="true">
+        <span class="arch-n" id="archN">01</span>
+        <div class="arch-glow"></div>
+        <div class="arch-cab" id="archCab">
+          <div class="drawer" data-d="0"><span class="hnd"></span><span class="tab">Pratica 01</span></div>
+          <div class="drawer" data-d="1"><span class="hnd"></span><span class="tab">Pratica 02</span></div>
+          <div class="drawer" data-d="2"><span class="hnd"></span><span class="tab">Pratica 03</span></div>
+          <div class="drawer" data-d="3"><span class="hnd"></span><span class="tab">Pratica 04</span></div>
+        </div>
+        <div class="arch-doc" data-doc="0"><b>MODULO 01</b><i class="ln"></i><i class="ln s"></i></div>
+        <div class="arch-doc" data-doc="1"><b>MODULO 02</b><i class="ln"></i><i class="ln s"></i></div>
+        <div class="arch-doc" data-doc="2"><b>MODULO 03</b><i class="ln"></i><i class="ln s"></i></div>
+        <div class="arch-doc" data-doc="3"><b>MODULO 04</b><i class="ln"></i><i class="ln s"></i></div>
+        <span class="dust"></span>
+        <span class="dust"></span>
+        <span class="dust"></span>
+        <span class="dust"></span>
+        <span class="dust"></span>
+        <span class="dust"></span>
+        <span class="dust"></span>
+        <span class="dust"></span>
       </div>
-      <div class="dsk-meta" aria-hidden="true"><span class="dsk-count"><b id="dskStep">01</b> / 04</span><div class="dsk-rail"><span id="dskFill"></span></div></div>
     </div>
   </div>
 </section>
@@ -1626,44 +1649,60 @@ if (FX){
   });
 })();
 
-/* ---------- 5d. ITER GSE — fascicoli e timbri scroll-driven ---------- */
-(function dossierGSE(){
-  const stage=document.getElementById('dsk');if(!stage)return;
-  const cards=[...stage.querySelectorAll('.dossier')];
-  const stamps=[...stage.querySelectorAll('.stamp')];
-  const ghost=document.getElementById('dskGhost'),stepN=document.getElementById('dskStep'),fill=document.getElementById('dskFill');
+/* ---------- 5d. ITER GSE — l'archivio: split-screen scroll-driven ---------- */
+(function archivioGSE(){
+  const split=document.getElementById('gseSplit');if(!split)return;
+  const lis=[...split.querySelectorAll('.gse-step')];
+  const mks=[...split.querySelectorAll('.mk')];
+  const cab=document.getElementById('archCab');
+  const drawers=[...split.querySelectorAll('.drawer')];
+  const docs=[...split.querySelectorAll('.arch-doc')];
+  const dust=[...split.querySelectorAll('.dust')];
+  const archN=document.getElementById('archN');
   const NN=['01','02','03','04'];
-  cards.forEach((c,i)=>c.style.zIndex=i+1);
-  if(!FX){stage.classList.add('static');return;}
-  if(window.matchMedia('(max-width:980px)').matches){
-    stage.classList.add('flow');
-    cards.forEach((c,i)=>{
-      gsap.from(c,{y:44,opacity:0,rotation:i%2?2.5:-2.5,duration:.7,ease:'power3.out',
-        scrollTrigger:{trigger:c,start:'top 84%',once:true}});
-      gsap.fromTo(stamps[i],{scale:2.3,opacity:0},{scale:1,opacity:1,duration:.4,ease:'power4.in',
-        scrollTrigger:{trigger:c,start:'top 52%',once:true},
-        onComplete:()=>gsap.fromTo(c,{rotation:i%2?1.2:-1.2},{rotation:0,duration:.55,ease:'elastic.out(1,.3)'})});
+  if(!FX){split.classList.add('static');return;}
+  const mobile=window.matchMedia('(max-width:980px)').matches;
+  if(mobile){
+    lis.forEach((li,i)=>{
+      gsap.from(li,{y:36,opacity:0,duration:.6,ease:'power3.out',scrollTrigger:{trigger:li,start:'top 85%',once:true}});
+      gsap.to(mks[i],{scaleY:1,duration:.5,ease:'power2.out',scrollTrigger:{trigger:li,start:'top 70%',once:true}});
     });
     return;
   }
-  gsap.set(cards.slice(1),{yPercent:75,opacity:0,rotation:i=>i%2?-5:5});
-  const tl=gsap.timeline({scrollTrigger:{trigger:stage,start:'top 22%',end:'+=240%',scrub:1,pin:true,anticipatePin:1,
+  gsap.set(lis[0],{opacity:1});
+  const arch=split.querySelector('.arch');
+  /* target del volo: centro del cassetto i, in coordinate locali di .arch */
+  const tgt=i=>{const A=arch.getBoundingClientRect(),D=drawers[i].getBoundingClientRect();
+    return {x:D.left-A.left+(D.width-132)/2, y:D.top-A.top+7};};
+  const tl=gsap.timeline({scrollTrigger:{trigger:split,start:'top 12%',end:'+=300%',scrub:1,pin:true,anticipatePin:1,invalidateOnRefresh:true,
     onUpdate:self=>{
-      const p=self.progress;
-      if(fill)fill.style.height=(p*100).toFixed(1)+'%';
-      const a=Math.min(3,Math.floor(p*4));
-      if(ghost.textContent!==NN[a]){
-        ghost.textContent=NN[a];if(stepN)stepN.textContent=NN[a];
-        gsap.fromTo(ghost,{y:16,opacity:.3},{y:0,opacity:1,duration:.4,ease:'power2.out',overwrite:'auto'});
-      }
+      const k=Math.min(3,Math.floor(self.progress*4));
+      if(archN.textContent!==NN[k]){archN.textContent=NN[k];
+        gsap.fromTo(archN,{y:14,opacity:.3},{y:0,opacity:1,duration:.35,ease:'power2.out',overwrite:'auto'});}
     }}});
-  for(let i=1;i<cards.length;i++){
-    tl.fromTo(stamps[i-1],{scale:2.4,opacity:0},{scale:1,opacity:1,duration:.28,ease:'power4.in'},'+=.15')
-      .fromTo(cards[i-1],{rotation:0},{y:-16,scale:.96,rotation:i%2?-2.2:2.2,filter:'brightness(.94)',duration:.5,ease:'power2.inOut'},'+=.05')
-      .to(cards[i],{yPercent:0,opacity:1,rotation:0,duration:.8,ease:'power3.out'},'<.12');
+  for(let i=0;i<4;i++){
+    const L='s'+i;
+    tl.addLabel(L);
+    /* sinistra: il passo si accende, il precedente resta "archiviato" */
+    if(i>0)tl.to(lis[i-1],{opacity:.55,x:0,duration:.35},L);
+    tl.to(lis[i],{opacity:1,x:8,duration:.4},L)
+      .to(mks[i],{scaleY:1,duration:.4,ease:'power2.out'},L);
+    /* il modulo materializza e vola ad arco verso il cassetto */
+    tl.fromTo(docs[i],{x:-190,y:26,rotation:-16,scale:1.05,opacity:0},
+        {x:()=>tgt(i).x*.45,y:()=>tgt(i).y*.35-46,rotation:9,opacity:1,duration:.55,ease:'power2.out'},L+'+=.1')
+      .to(drawers[i],{y:9,duration:.22,ease:'power2.out'},'<.25')
+      .to(docs[i],{x:()=>tgt(i).x,y:()=>tgt(i).y,rotation:0,scale:.62,duration:.5,ease:'power2.in'})
+      .to(docs[i],{y:()=>tgt(i).y+26,opacity:0,duration:.18,ease:'power1.in'})
+      /* slam: il cassetto si chiude, la cassettiera sobbalza, polvere */
+      .to(drawers[i],{y:0,duration:.55,ease:'elastic.out(1.1,.4)'},'<')
+      .fromTo(cab,{y:0},{y:5,duration:.07,yoyo:true,repeat:1,ease:'power1.inOut'},'<')
+      .to(drawers[i].querySelector('.tab'),{color:'#F4740B',opacity:1,duration:.25},'<')
+      .fromTo(dust,{x:()=>tgt(i).x+66,y:()=>tgt(i).y+30,scale:.4,opacity:0},
+        {x:(j)=>tgt(i).x+66+Math.cos(j*.9)*(46+j*7),y:(j)=>tgt(i).y+30+Math.sin(j*2.4)*(26+j*4)-14,
+         scale:1,opacity:.85,duration:.3,stagger:.015,ease:'power2.out'},'<.05')
+      .to(dust,{opacity:0,scale:.2,duration:.3,ease:'power1.in'},'>-.05')
+      .to({},{duration:.25});
   }
-  tl.fromTo(stamps[3],{scale:2.4,opacity:0},{scale:1,opacity:1,duration:.3,ease:'power4.in'},'+=.2')
-    .to({},{duration:.3});
 })();
 
 /* ---------- 5e. RECENSIONI: entrata dai lati, stagger, power2.out ---------- */
