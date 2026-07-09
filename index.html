@@ -627,6 +627,26 @@ footer p{font-size:.85rem;line-height:1.7}
   .diagram .stream{animation:none}
   .hero-hud .hh-dot{animation:none}
 }
+/* 1 — spazio per le discendenti nelle righe mascherate (.tr) */
+.tr .mask{padding-bottom:.22em;margin-bottom:-.22em}
+.f-claim{line-height:1.45;padding-bottom:.08em}
+
+/* 2 — reattività numerica del simulatore */
+.slider-value,.res .val{transition:color .3s ease,transform .3s ease}
+.bar{transition:width .3s ease}
+
+/* 3 — tag servizi centrati sotto i 980px */
+@media (max-width:980px){
+  .p-tags{justify-content:center}
+  .p-tags span{text-align:center}
+}
+
+/* 4 — blocco "Tutta la casa" compattato del 30% */
+.services-head{padding:28px 0 49px}
+.services-head h2{margin:13px 0}
+
+/* 5 — badge: niente clip verticale, altezza uniforme */
+.p-tags span{display:inline-flex;align-items:center;line-height:1.35;min-height:34px;padding:9px 15px 10px}
 </style>
 </head>
 <body>
