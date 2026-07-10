@@ -131,10 +131,12 @@ body.fxon #cursor{display:block}
 .hero{position:relative;min-height:100svh;background:radial-gradient(120% 90% at 50% -10%, #0D1930 0%, var(--notte) 55%);display:flex;flex-direction:column;justify-content:center;overflow:hidden;padding:140px 0 0}
 
 .hero .wrap{position:relative;z-index:2}
-.hero .kicker{margin-bottom:26px}
-.hero h1{font-size:clamp(3rem,7.6vw,6.6rem);color:#F6F1E6;max-width:12ch}
-.hero h1 em{color:var(--sole)}
-.hero p.lead{margin:30px 0 38px;font-size:1.12rem;color:var(--muted-d);max-width:52ch}
+.hero .kicker{margin-bottom:20px}
+/* v15 — gerarchia ricomposta: il claim bianco si spezza in modo bilanciato,
+   l'inciso in serif vive su una riga propria, mai orfani a fine riga */
+.hero h1{font-size:clamp(2.8rem,6.6vw,5.8rem);line-height:1.04;letter-spacing:-.015em;color:#F6F1E6;max-width:19ch;text-wrap:balance}
+.hero h1 em{display:block;margin-top:.1em;font-size:.9em;color:var(--sole)}
+.hero p.lead{margin:26px 0 34px;font-size:1.12rem;line-height:1.65;color:var(--muted-d);max-width:52ch;text-wrap:pretty}
 .ctas{display:flex;gap:14px;flex-wrap:wrap}
 .btn{position:relative;display:inline-flex;align-items:center;justify-content:center;padding:16px 30px;border-radius:100px;font-family:'Instrument Sans',sans-serif;font-weight:600;font-size:.98rem;text-decoration:none;border:none;cursor:pointer;transition:transform .35s var(--ease),box-shadow .35s var(--ease),background .3s,color .3s;overflow:hidden}
 .btn span{position:relative;z-index:1}
@@ -769,7 +771,7 @@ body.menu-open{overflow:hidden}
 .nav-scrim.show{opacity:1;pointer-events:auto}
 
 /* BADGE DI VERIFICA DEPLOY — ELIMINARE DOPO IL TEST */
-body::after{content:'VER-2026-07-11-V14';position:fixed;bottom:8px;left:8px;z-index:99999;font:600 11px/1 monospace;color:#fff;background:#c0392b;padding:4px 8px;border-radius:4px;pointer-events:none}
+body::after{content:'VER-2026-07-11-V15';position:fixed;bottom:8px;left:8px;z-index:99999;font:600 11px/1 monospace;color:#fff;background:#c0392b;padding:4px 8px;border-radius:4px;pointer-events:none}
 
 /* iter gse — v7 archivio split-screen */
 .gse-split{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:center;min-height:64vh}
@@ -781,7 +783,7 @@ body::after{content:'VER-2026-07-11-V14';position:fixed;bottom:8px;left:8px;z-in
 .gse-step h3{font-size:1.15rem;margin:4px 0 6px}
 .gse-step p{font-size:.92rem;color:var(--muted-l);max-width:44ch}
 .arch{position:relative;width:min(400px,100%);margin:0 auto;min-height:420px}
-.arch-n{position:absolute;top:-22px;right:-4px;font-family:'Bricolage Grotesque',sans-serif;font-weight:780;font-size:5.4rem;line-height:1;color:transparent;-webkit-text-stroke:2px rgba(16,24,34,.12);font-variant-numeric:tabular-nums;pointer-events:none;user-select:none}
+.arch-n{position:absolute;top:-22px;right:-4px;font-family:'Bricolage Grotesque',sans-serif;font-weight:780;font-size:5.4rem;line-height:1;color:rgba(16,24,34,.09);font-variant-numeric:tabular-nums;letter-spacing:-.02em;pointer-events:none;user-select:none}
 .arch-glow{position:absolute;left:50%;top:52%;width:340px;height:340px;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(245,166,35,.16),transparent 65%);pointer-events:none}
 .arch-cab{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);width:300px;padding:14px;border:1px solid var(--line-l);border-radius:20px;background:var(--giorno-2);box-shadow:0 30px 70px -28px rgba(16,24,34,.3);will-change:transform}
 .drawer{position:relative;height:62px;margin:10px 0;border:1px solid var(--line-l);border-radius:12px;background:linear-gradient(180deg,#FFFDF7,#F1EADB);box-shadow:inset 0 -3px 0 rgba(16,24,34,.05);will-change:transform}
@@ -926,12 +928,6 @@ input[type=range]:active::-moz-range-thumb{transform:scale(1.22)}
       <circle class="tw" cx="1370" cy="210" r="1.5" opacity=".6"/>
       <circle class="tw" cx="390" cy="420" r="1.4" opacity=".45"/>
       <circle class="tw" cx="980" cy="470" r="1.4" opacity=".42"/>
-    </g>
-    <!-- 3 stelle brillanti con glint a croce -->
-    <g id="starsBright" stroke="#F6F1E6" stroke-linecap="round">
-      <g opacity=".85"><circle cx="1062" cy="120" r="2.2" fill="#F6F1E6" stroke="none"/><path d="M1062 111v-6M1062 129v6M1053 120h-6M1071 120h6" stroke-width="1" opacity=".5"/></g>
-      <g opacity=".75"><circle cx="320" cy="250" r="2" fill="#F6F1E6" stroke="none"/><path d="M320 243v-5M320 257v5M313 250h-5M327 250h5" stroke-width="1" opacity=".45"/></g>
-      <g opacity=".7"><circle cx="1330" cy="430" r="1.9" fill="#F6F1E6" stroke="none"/><path d="M1330 424v-4M1330 436v4M1324 430h-4M1336 430h4" stroke-width="1" opacity=".4"/></g>
     </g>
     <!-- luna: falce con luce cinerea -->
     <g id="moon">
@@ -1178,7 +1174,7 @@ input[type=range]:active::-moz-range-thumb{transform:scale(1.22)}
     <circle cx="200" cy="30" r="1" opacity=".3"/>
     <circle cx="740" cy="60" r="1.1" opacity=".3"/>
   </g>
-  <g id="moon">
+  <g id="moonDia">
     <circle cx="648" cy="72" r="15" fill="#E8E4D8" opacity=".85"/>
     <circle cx="654" cy="68" r="14" fill="#0C1730"/>
   </g>
@@ -1191,7 +1187,7 @@ input[type=range]:active::-moz-range-thumb{transform:scale(1.22)}
     <circle class="ring ring-c" cx="110" cy="264" r="23" fill="none" stroke="#F5A623" stroke-width="1.4" stroke-opacity=".65"/>
     <circle id="core" cx="110" cy="264" r="15" fill="url(#coreGrad)"/>
     <g id="rays" stroke="#F5A623" stroke-width="1.4" stroke-linecap="round" stroke-opacity=".75">
-      <path d="M110 206v-12M110 322v12M168 264h12M40 264h12M152 222l9-9M59 306l-9 9M152 306l9 9M59 222l-9-9"/>
+      <path d="M110 206v-12M110 322v12M168 264h12M52 264h-12M151 223l8.5-8.5M69 305l-8.5 8.5M151 305l8.5 8.5M69 223l-8.5-8.5"/>
     </g>
   </g>
 
@@ -1337,9 +1333,17 @@ input[type=range]:active::-moz-range-thumb{transform:scale(1.22)}
     <div class="alba-sun" id="albaSun" aria-hidden="true"></div>
     <svg class="alba-skyline" viewBox="0 0 1440 180" preserveAspectRatio="none" aria-hidden="true">
       <path d="M0 180 L0 120 L90 120 L90 96 L150 60 L210 96 L210 120 L340 120 L340 84 L420 40 L500 84 L500 120 L640 120 L640 104 L700 74 L760 104 L760 120 L900 120 L900 88 L980 46 L1060 88 L1060 120 L1190 120 L1190 100 L1250 68 L1310 100 L1310 120 L1440 120 L1440 180 Z" fill="#101822"/>
-      <g fill="#F5A623" opacity=".9">
-        <rect x="386" y="58" width="26" height="14" transform="skewX(-14)"/>
-        <rect x="948" y="64" width="26" height="14" transform="skewX(-14)"/>
+      <!-- pannelli allineati alla pendenza reale delle falde:
+           casa 2 (340,84)→(420,40) = −28.8° · casa 4 (900,88)→(980,46) = −27.7° -->
+      <g opacity=".95">
+        <g transform="translate(361,72.5) rotate(-28.8)">
+          <rect x="0" y="-9" width="38" height="9" rx="1" fill="#F5A623"/>
+          <path d="M12.7 -9v9M25.3 -9v9" stroke="#101822" stroke-width="1"/>
+        </g>
+        <g transform="translate(921,77) rotate(-27.7)">
+          <rect x="0" y="-9" width="38" height="9" rx="1" fill="#F5A623"/>
+          <path d="M12.7 -9v9M25.3 -9v9" stroke="#101822" stroke-width="1"/>
+        </g>
       </g>
     </svg>
     <div class="alba-copy" id="albaCopy">
@@ -2024,6 +2028,10 @@ input[type=range]:active::-moz-range-thumb{transform:scale(1.22)}
    - NAV camaleonte: legge il data-theme della sezione corrente.
    ============================================================ */
 gsap.registerPlugin(ScrollTrigger);
+/* v15 — la barra URL di Safari mobile che appare/scompare è un "resize":
+   senza questo flag ScrollTrigger rifà i calcoli a metà scroll e i pin
+   saltano. ignoreMobileResize ricalcola solo su rotazione/resize veri. */
+ScrollTrigger.config({ignoreMobileResize:true});
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const finePointer  = window.matchMedia('(pointer: fine)').matches;
 const FX = !reduceMotion;
@@ -2635,16 +2643,18 @@ function compute(m){
 }
 
 /* — la scena: tetto parametrico, sole, fotoni —
-   Il tetto è un parallelogramma (vista ¾): 13×3 = 39 slot, il massimo reale
-   è 38 pannelli (bolletta 500 €). Ogni slot ha un fantasma (il potenziale)
-   e un modulo acceso che nasce con pop elastico quando i dati lo chiamano. */
+   Il tetto è un parallelogramma (vista ¾): 19×2 = 38 slot in montaggio
+   verticale, ESATTAMENTE il massimo di compute() a bolletta 500 €:
+   barra piena = tetto pieno, nessuno slot orfano (fix V15). Ogni slot ha
+   un fantasma (il potenziale) e un modulo acceso che nasce con pop
+   elastico quando i dati lo chiamano. */
 const simSvg=E('simSvg');
 const pvCells=[], photons=[];
 let pvLitN=0;
 (function buildScene(){
   if(!simSvg) return;
   const NS='http://www.w3.org/2000/svg';
-  const eL=[264,332], Uv=[452,0], Vv=[41,-76], COLS=13, ROWS=3, G=.09;
+  const eL=[264,332], Uv=[452,0], Vv=[41,-76], COLS=19, ROWS=2, G=.09;
   const P=(u,v)=>[eL[0]+Uv[0]*u/COLS+Vv[0]*v/ROWS, eL[1]+Uv[1]*u/COLS+Vv[1]*v/ROWS];
   const pts=(i,j)=>[P(i+G,j+G),P(i+1-G,j+G),P(i+1-G,j+1-G),P(i+G,j+1-G)]
     .map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ');
@@ -2862,9 +2872,29 @@ if(document.fonts&&document.fonts.ready){
    Qui facciamo qualche refresh scaglionato nei primi secondi, quando l'utente
    è ancora vicino alla cima e un refresh è invisibile. Nessun observer continuo
    (rischioso: i pin stessi cambiano scrollHeight e innescherebbero un loop). */
+/* v15 — la rete ora guarisce anche in profondità: se l'altezza del documento
+   è derivata rispetto all'ultimo refresh (>150px: un reflow vero, non rumore),
+   il refresh correttivo parte ANCHE oltre 1.2·viewport — refresh() preserva la
+   posizione di scroll, quindi è invisibile; lasciare i pin su geometria stale
+   invece produce le sezioni sovrapposte. Sempre e solo eventi finiti
+   (4 timeout + load delle immagini lazy): nessun observer, nessun loop. */
+let stH=document.documentElement.scrollHeight;
+const netRefresh=()=>{ScrollTrigger.refresh();stH=document.documentElement.scrollHeight;};
 [400,900,1600,2600].forEach(ms=>setTimeout(()=>{
-  if(window.scrollY<window.innerHeight*1.2)ScrollTrigger.refresh();
+  const drift=Math.abs(document.documentElement.scrollHeight-stH)>150;
+  if(window.scrollY<window.innerHeight*1.2||drift)netRefresh();
 },ms));
+/* le immagini lazy che montano tardi (sezioni Servizi/Impatto raggiunte in
+   profondità) sono l'altro reflow tardivo: un refresh una-tantum per immagine,
+   coalescato nel frame successivo. Insieme finito → loop impossibile. */
+let imgRaf=0;
+document.querySelectorAll('img[loading="lazy"]').forEach(im=>{
+  if(im.complete)return;
+  im.addEventListener('load',()=>{
+    cancelAnimationFrame(imgRaf);
+    imgRaf=requestAnimationFrame(netRefresh);
+  },{once:true});
+});
 
 /* ---------- impact cards: reveal foto su touch ---------- */
 (function impactReveal(){
