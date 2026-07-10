@@ -129,7 +129,7 @@ body.fxon #cursor{display:block}
    La casa va avanti anche adesso: la batteria alimenta tutto.
    ============================================================ */
 .hero{position:relative;min-height:100svh;background:radial-gradient(120% 90% at 50% -10%, #0D1930 0%, var(--notte) 55%);display:flex;flex-direction:column;justify-content:center;overflow:hidden;padding:140px 0 0}
-#particles{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+
 .hero .wrap{position:relative;z-index:2}
 .hero .kicker{margin-bottom:26px}
 .hero h1{font-size:clamp(3rem,7.6vw,6.6rem);color:#F6F1E6;max-width:12ch}
@@ -146,19 +146,18 @@ body.fxon #cursor{display:block}
 .btn-ink{background:var(--ink);color:var(--giorno)}
 .btn-ink:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(16,24,34,.22)}
 
-.hero-media{position:relative;margin-top:64px;height:54vh;min-height:340px;overflow:hidden}
-.hero-media img,.hero-media canvas.liquid{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
-.hero-media::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,var(--notte) 0%,rgba(7,12,22,0) 26%,rgba(7,12,22,0) 70%,rgba(7,12,22,.55) 100%);pointer-events:none}
-.hero-badges{position:absolute;left:0;right:0;bottom:0;z-index:3;display:flex;gap:10px;flex-wrap:wrap;padding:0 32px 26px;max-width:1200px;margin:0 auto}
+
+
+
+.hero-badges{display:flex;gap:10px;flex-wrap:wrap;margin-top:30px}
 .hero-badges span{font-size:.82rem;font-weight:500;color:#EDEAE0;background:rgba(7,12,22,.55);border:1px solid var(--line-d);backdrop-filter:blur(10px);padding:9px 16px;border-radius:100px}
 .hero-badges b{color:var(--sole);font-weight:700}
-/* hero liquid reveal (dual-texture shader) */
-.hero-reveal{position:relative;width:100%;height:100%;overflow:hidden}
-.hr-layer{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+
+
+
 .hr-base{z-index:1}
 .hr-top{z-index:2;opacity:0}                 /* nascosto: la fusione avviene nel canvas WebGL */
-.hero-reveal canvas.liquid{position:absolute;inset:0;z-index:3;width:100%;height:100%;display:block}
-@media (hover:none){.hr-top{opacity:0}}      /* touch: mostra il "prima" statico (nessuno shader) */
+
 /* orologio di bordo */
 .hero-hud{position:absolute;top:112px;right:32px;z-index:3;text-align:right;font-variant-numeric:tabular-nums}
 .hero-hud .hh-time{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:1.05rem;color:#F6F1E6;letter-spacing:.04em}
@@ -560,7 +559,7 @@ footer p{font-size:.85rem;line-height:1.7}
   .wrap{padding:0 22px}
   .hero{padding-top:120px}
   .hero-hud{display:none}
-  .hero-media{height:48vh;margin-top:46px}
+  
   .how-grid{grid-template-columns:1fr;gap:40px}
   .approach .wrap{grid-template-columns:1fr;gap:34px}
   /* servizi: verticale */
@@ -743,6 +742,16 @@ footer p{font-size:.85rem;line-height:1.7}
 .diagram{border-radius:24px;border:1px solid var(--line-d);box-shadow:0 34px 80px -36px rgba(7,12,22,.6);display:block}
 .diagram .ring-b{transform-origin:110px 264px}
 
+/* ── v14. HERO NOTTE — la casa che respira alle 03:47 ── */
+#heroScene{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:0}
+.hero-copy{position:relative;z-index:2}
+.hero .lead{max-width:46ch}
+.hero-cue{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:10px;font-size:.66rem;letter-spacing:.26em;text-transform:uppercase;color:rgba(237,234,224,.55);pointer-events:none}
+.hero-cue i{display:block;width:1px;height:34px;background:linear-gradient(180deg,rgba(245,166,35,.9),rgba(245,166,35,0));animation:cueDrop 2.2s var(--ease) infinite}
+@keyframes cueDrop{0%{transform:scaleY(0);transform-origin:top}45%{transform:scaleY(1);transform-origin:top}55%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+@media (max-width:980px){.hero-cue{bottom:16px}}
+@media (prefers-reduced-motion:reduce){.hero-cue i{animation:none;transform:none}}
+
 /* ── v12. menu mobile ── */
 .nav-burger{display:none;width:44px;height:44px;flex-direction:column;justify-content:center;align-items:center;gap:5px;background:none;border:0;cursor:pointer;padding:0;z-index:102}
 .nav-burger span{display:block;width:24px;height:2px;border-radius:2px;background:#F6F1E6;transition:transform .35s var(--ease),opacity .25s var(--ease)}
@@ -760,7 +769,7 @@ body.menu-open{overflow:hidden}
 .nav-scrim.show{opacity:1;pointer-events:auto}
 
 /* BADGE DI VERIFICA DEPLOY — ELIMINARE DOPO IL TEST */
-body::after{content:'VER-2026-07-11-V13-1';position:fixed;bottom:8px;left:8px;z-index:99999;font:600 11px/1 monospace;color:#fff;background:#c0392b;padding:4px 8px;border-radius:4px;pointer-events:none}
+body::after{content:'VER-2026-07-11-V14';position:fixed;bottom:8px;left:8px;z-index:99999;font:600 11px/1 monospace;color:#fff;background:#c0392b;padding:4px 8px;border-radius:4px;pointer-events:none}
 
 /* iter gse — v7 archivio split-screen */
 .gse-split{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:center;min-height:64vh}
@@ -838,12 +847,211 @@ input[type=range]:active::-moz-range-thumb{transform:scale(1.22)}
 
 <!-- ============ H 03:47 · NOTTE ============ -->
 <header class="hero" id="top" data-theme="notte">
-  <canvas id="particles" aria-hidden="true"></canvas>
+  <svg id="heroScene" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+  <defs>
+    <linearGradient id="nightG" x1="0" y1="0" x2="0" y2="1" color-interpolation="linearRGB">
+      <stop offset="0" stop-color="#04060D"/>
+      <stop offset=".38" stop-color="#070C1A"/>
+      <stop offset=".68" stop-color="#0B1328"/>
+      <stop offset=".9" stop-color="#0F1B38"/>
+      <stop offset="1" stop-color="#122040"/>
+    </linearGradient>
+    <radialGradient id="moonGlow" cx=".5" cy=".5" r=".5">
+      <stop offset="0" stop-color="#DDE6F5" stop-opacity=".28"/>
+      <stop offset="1" stop-color="#DDE6F5" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="mwG" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#C9D4F0" stop-opacity="0"/>
+      <stop offset=".5" stop-color="#C9D4F0" stop-opacity=".07"/>
+      <stop offset="1" stop-color="#C9D4F0" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="winHG" cx=".5" cy=".4" r=".75">
+      <stop offset="0" stop-color="#FFE7B0"/><stop offset="1" stop-color="#F5A623"/>
+    </radialGradient>
+    <linearGradient id="groundHG" x1="0" y1="0" x2="0" y2="1" color-interpolation="linearRGB">
+      <stop offset="0" stop-color="#0C1226"/><stop offset="1" stop-color="#070B18"/>
+    </linearGradient>
+    <linearGradient id="pvNightG" x1="0" y1="0" x2="1" y2="1" color-interpolation="linearRGB">
+      <stop offset="0" stop-color="#1B2C52"/><stop offset="1" stop-color="#0D1830"/>
+    </linearGradient>
+    <linearGradient id="shootG" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#F6F1E6" stop-opacity="0"/>
+      <stop offset="1" stop-color="#F6F1E6" stop-opacity=".9"/>
+    </linearGradient>
+    <radialGradient id="vinHG" cx=".5" cy=".42" r=".8">
+      <stop offset=".55" stop-color="#03050B" stop-opacity="0"/>
+      <stop offset="1" stop-color="#03050B" stop-opacity=".5"/>
+    </radialGradient>
+    <filter id="softH" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="14"/></filter>
+    <filter id="glowH" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="2.6" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- ═══ STRATO CIELO (parallasse lenta) ═══ -->
+  <g id="heroSky">
+    <rect width="1440" height="760" fill="url(#nightG)"/>
+    <!-- via lattea: banda diagonale sottile -->
+    <ellipse cx="820" cy="300" rx="720" ry="160" fill="url(#mwG)" transform="rotate(-16 820 300)" opacity="1.3"/>
+    <ellipse cx="760" cy="330" rx="560" ry="80" fill="url(#mwG)" transform="rotate(-16 760 330)"/>
+    <!-- stelle: polvere fine -->
+    <g fill="#E8ECF6" id="starsTiny">
+      <circle cx="120" cy="110" r="1" opacity=".35"/><circle cx="240" cy="60" r=".8" opacity=".3"/>
+      <circle cx="330" cy="180" r="1" opacity=".28"/><circle cx="430" cy="90" r=".9" opacity=".33"/>
+      <circle cx="530" cy="200" r=".8" opacity=".26"/><circle cx="610" cy="70" r="1" opacity=".35"/>
+      <circle cx="700" cy="150" r=".9" opacity=".3"/><circle cx="790" cy="60" r=".8" opacity=".28"/>
+      <circle cx="880" cy="190" r="1" opacity=".32"/><circle cx="960" cy="100" r=".8" opacity=".3"/>
+      <circle cx="1040" cy="220" r=".9" opacity=".28"/><circle cx="1120" cy="70" r="1" opacity=".33"/>
+      <circle cx="1250" cy="240" r=".9" opacity=".3"/><circle cx="1330" cy="120" r=".8" opacity=".26"/>
+      <circle cx="1395" cy="60" r="1" opacity=".3"/><circle cx="80" cy="300" r=".8" opacity=".24"/>
+      <circle cx="190" cy="380" r=".9" opacity=".22"/><circle cx="360" cy="320" r=".8" opacity=".24"/>
+      <circle cx="520" cy="400" r=".9" opacity=".2"/><circle cx="660" cy="330" r=".8" opacity=".24"/>
+      <circle cx="900" cy="360" r=".9" opacity=".22"/><circle cx="1060" cy="420" r=".8" opacity=".2"/>
+      <circle cx="1210" cy="380" r="1" opacity=".24"/><circle cx="1380" cy="330" r=".8" opacity=".22"/>
+      <circle cx="60" cy="500" r=".8" opacity=".16"/><circle cx="300" cy="540" r=".9" opacity=".15"/>
+      <circle cx="760" cy="480" r=".8" opacity=".16"/><circle cx="1150" cy="540" r=".9" opacity=".14"/>
+    </g>
+    <!-- stelle medie: brillano (classe .tw animata da GSAP) -->
+    <g fill="#F6F1E6" id="starsTw">
+      <circle class="tw" cx="180" cy="150" r="1.7" opacity=".7"/>
+      <circle class="tw" cx="470" cy="130" r="1.5" opacity=".6"/>
+      <circle class="tw" cx="720" cy="90" r="1.8" opacity=".75"/>
+      <circle class="tw" cx="1000" cy="160" r="1.5" opacity=".6"/>
+      <circle class="tw" cx="1290" cy="90" r="1.7" opacity=".7"/>
+      <circle class="tw" cx="90" cy="230" r="1.4" opacity=".55"/>
+      <circle class="tw" cx="590" cy="260" r="1.6" opacity=".6"/>
+      <circle class="tw" cx="840" cy="240" r="1.4" opacity=".55"/>
+      <circle class="tw" cx="1130" cy="300" r="1.6" opacity=".6"/>
+      <circle class="tw" cx="1370" cy="210" r="1.5" opacity=".6"/>
+      <circle class="tw" cx="390" cy="420" r="1.4" opacity=".45"/>
+      <circle class="tw" cx="980" cy="470" r="1.4" opacity=".42"/>
+    </g>
+    <!-- 3 stelle brillanti con glint a croce -->
+    <g id="starsBright" stroke="#F6F1E6" stroke-linecap="round">
+      <g opacity=".85"><circle cx="1062" cy="120" r="2.2" fill="#F6F1E6" stroke="none"/><path d="M1062 111v-6M1062 129v6M1053 120h-6M1071 120h6" stroke-width="1" opacity=".5"/></g>
+      <g opacity=".75"><circle cx="320" cy="250" r="2" fill="#F6F1E6" stroke="none"/><path d="M320 243v-5M320 257v5M313 250h-5M327 250h5" stroke-width="1" opacity=".45"/></g>
+      <g opacity=".7"><circle cx="1330" cy="430" r="1.9" fill="#F6F1E6" stroke="none"/><path d="M1330 424v-4M1330 436v4M1324 430h-4M1336 430h4" stroke-width="1" opacity=".4"/></g>
+    </g>
+    <!-- luna: falce con luce cinerea -->
+    <g id="moon">
+      <circle cx="1180" cy="160" r="86" fill="url(#moonGlow)"/>
+      <circle cx="1180" cy="160" r="33" fill="#E8ECF2" opacity=".12"/>
+      <circle cx="1180" cy="160" r="33" fill="#EDEFF4" opacity=".95"/>
+      <circle cx="1194" cy="152" r="30" fill="#0A0F1F"/>
+    </g>
+    <!-- stella cadente (nascosta, la anima GSAP) -->
+    <line id="shoot" x1="0" y1="0" x2="90" y2="26" stroke="url(#shootG)" stroke-width="2" stroke-linecap="round" opacity="0" transform="translate(900,140)"/>
+  </g>
+
+  <!-- ═══ STRATO MEDIO (colline + casa viva) ═══ -->
+  <g id="heroMid">
+    <path d="M0,724 Q160,700 320,716 Q480,698 640,714 Q820,696 980,714 Q1160,700 1300,714 Q1380,708 1440,714 L1440,760 L0,760 Z" fill="#0C102A" opacity=".85"/>
+    <path d="M0,744 Q220,728 440,742 Q700,726 940,742 Q1180,730 1440,742 L1440,760 L0,760 Z" fill="#080B1E"/>
+    <rect y="760" width="1440" height="140" fill="url(#groundHG)"/>
+    <line x1="0" y1="760" x2="1440" y2="760" stroke="rgba(201,212,240,.14)" stroke-width="1.2"/>
+
+    <!-- LA CASA D'ORO, ore 03:47: buia fuori, viva dentro -->
+    <g id="heroHouse">
+      <!-- ombra lunare fredda (luna a destra → ombra a sinistra) -->
+      <polygon points="618,760 908,760 858,782 548,782" fill="#02040C" opacity=".6" filter="url(#softH)"/>
+      <!-- parete lunga -->
+      <rect x="622" y="668" width="286" height="92" fill="#0A1226"/>
+      <!-- finestre: cornici + vetri caldi (il cuore della scena) -->
+      <g stroke="#1B2748" stroke-width="3.4" fill="none">
+        <rect x="654" y="688" width="52" height="44" rx="2"/>
+        <rect x="742" y="688" width="52" height="44" rx="2"/>
+      </g>
+      <g id="winHeroGlow" opacity=".8">
+        <rect x="657" y="691" width="46" height="38" rx="1.5" fill="url(#winHG)"/>
+        <rect x="745" y="691" width="46" height="38" rx="1.5" fill="url(#winHG)"/>
+        <line x1="680" y1="691" x2="680" y2="729" stroke="#0A1226" stroke-width="2.6"/>
+        <line x1="768" y1="691" x2="768" y2="729" stroke="#0A1226" stroke-width="2.6"/>
+      </g>
+      <!-- porta -->
+      <rect x="826" y="702" width="40" height="58" rx="2" fill="#060B18" stroke="#1B2748" stroke-width="2"/>
+      <circle cx="858" cy="732" r="2" fill="#F5A623" opacity=".7"/>
+      <!-- parete di testa (verso luna: lievemente rischiarata) -->
+      <polygon points="908,668 986,656 986,760 908,760" fill="#0E1730"/>
+      <polygon points="908,668 986,656 948,600" fill="#101A36"/>
+      <!-- falda con pannelli al chiaro di luna -->
+      <polygon points="614,670 908,670 948,600 662,600" fill="#0B1226" stroke="rgba(201,212,240,.1)" stroke-width="1"/>
+      <g id="pvHero"><polygon points="631.4,661.7 669.5,661.7 687.9,637.3 649.9,637.3" fill="url(#pvNightG)" stroke="rgba(175,194,232,.22)" stroke-width=".8"/><polygon points="676.7,661.7 714.8,661.7 733.3,637.3 695.2,637.3" fill="url(#pvNightG)" stroke="rgba(175,194,232,.22)" stroke-width=".8"/><polygon points="722.1,661.7 760.1,661.7 778.6,637.3 740.5,637.3" fill="url(#pvNightG)" stroke="rgba(175,194,232,.22)" stroke-width=".8"/><polygon points="767.4,661.7 805.5,661.7 823.9,637.3 785.9,637.3" fill="url(#pvNightG)" stroke="rgba(175,194,232,.22)" stroke-width=".8"/><polygon points="812.7,661.7 850.8,661.7 869.3,637.3 831.2,637.3" fill="url(#pvNightG)" stroke="rgba(175,194,232,.22)" stroke-width=".8"/><polygon points="858.1,661.7 896.1,661.7 914.6,637.3 876.5,637.3" fill="url(#pvNightG)" stroke="rgba(175,194,232,.22)" stroke-width=".8"/><polygon points="653.4,632.7 691.5,632.7 709.9,608.3 671.9,608.3" fill="url(#pvNightG)" stroke="rgba(175,194,232,.22)" stroke-width=".8"/><polygon points="698.7,632.7 736.8,632.7 755.3,608.3 717.2,608.3" fill="url(#pvNightG)" stroke="rgba(175,194,232,.22)" stroke-width=".8"/><polygon points="744.1,632.7 782.1,632.7 800.6,608.3 762.5,608.3" fill="url(#pvNightG)" stroke="rgba(175,194,232,.22)" stroke-width=".8"/><polygon points="789.4,632.7 827.5,632.7 845.9,608.3 807.9,608.3" fill="url(#pvNightG)" stroke="rgba(175,194,232,.22)" stroke-width=".8"/><polygon points="834.7,632.7 872.8,632.7 891.3,608.3 853.2,608.3" fill="url(#pvNightG)" stroke="rgba(175,194,232,.22)" stroke-width=".8"/><polygon points="880.1,632.7 918.1,632.7 936.6,608.3 898.5,608.3" fill="url(#pvNightG)" stroke="rgba(175,194,232,.22)" stroke-width=".8"/></g>
+      <!-- comignolo -->
+      <polygon points="676,600 698,599 698,566 676,567" fill="#0E1730"/>
+      <rect x="672" y="560" width="30" height="7" rx="2" fill="#16224A"/>
+      <g id="smoke" stroke="#AFC2E8" fill="none" stroke-linecap="round" opacity=".8">
+        <path class="sm" d="M687 556 C683 544 692 536 687 524" stroke-width="2.4" opacity=".14"/>
+        <path class="sm" d="M687 548 C692 534 682 524 688 508" stroke-width="2" opacity=".1"/>
+        <path class="sm" d="M687 538 C684 520 694 508 689 488" stroke-width="1.6" opacity=".07"/>
+      </g>
+      <!-- orlo lunare freddo sui bordi verso la luna (destra) -->
+      <g stroke="#AFC2E8" stroke-width="1.6" fill="none" stroke-linecap="round" opacity=".5">
+        <path d="M908 668 L986 656"/>
+        <line x1="986" y1="656" x2="986" y2="760"/>
+        <path d="M948 600 L986 656"/>
+        <line x1="662" y1="600" x2="948" y2="600"/>
+      </g>
+      <!-- BATTERIA a muro, LED verde, e l'impulso che nutre la casa -->
+      <g id="heroBatt">
+        <rect x="912" y="700" width="26" height="48" rx="4" fill="#0E1730" stroke="#1B2748" stroke-width="1.6"/>
+        <rect x="916" y="726" width="18" height="18" rx="2" fill="#123528" opacity=".9"/>
+        <rect x="916" y="712" width="18" height="12" rx="2" fill="#0B1F18" opacity=".9"/>
+        <circle id="battLed" cx="925" cy="706" r="2.4" fill="#7FE0B0" filter="url(#glowH)"/>
+      </g>
+      <path id="hPulse" d="M925 748 L925 766 Q925 772 918 772 L700 772 Q690 772 690 762 L690 736" fill="none" stroke="#7FE0B0" stroke-width="2" stroke-linecap="round" opacity=".28" stroke-dasharray="10 220"/>
+    </g>
+
+    <!-- pozza di luce dalle finestre sul prato -->
+    <ellipse cx="726" cy="772" rx="110" ry="14" fill="#F5A623" opacity=".08" filter="url(#softH)"/>
+  </g>
+
+  <!-- ═══ STRATO PRIMO PIANO (albero, erba, lucciole) ═══ -->
+  <g id="heroFg">
+    <!-- albero della trilogia, a destra -->
+    <g id="heroTree">
+      <path d="M1332 830 C1330 780 1328 740 1330 690" stroke="#05070F" stroke-width="12" fill="none" stroke-linecap="round"/>
+      <path d="M1330 728 C1312 714 1302 702 1296 688" stroke="#05070F" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <path d="M1331 706 C1348 694 1358 684 1366 670" stroke="#05070F" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <ellipse cx="1288" cy="662" rx="54" ry="44" fill="#060913"/>
+      <ellipse cx="1348" cy="632" rx="62" ry="50" fill="#070B17"/>
+      <ellipse cx="1402" cy="668" rx="48" ry="38" fill="#060913"/>
+      <ellipse cx="1332" cy="678" rx="52" ry="34" fill="#080D1B"/>
+      <path d="M1394 636 A66,56 0 0 1 1438 674" stroke="#AFC2E8" stroke-width="1.6" fill="none" opacity=".3" stroke-linecap="round"/>
+    </g>
+    <!-- cespugli e erba -->
+    <g fill="#05080F">
+      <ellipse cx="600" cy="762" rx="40" ry="16"/>
+      <ellipse cx="948" cy="764" rx="34" ry="14"/>
+      <ellipse cx="1010" cy="766" rx="26" ry="11"/>
+      <ellipse cx="120" cy="780" rx="60" ry="18"/>
+      <ellipse cx="210" cy="786" rx="44" ry="14"/>
+    </g>
+    <g stroke="#0D1330" stroke-width="2" fill="none" stroke-linecap="round" opacity=".9">
+      <path d="M330 792 q3,-10 0,-15 M340 792 q4,-8 8,-12 M320 792 q-4,-8 -8,-11"/>
+      <path d="M520 800 q3,-9 0,-13 M530 800 q4,-7 7,-10"/>
+      <path d="M1080 796 q-3,-8 -6,-11 M1090 796 q3,-10 0,-14"/>
+    </g>
+    <!-- lucciole (classe .ff, GSAP le fa vagare) -->
+    <g id="fireflies" fill="#FFD98A">
+      <circle class="ff" cx="480" cy="740" r="2.2" opacity=".8" filter="url(#glowH)"/>
+      <circle class="ff" cx="560" cy="770" r="1.8" opacity=".6" filter="url(#glowH)"/>
+      <circle class="ff" cx="1020" cy="740" r="2" opacity=".7" filter="url(#glowH)"/>
+      <circle class="ff" cx="1120" cy="782" r="1.7" opacity=".55" filter="url(#glowH)"/>
+      <circle class="ff" cx="250" cy="760" r="2" opacity=".65" filter="url(#glowH)"/>
+      <circle class="ff" cx="880" cy="792" r="1.8" opacity=".6" filter="url(#glowH)"/>
+      <circle class="ff" cx="700" cy="812" r="2" opacity=".6" filter="url(#glowH)"/>
+    </g>
+  </g>
+
+  <!-- vignetta -->
+  <rect width="1440" height="900" fill="url(#vinHG)"/>
+</svg>
   <div class="hero-hud fx" aria-hidden="true">
     <div class="hh-time"><span class="hh-dot"></span>03:47</div>
     <div class="hh-lbl">La batteria alimenta la casa</div>
   </div>
-  <div class="wrap">
+  <div class="wrap hero-copy">
     <span class="kicker fx"><span class="ora">H 03:47</span><span class="sep">·</span>Fotovoltaico · Pompe di calore · Ristrutturazioni · Case da zero</span>
     <h1 class="tr">Il sole non manda bollette. <em>Il tuo tetto nemmeno.</em></h1>
     <p class="lead fx">Sono le 3 di notte e questa casa va avanti con l'energia raccolta ieri. Fotovoltaico chiavi in mano: pratica GSE inclusa, detrazione fiscale del 50%. Tu accendi la luce, al resto pensiamo noi.</p>
@@ -851,18 +1059,13 @@ input[type=range]:active::-moz-range-thumb{transform:scale(1.22)}
       <a class="btn btn-accent" href="#preventivo" data-nav><span>Richiedi il preventivo gratuito</span></a>
       <a class="btn btn-ghost" href="#risparmio" data-nav><span>Calcola il tuo risparmio</span></a>
     </div>
-  </div>
-  <div class="hero-media">
-    <div class="hero-reveal" id="heroReveal">
-      <img class="hr-layer hr-base" id="hrPrima" crossorigin="anonymous" src="hero-prima.webp" alt="Villa moderna con impianto fotovoltaico REALHOME al crepuscolo" fetchpriority="high">
-      <img class="hr-layer hr-top" id="hrDopo" crossorigin="anonymous" src="hero-dopo.webp" alt="" aria-hidden="true">
-    </div>
-    <div class="hero-badges">
+    <div class="hero-badges fx">
       <span>✓ Pratica <b>GSE</b> inclusa</span>
       <span>✓ Detrazione <b class="pct">50%</b> fotovoltaico</span>
       <span>✓ <b class="pct">65%</b> infissi e pompe di calore</span>
     </div>
   </div>
+  <div class="hero-cue" aria-hidden="true"><i></i>Scorri</div>
 </header>
 
 <!-- marquee notturno velocity-reactive -->
@@ -1808,7 +2011,6 @@ input[type=range]:active::-moz-range-thumb{transform:scale(1.22)}
   </div>
 </footer>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.24/dist/lenis.min.js"></script>
@@ -1881,80 +2083,59 @@ if (FX && window.Lenis){
   gsap.ticker.lagSmoothing(0);
 }
 
-/* ---------- 2. cielo stellato dell'hero ---------- */
-if (FX && window.THREE) (function(){
-  const cv=document.getElementById('particles');
-  const renderer=new THREE.WebGLRenderer({canvas:cv,alpha:true,antialias:true});
-  const scene=new THREE.Scene();
-  const cam=new THREE.PerspectiveCamera(60,1,.1,100); cam.position.z=8;
-  const N=560,pos=new Float32Array(N*3);
-  for(let i=0;i<N;i++){pos[i*3]=(Math.random()-.5)*24;pos[i*3+1]=(Math.random()-.5)*13;pos[i*3+2]=(Math.random()-.5)*8}
-  const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.BufferAttribute(pos,3));
-  /* stelle bianche fitte + pulviscolo ambra rado: la notte prima dell'alba */
-  const stars=new THREE.Points(geo,new THREE.PointsMaterial({color:0xEDEAE0,size:.035,transparent:true,opacity:.75}));scene.add(stars);
-  const dust=new THREE.Points(geo.clone(),new THREE.PointsMaterial({color:0xF5A623,size:.055,transparent:true,opacity:.28}));dust.rotation.z=1.3;scene.add(dust);
-  const m={x:0,y:0};
-  window.addEventListener('mousemove',e=>{m.x=e.clientX/innerWidth-.5;m.y=e.clientY/innerHeight-.5},{passive:true});
-  function size(){const r=cv.parentElement.getBoundingClientRect();renderer.setSize(r.width,r.height,false);cam.aspect=r.width/r.height;cam.updateProjectionMatrix()}
-  size();window.addEventListener('resize',size);
-  (function loop(t){stars.rotation.y=t*.00003+m.x*.22;stars.rotation.x=m.y*.15;dust.rotation.y=-t*.000025+m.x*.14;
-    cam.position.x+=(m.x*1.1-cam.position.x)*.04;cam.position.y+=(-m.y*.7-cam.position.y)*.04;
-    renderer.render(scene,cam);requestAnimationFrame(loop)})(0);
-})();
-
-/* ---------- 3. hero liquid ripple reveal (dual-texture shader) ---------- */
-if (FX && window.THREE) (function(){
-  const box=document.getElementById('heroReveal');
-  const imgA=document.getElementById('hrPrima');   // prima (tetto pulito)
-  const imgB=document.getElementById('hrDopo');    // dopo (pannelli)
-  if(!box||!imgA||!imgB) return;
-  if(!window.matchMedia('(hover:hover)').matches) return;   // touch: resta statico
-
-  const VERT=`varying vec2 vUv;void main(){vUv=uv;gl_Position=vec4(position,1.0);}`;
-  // increspatura ad anello attorno al mouse; la stessa onda pilota sia la
-  // distorsione UV sia la miscela prima->dopo (effetto "acqua che rivela")
-  const FRAG=`precision mediump float;
-  uniform sampler2D uA,uB;uniform float uTime,uHover;uniform vec2 uMouse,uScale;varying vec2 vUv;
-  void main(){
-    vec2 uv=(vUv-.5)*uScale+.5;
-    float d=distance(vUv,uMouse);
-    float wave=sin(d*24.0-uTime*4.2)*smoothstep(.55,0.,d);
-    uv+=normalize(vUv-uMouse+.0001)*wave*.016*uHover;
-    vec4 a=texture2D(uA,clamp(uv,.002,.998));
-    vec4 b=texture2D(uB,clamp(uv,.002,.998));
-    // rivelazione morbida: disco attorno al mouse + spinta dell'onda
-    float reveal=smoothstep(.42,.05,d)+wave*.35;
-    reveal=clamp(reveal*uHover,0.,1.);
-    gl_FragColor=mix(a,b,reveal);
-  }`;
-
-  const loader=new THREE.TextureLoader();loader.crossOrigin='anonymous';
-  let loaded=0,texA,texB;
-  function ready(){
-    if(loaded<2) return;
-    texA.minFilter=texB.minFilter=THREE.LinearFilter;
-    const cv=document.createElement('canvas');cv.className='liquid';
-    const renderer=new THREE.WebGLRenderer({canvas:cv,antialias:true});
-    const scene=new THREE.Scene(),cam=new THREE.OrthographicCamera(-1,1,1,-1,0,1);
-    const uni={uA:{value:texA},uB:{value:texB},uTime:{value:0},uHover:{value:0},
-      uMouse:{value:new THREE.Vector2(.5,.5)},uScale:{value:new THREE.Vector2(1,1)}};
-    scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2,2),
-      new THREE.ShaderMaterial({uniforms:uni,vertexShader:VERT,fragmentShader:FRAG})));
-    const ia=texA.image.width/texA.image.height;
-    function size(){const r=box.getBoundingClientRect();if(!r.width)return;
-      renderer.setPixelRatio(Math.min(devicePixelRatio,2));
-      renderer.setSize(r.width,r.height,false);
-      const pa=r.width/r.height;uni.uScale.value.set(ia>pa?pa/ia:1,ia>pa?1:ia/pa);}
-    size();addEventListener('resize',size);
-    box.appendChild(cv);imgA.style.visibility='hidden';
-    box.addEventListener('mouseenter',()=>gsap.to(uni.uHover,{value:1,duration:.7,ease:'power2.out'}));
-    box.addEventListener('mouseleave',()=>gsap.to(uni.uHover,{value:0,duration:1.0,ease:'power2.out'}));
-    box.addEventListener('mousemove',e=>{const r=cv.getBoundingClientRect();
-      uni.uMouse.value.set((e.clientX-r.left)/r.width,1-(e.clientY-r.top)/r.height);},{passive:true});
-    (function loop(t){uni.uTime.value=t*.001;renderer.render(scene,cam);requestAnimationFrame(loop);})(0);
+/* ---------- 2. HERO NOTTE — la casa che respira alle 03:47 ----------
+   Sostituisce starfield THREE.Points (stelle quadrate) e liquid ripple.
+   Tutto SVG+GSAP: brillio stelle, lucciole, fumo, impulso batteria→finestre,
+   stella cadente. !FX: scena compiuta e ferma. */
+(function heroNight(){
+  const scene=document.getElementById('heroScene');
+  if(!scene)return;
+  if(!FX)return;                                   /* statica: già tutta visibile */
+  gsap.from(scene,{opacity:0,duration:1.4,ease:'power2.out'});
+  /* stelle: ogni .tw respira con fase propria */
+  gsap.utils.toArray('#heroScene .tw').forEach(st=>{
+    gsap.to(st,{opacity:'-=.35',duration:1.4+Math.random()*2.2,yoyo:true,repeat:-1,
+      ease:'sine.inOut',delay:Math.random()*3});
+  });
+  /* lucciole: vagabondaggio browniano dolce */
+  gsap.utils.toArray('#heroScene .ff').forEach(f=>{
+    gsap.to(f,{x:'+=random(-26,26)',y:'+=random(-16,12)',duration:'random(3,5)',
+      yoyo:true,repeat:-1,repeatRefresh:true,ease:'sine.inOut',delay:Math.random()*2});
+    gsap.to(f,{opacity:'random(.25,.85)',duration:'random(1.2,2.4)',yoyo:true,repeat:-1,
+      repeatRefresh:true,ease:'sine.inOut'});
+  });
+  /* fumo: deriva verso l'alto in loop morbido */
+  gsap.utils.toArray('#heroScene .sm').forEach((w,i)=>{
+    gsap.to(w,{y:-14,opacity:0,duration:4+i*1.2,repeat:-1,ease:'sine.in',delay:i*1.3});
+  });
+  /* impulso: la batteria nutre la casa — ogni ~4s un pacchetto d'energia
+     scorre lungo il cavo e le finestre rispondono con un respiro di luce */
+  const pulse=document.getElementById('hPulse'),win=document.getElementById('winHeroGlow'),
+        led=document.getElementById('battLed');
+  if(pulse){
+    const len=pulse.getTotalLength();
+    pulse.style.strokeDasharray=`26 ${len}`;
+    const ptl=gsap.timeline({repeat:-1,repeatDelay:2.6});
+    ptl.set(pulse,{strokeDashoffset:26,opacity:.9})
+       .to(pulse,{strokeDashoffset:-len,duration:1.5,ease:'power1.inOut'})
+       .to(win,{opacity:1,duration:.5,ease:'power2.out'},'-=.55')
+       .fromTo(led,{scale:1},{scale:1.5,transformOrigin:'center',duration:.3,yoyo:true,repeat:1},'-=1.4')
+       .to(win,{opacity:.8,duration:1.1,ease:'sine.inOut'});
   }
-  texA=loader.load(imgA.src,()=>{loaded++;ready();});
-  texB=loader.load(imgB.src,()=>{loaded++;ready();});
+  /* stella cadente: ogni 6–12s, mai due volte nello stesso punto */
+  const shoot=document.getElementById('shoot');
+  if(shoot){
+    (function fall(){
+      gsap.delayedCall(6+Math.random()*6,()=>{
+        const sx=560+Math.random()*640, sy=60+Math.random()*200;
+        gsap.set(shoot,{attr:{transform:`translate(${sx},${sy})`},opacity:0});
+        gsap.timeline({onComplete:fall})
+          .to(shoot,{opacity:.9,duration:.12})
+          .to(shoot,{attr:{transform:`translate(${sx+150},${sy+44})`},duration:.6,ease:'power1.in'},0)
+          .to(shoot,{opacity:0,duration:.2},'-=.2');
+      });
+    })();
+  }
 })();
 
 /* ---------- 4. text reveal + fade ---------- */
@@ -2644,6 +2825,7 @@ function submitLead(){document.getElementById('formOk').style.display='block'}
     el.style.willChange='transform';
   });
   add('.hero h1',12);add('.hero-badges',16);add('.ctas',9);add('.hero-hud',6);
+  add('#heroSky',3);add('#heroMid',7);add('#heroFg',13);
   add('.stg-head',10);add('.stg-chips',5);add('.stg-compare',7);
   add('.arch',9);
   window.addEventListener('mousemove',e=>{
