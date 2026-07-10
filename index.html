@@ -199,7 +199,7 @@ body.fxon #cursor{display:block}
 .diagram .label{font-family:'Instrument Sans',sans-serif;font-size:11px;letter-spacing:.22em;fill:rgba(246,241,230,.55);text-anchor:middle;font-weight:600}
 .diagram .ring{fill:none;stroke:var(--sole)}
 .diagram #core{fill:url(#coreGrad)}
-.diagram .ring-b{animation:spin 14s linear infinite;transform-origin:96px 92px}
+.diagram .ring-b{animation:spin 14s linear infinite;transform-origin:110px 264px}
 @keyframes spin{to{transform:rotate(360deg)}}
 .diagram #panel-cells rect{fill:url(#cellGrad);stroke:#7FB0FF;stroke-width:.5;opacity:.92}
 .diagram #invGlow{fill:url(#invGrad);opacity:0}
@@ -592,7 +592,8 @@ footer p{font-size:.85rem;line-height:1.7}
   .contact .wrap{grid-template-columns:1fr;gap:44px}
   .footer-top{grid-template-columns:1fr;gap:30px}
   .footer-bottom{flex-direction:column;align-items:flex-start}
-  .nav-links li:not(:last-child){display:none}
+  .nav-links{display:none}
+  .nav-burger{display:flex}
   .alba-copy h2 em{font-size:.78em}
   .marquee.m-notte{padding:40px 0 14px}
   .stats,.casestudy,.turnkey,.calc,.reviews{padding-top:40px;padding-bottom:40px}
@@ -618,6 +619,52 @@ footer p{font-size:.85rem;line-height:1.7}
   .btn{padding:15px 24px}
   #nav .logo span{font-size:.95rem}
   .footer-top{gap:24px}
+}
+/* ============ rifinitura mobile trasversale (v12) ============ */
+@media (max-width:720px){
+  /* verticalità: mai scroll orizzontale */
+  html,body{overflow-x:hidden;max-width:100%}
+  section,.wrap{max-width:100%}
+  /* titoli che respirano */
+  h2,.tr{overflow-wrap:break-word}
+  .hero h1{max-width:100%;line-height:1.06}
+  /* diagramma "Prime luci": la scena resta leggibile, cornice più tenue */
+  .diagram{border-radius:16px;margin-top:8px}
+  .steps{gap:0}
+  .step{padding:16px 18px}
+  .step h3{font-size:1.16rem}
+  /* simulatore: scena e testa impilate, niente sovrapposizioni */
+  .stg-hero{font-size:clamp(2.4rem,11vw,3.2rem)}
+  .stg-bubble{top:-46px}
+  .stg-slider{margin-top:52px}
+  .stg-compare{gap:10px}
+  .cmp{min-width:0;flex:1 1 40%}
+  .cmp-vs{order:0;flex:0 0 auto}
+  .stg-note{font-size:.66rem}
+  /* caso studio: il sole trascinabile è touch, lascia spazio */
+  .cs-stage2{aspect-ratio:1/1}
+  /* recensioni e impatto già in colonna: solo aria */
+  .rev-card{padding:22px 20px}
+}
+@media (max-width:480px){
+  .wrap{padding:0 15px}
+  .hero h1{font-size:clamp(2.2rem,10vw,2.8rem)}
+  .kicker .ora{display:inline-block}
+  /* chip simulatore passano a 1 colonna via blocco v9 (≤480) */
+  .stg-chip{padding:14px 12px 13px}
+  .stg-chip b{font-size:1.1rem}
+  .stg-chip .ci{width:20px;height:20px}
+  /* compare: due card sopra, badge -85% sotto centrato */
+  .stg-compare{flex-direction:column;align-items:stretch}
+  .cmp{flex:1 1 auto}
+  .cmp-vs{margin:2px auto}
+  /* menu: full width su schermi piccolissimi */
+  .nav-menu{width:min(88vw,320px)}
+  /* footer legale: separatori che non spezzano male */
+  .legal{font-size:.82rem;line-height:1.7}
+}
+@media (max-width:560px) and (min-width:481px){
+  .stg-chips{grid-template-columns:repeat(2,1fr)}
 }
 @media (prefers-reduced-motion: reduce){
   .diagram .stream{animation:none}
@@ -690,10 +737,30 @@ footer p{font-size:.85rem;line-height:1.7}
 .stg-note{margin:28px auto 0;max-width:60ch;text-align:center;font-size:.7rem;color:var(--muted-d);line-height:1.6}
 @media(max-width:980px){.stg-chips{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:720px){.stg-head{position:static;text-align:center;padding:26px 18px 0;pointer-events:auto}.stg-hero{font-size:clamp(2.6rem,12vw,3.6rem)}.sim-deck{padding-top:22px}}
-@media(max-width:560px){.stg-chips{grid-template-columns:1fr}.cmp{min-width:130px;padding:10px 16px}}
+@media(max-width:480px){.stg-chips{grid-template-columns:1fr}.cmp{min-width:0;padding:10px 16px}}
+
+/* ── v11. "Prime luci" — il diagramma è diventato un dipinto ── */
+.diagram{border-radius:24px;border:1px solid var(--line-d);box-shadow:0 34px 80px -36px rgba(7,12,22,.6);display:block}
+.diagram .ring-b{transform-origin:110px 264px}
+
+/* ── v12. menu mobile ── */
+.nav-burger{display:none;width:44px;height:44px;flex-direction:column;justify-content:center;align-items:center;gap:5px;background:none;border:0;cursor:pointer;padding:0;z-index:102}
+.nav-burger span{display:block;width:24px;height:2px;border-radius:2px;background:#F6F1E6;transition:transform .35s var(--ease),opacity .25s var(--ease)}
+#nav.nav-day .nav-burger span{background:var(--ink)}
+.nav-burger[aria-expanded=true] span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.nav-burger[aria-expanded=true] span:nth-child(2){opacity:0}
+.nav-burger[aria-expanded=true] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.nav-menu{position:fixed;inset:0 0 0 auto;width:min(80vw,320px);background:rgba(9,15,28,.97);backdrop-filter:blur(18px);border-left:1px solid var(--line-d);z-index:101;display:flex;flex-direction:column;justify-content:center;gap:6px;padding:32px 30px;transform:translateX(100%);transition:transform .42s var(--ease);will-change:transform}
+.nav-menu.open{transform:none}
+.nav-menu a{font-size:1.15rem;font-weight:600;color:#F6F1E6;text-decoration:none;padding:15px 4px;border-bottom:1px solid rgba(255,255,255,.07)}
+.nav-menu a:active{color:var(--sole)}
+.nav-menu .nav-cta{margin-top:18px;border:1px solid var(--sole);color:var(--sole)!important;border-radius:100px;text-align:center;border-bottom:1px solid var(--sole)}
+body.menu-open{overflow:hidden}
+.nav-scrim{position:fixed;inset:0;background:rgba(4,8,15,.5);z-index:100;opacity:0;pointer-events:none;transition:opacity .42s var(--ease)}
+.nav-scrim.show{opacity:1;pointer-events:auto}
 
 /* BADGE DI VERIFICA DEPLOY — ELIMINARE DOPO IL TEST */
-body::after{content:'VER-2026-07-10-V10';position:fixed;bottom:8px;left:8px;z-index:99999;font:600 11px/1 monospace;color:#fff;background:#c0392b;padding:4px 8px;border-radius:4px;pointer-events:none}
+body::after{content:'VER-2026-07-10-V12';position:fixed;bottom:8px;left:8px;z-index:99999;font:600 11px/1 monospace;color:#fff;background:#c0392b;padding:4px 8px;border-radius:4px;pointer-events:none}
 
 /* iter gse — v7 archivio split-screen */
 .gse-split{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:center;min-height:64vh}
@@ -757,6 +824,15 @@ input[type=range]:active::-moz-range-thumb{transform:scale(1.22)}
       <li><a href="#risparmio" data-nav>Simulatore</a></li>
       <li><a class="nav-cta" href="#preventivo" data-nav>Preventivo gratuito</a></li>
     </ul>
+    <button id="navToggle" class="nav-burger" aria-label="Apri il menu" aria-expanded="false" aria-controls="navMenu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div id="navMenu" class="nav-menu" aria-hidden="true">
+    <a href="#come-funziona" data-nav data-mnav>Come funziona</a>
+    <a href="#servizi" data-nav data-mnav>Servizi</a>
+    <a href="#risparmio" data-nav data-mnav>Simulatore</a>
+    <a class="nav-cta" href="#preventivo" data-nav data-mnav>Preventivo gratuito</a>
   </div>
 </nav>
 
@@ -821,23 +897,30 @@ input[type=range]:active::-moz-range-thumb{transform:scale(1.22)}
         </div>
       </div>
       <svg class="diagram" viewBox="0 0 760 470" xmlns="http://www.w3.org/2000/svg" aria-label="Schema del flusso di energia dal sole alla casa">
-
   <defs>
+    <linearGradient id="preDawnG" x1="0" y1="0" x2="0" y2="1" color-interpolation="linearRGB">
+      <stop offset="0" stop-color="#08101F"/>
+      <stop offset=".32" stop-color="#0F1B38"/>
+      <stop offset=".58" stop-color="#26294E"/>
+      <stop offset=".76" stop-color="#45355C"/>
+      <stop offset=".9" stop-color="#8A4E48"/>
+      <stop offset="1" stop-color="#E29A55"/>
+    </linearGradient>
     <radialGradient id="coreGrad" cx=".5" cy=".5" r=".5">
       <stop offset="0" stop-color="#FFF4D6"/><stop offset=".5" stop-color="#F5A623"/>
       <stop offset="1" stop-color="#F5A623" stop-opacity="0"/>
     </radialGradient>
-    <linearGradient id="beamG" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#FFD98A" stop-opacity=".34"/>
+    <linearGradient id="beamG" x1="0" y1="0" x2="1" y2=".35">
+      <stop offset="0" stop-color="#FFD98A" stop-opacity=".32"/>
       <stop offset="1" stop-color="#FFD98A" stop-opacity="0"/>
     </linearGradient>
-    <linearGradient id="cellGrad" x1="0" y1="0" x2="1" y2="1">
+    <linearGradient id="cellGrad" x1="0" y1="0" x2="1" y2="1" color-interpolation="linearRGB">
       <stop offset="0" stop-color="#3A78E8"/><stop offset=".55" stop-color="#1C4187"/>
       <stop offset="1" stop-color="#0E2C63"/>
     </linearGradient>
     <linearGradient id="cellSheen" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#BFE4FF" stop-opacity=".55"/>
-      <stop offset=".35" stop-color="#BFE4FF" stop-opacity="0"/>
+      <stop offset="0" stop-color="#BFE4FF" stop-opacity=".5"/>
+      <stop offset=".4" stop-color="#BFE4FF" stop-opacity="0"/>
     </linearGradient>
     <linearGradient id="flowDC" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0" stop-color="#F5A623"/><stop offset="1" stop-color="#FFD98A"/>
@@ -851,15 +934,21 @@ input[type=range]:active::-moz-range-thumb{transform:scale(1.22)}
     <radialGradient id="invGrad" cx=".5" cy=".5" r=".6">
       <stop offset="0" stop-color="#FFD98A"/><stop offset="1" stop-color="#F5A623" stop-opacity="0"/>
     </radialGradient>
-    <linearGradient id="battGrad" x1="0" y1="1" x2="0" y2="0">
+    <linearGradient id="battGrad" x1="0" y1="1" x2="0" y2="0" color-interpolation="linearRGB">
       <stop offset="0" stop-color="#F5A623"/><stop offset="1" stop-color="#7FE0B0"/>
     </linearGradient>
     <radialGradient id="winGrad" cx=".5" cy=".4" r=".7">
       <stop offset="0" stop-color="#FFE7B0"/><stop offset="1" stop-color="#F5A623"/>
     </radialGradient>
-    <radialGradient id="dawnG" cx=".5" cy="1" r="1">
-      <stop offset="0" stop-color="#F5A623" stop-opacity=".14"/>
-      <stop offset="1" stop-color="#F5A623" stop-opacity="0"/>
+    <linearGradient id="groundNG" x1="0" y1="0" x2="0" y2="1" color-interpolation="linearRGB">
+      <stop offset="0" stop-color="#111C36"/><stop offset="1" stop-color="#0A1322"/>
+    </linearGradient>
+    <linearGradient id="bodyG" x1="0" y1="0" x2="1" y2="0" color-interpolation="linearRGB">
+      <stop offset="0" stop-color="#1E2C4E"/><stop offset="1" stop-color="#101B36"/>
+    </linearGradient>
+    <radialGradient id="vin2G" cx=".5" cy=".5" r=".74">
+      <stop offset=".6" stop-color="#060B14" stop-opacity="0"/>
+      <stop offset="1" stop-color="#060B14" stop-opacity=".4"/>
     </radialGradient>
     <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
       <feGaussianBlur stdDeviation="3.4" result="b"/>
@@ -868,142 +957,169 @@ input[type=range]:active::-moz-range-thumb{transform:scale(1.22)}
     <filter id="softB" x="-60%" y="-60%" width="220%" height="220%">
       <feGaussianBlur stdDeviation="10"/>
     </filter>
+    <filter id="shB" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="4"/>
+    </filter>
   </defs>
 
-  <!-- stelle rade -->
+  <!-- L1: cielo pre-alba -->
+  <rect x="0" y="0" width="760" height="384" fill="url(#preDawnG)"/>
+
+  <!-- stelle che sbiadiscono + falce di luna -->
   <g fill="#F6F1E6">
     <circle cx="300" cy="46" r="1.2" opacity=".4"/>
-    <circle cx="470" cy="80" r="1" opacity=".3"/>
-    <circle cx="620" cy="40" r="1.3" opacity=".45"/>
-    <circle cx="700" cy="120" r="1" opacity=".3"/>
-    <circle cx="390" cy="120" r="1" opacity=".28"/>
-    <circle cx="180" cy="36" r="1" opacity=".3"/>
+    <circle cx="470" cy="84" r="1" opacity=".3"/>
+    <circle cx="560" cy="38" r="1.3" opacity=".45"/>
+    <circle cx="700" cy="130" r="1" opacity=".25"/>
+    <circle cx="390" cy="120" r="1" opacity=".25"/>
+    <circle cx="200" cy="30" r="1" opacity=".3"/>
+    <circle cx="740" cy="60" r="1.1" opacity=".3"/>
+  </g>
+  <g id="moon">
+    <circle cx="648" cy="72" r="15" fill="#E8E4D8" opacity=".85"/>
+    <circle cx="654" cy="68" r="14" fill="#0C1730"/>
   </g>
 
-  <!-- alba che preme all'orizzonte, lato sole -->
-  <ellipse cx="150" cy="410" rx="280" ry="90" fill="url(#dawnG)"/>
-
-  <!-- IL SOLE (96,92 — origine intoccabile per il JS) -->
+  <!-- L2: IL SOLE basso, appena sopra l'orizzonte (origine JS: 110,264) -->
   <g id="reactor">
-    <circle cx="96" cy="92" r="44" fill="#F5A623" opacity=".12" filter="url(#softB)"/>
-    <circle class="ring ring-a" cx="96" cy="92" r="46" fill="none" stroke="#F5A623" stroke-width="1" stroke-opacity=".3"/>
-    <circle class="ring ring-b" cx="96" cy="92" r="34" fill="none" stroke="#F5A623" stroke-width="1.2" stroke-opacity=".5" stroke-dasharray="3 7"/>
-    <circle class="ring ring-c" cx="96" cy="92" r="24" fill="none" stroke="#F5A623" stroke-width="1.4" stroke-opacity=".7"/>
-    <circle id="core" cx="96" cy="92" r="16" fill="url(#coreGrad)"/>
-    <g id="rays" stroke="#F5A623" stroke-width="1.4" stroke-linecap="round" stroke-opacity=".8">
-      <path d="M96 30v-12M96 154v12M158 92h12M22 92h12M140 48l9-9M43 136l-9 9M140 136l9 9M43 48l-9-9"/>
+    <circle cx="110" cy="264" r="52" fill="#F5A623" opacity=".14" filter="url(#softB)"/>
+    <circle class="ring ring-a" cx="110" cy="264" r="44" fill="none" stroke="#F5A623" stroke-width="1" stroke-opacity=".28"/>
+    <circle class="ring ring-b" cx="110" cy="264" r="33" fill="none" stroke="#F5A623" stroke-width="1.2" stroke-opacity=".45" stroke-dasharray="3 7"/>
+    <circle class="ring ring-c" cx="110" cy="264" r="23" fill="none" stroke="#F5A623" stroke-width="1.4" stroke-opacity=".65"/>
+    <circle id="core" cx="110" cy="264" r="15" fill="url(#coreGrad)"/>
+    <g id="rays" stroke="#F5A623" stroke-width="1.4" stroke-linecap="round" stroke-opacity=".75">
+      <path d="M110 206v-12M110 322v12M168 264h12M40 264h12M152 222l9-9M59 306l-9 9M152 306l9 9M59 222l-9-9"/>
     </g>
   </g>
 
-  <!-- fascio di luce sole→pannello -->
-  <polygon points="112,100 122,112 288,268 262,282" fill="url(#beamG)"/>
-  <path class="rail" d="M118 112 C 170 168, 210 214, 262 266" fill="none" stroke="rgba(255,255,255,.10)" stroke-width="2" stroke-linecap="round"/>
-  <path id="flow0" class="energy" d="M118 112 C 170 168, 210 214, 262 266" fill="none" stroke="url(#flowDC)" stroke-width="2.6" stroke-linecap="round"/>
-  <path class="stream" d="M118 112 C 170 168, 210 214, 262 266" fill="none" stroke="#FFE9B0" stroke-width="1.6"/>
+  <!-- L3: colline lontane + foschia della prima luce -->
+  <path d="M0,362 Q90,346 190,358 Q290,344 400,358 Q520,346 620,358 Q690,350 760,358 L760,384 L0,384 Z"
+        fill="#2C2748" opacity=".6"/>
+  <path d="M0,372 Q140,360 280,371 Q430,360 570,371 Q670,363 760,371 L760,384 L0,384 Z"
+        fill="#1C2140" opacity=".8"/>
+  <rect x="0" y="330" width="760" height="54" fill="#E29A55" opacity=".07"/>
 
-  <!-- linea di terra: il mondo su cui tutto poggia -->
-  <line x1="24" y1="406" x2="744" y2="406" stroke="rgba(246,241,230,.18)" stroke-width="1.5" stroke-linecap="round"/>
-  <g stroke="#25304E" stroke-width="1.6" fill="none" stroke-linecap="round" opacity=".8">
-    <path d="M120 406 q2,-7 0,-10 M126 406 q3,-5 5,-8"/>
-    <path d="M420 406 q2,-6 0,-9 M426 406 q3,-5 5,-7"/>
-    <path d="M600 406 q-2,-6 -4,-8 M606 406 q2,-7 0,-10"/>
+  <!-- fascio radente sole→pannello -->
+  <polygon points="126,252 126,268 272,314 254,290" fill="url(#beamG)"/>
+  <path class="rail" d="M128 260 C 170 280, 210 292, 252 304" fill="none" stroke="rgba(255,255,255,.10)" stroke-width="2" stroke-linecap="round"/>
+  <path id="flow0" class="energy" d="M128 260 C 170 280, 210 292, 252 304" fill="none" stroke="url(#flowDC)" stroke-width="3" stroke-linecap="round"/>
+  <path class="stream" d="M128 260 C 170 280, 210 292, 252 304" fill="none" stroke="#FFE9B0" stroke-width="1.6"/>
+
+  <!-- L4: terra -->
+  <rect x="0" y="384" width="760" height="86" fill="url(#groundNG)"/>
+  <line x1="0" y1="384" x2="760" y2="384" stroke="rgba(226,154,85,.35)" stroke-width="1.4"/>
+  <ellipse cx="120" cy="392" rx="200" ry="16" fill="#E29A55" opacity=".1" filter="url(#softB)"/>
+  <g stroke="#1E2445" stroke-width="1.8" fill="none" stroke-linecap="round">
+    <path d="M170 396 q2,-7 0,-10 M176 396 q3,-5 5,-8"/>
+    <path d="M430 396 q2,-6 0,-9 M436 396 q3,-5 5,-7"/>
+    <path d="M624 396 q-2,-6 -4,-8 M630 396 q2,-7 0,-10"/>
   </g>
 
-  <!-- PANNELLO: array su cavalletti, ¾ -->
+  <!-- L5: PANNELLO — oggetto solido, luce da sinistra, ombra a destra -->
   <g id="panelG">
-    <!-- gambe -->
-    <path d="M250 352 L242 400 M340 352 L354 400 M296 352 L298 400" stroke="rgba(246,241,230,.4)" stroke-width="2.4" fill="none" stroke-linecap="round"/>
-    <path d="M243 398 h12 M348 398 h12 M292 398 h12" stroke="rgba(246,241,230,.4)" stroke-width="2.4" stroke-linecap="round"/>
-    <!-- corpo inclinato: cornice + lato di spessore -->
-    <g transform="translate(226,258) skewX(-14)">
-      <rect x="4" y="86" width="152" height="7" rx="2" fill="#0B1526"/>
-      <rect class="glass" x="0" y="0" width="160" height="88" rx="4" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.45)" stroke-width="1.3"/>
+    <polygon points="262,396 398,396 434,408 296,408" fill="#0A0F26" opacity=".5" filter="url(#shB)"/>
+    <path d="M266 344 L258 394 M354 344 L366 394 M310 344 L312 394" stroke="#2A3A60" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <path d="M251 394 h14 M359 394 h14 M305 394 h14" stroke="#2A3A60" stroke-width="4" stroke-linecap="round"/>
+    <g transform="translate(240,252) skewX(-14)">
+      <rect x="5" y="86" width="150" height="8" rx="2" fill="#0A1226"/>
+      <rect x="0" y="0" width="158" height="90" rx="5" fill="#0D1830" stroke="#31406B" stroke-width="1.6"/>
       <g id="panel-cells">
-        <rect x="8" y="8" width="44" height="34" rx="1.5" fill="url(#cellGrad)" stroke="#7FB0FF" stroke-width=".5"/>
-        <rect x="58" y="8" width="44" height="34" rx="1.5" fill="url(#cellGrad)" stroke="#7FB0FF" stroke-width=".5"/>
-        <rect x="108" y="8" width="44" height="34" rx="1.5" fill="url(#cellGrad)" stroke="#7FB0FF" stroke-width=".5"/>
-        <rect x="8" y="48" width="44" height="34" rx="1.5" fill="url(#cellGrad)" stroke="#7FB0FF" stroke-width=".5"/>
-        <rect x="58" y="48" width="44" height="34" rx="1.5" fill="url(#cellGrad)" stroke="#7FB0FF" stroke-width=".5"/>
-        <rect x="108" y="48" width="44" height="34" rx="1.5" fill="url(#cellGrad)" stroke="#7FB0FF" stroke-width=".5"/>
+        <rect x="8" y="8" width="43" height="35" rx="1.5"/>
+        <rect x="57" y="8" width="43" height="35" rx="1.5"/>
+        <rect x="106" y="8" width="43" height="35" rx="1.5"/>
+        <rect x="8" y="47" width="43" height="35" rx="1.5"/>
+        <rect x="57" y="47" width="43" height="35" rx="1.5"/>
+        <rect x="106" y="47" width="43" height="35" rx="1.5"/>
       </g>
-      <!-- riflesso diagonale della luce sul vetro -->
-      <polygon points="0,26 46,0 78,0 0,44" fill="url(#cellSheen)" opacity=".7"/>
-      <!-- orlo dorato sul bordo rivolto al sole -->
-      <line x1="0" y1="0" x2="160" y2="0" stroke="#FFC670" stroke-width="1.8" opacity=".85"/>
-      <line x1="0" y1="0" x2="0" y2="88" stroke="#FFC670" stroke-width="1.8" opacity=".6"/>
+      <polygon points="0,30 52,0 86,0 0,50" fill="url(#cellSheen)" opacity=".7"/>
+      <line x1="0" y1="0" x2="158" y2="0" stroke="#FFC670" stroke-width="2" opacity=".9"/>
+      <line x1="0" y1="0" x2="0" y2="90" stroke="#FFC670" stroke-width="2" opacity=".7"/>
     </g>
-    <text class="label" x="296" y="432" >PANNELLO</text>
+    <text class="label" x="308" y="436">PANNELLO</text>
   </g>
 
-  <!-- cavo CC pannello→inverter (catenaria a terra) -->
-  <path class="rail" d="M368 322 C 400 352, 420 356, 450 336" fill="none" stroke="rgba(255,255,255,.10)" stroke-width="2" stroke-linecap="round"/>
-  <path id="flow1" class="energy" d="M368 322 C 400 352, 420 356, 450 336" fill="none" stroke="url(#flowDC)" stroke-width="2.6" stroke-linecap="round"/>
-  <path class="stream" d="M368 322 C 400 352, 420 356, 450 336" fill="none" stroke="#FFD98A" stroke-width="1.6"/>
+  <!-- cavo CC pannello→inverter -->
+  <path class="rail" d="M382 330 C 408 352, 430 354, 456 336" fill="none" stroke="rgba(255,255,255,.10)" stroke-width="2" stroke-linecap="round"/>
+  <path id="flow1" class="energy" d="M382 330 C 408 352, 430 354, 456 336" fill="none" stroke="url(#flowDC)" stroke-width="3" stroke-linecap="round"/>
+  <path class="stream" d="M382 330 C 408 352, 430 354, 456 336" fill="none" stroke="#FFD98A" stroke-width="1.6"/>
 
-  <!-- INVERTER: colonnina a terra con spessore -->
+  <!-- L5: INVERTER — colonnina solida -->
   <g id="invG">
-    <polygon points="518,266 528,262 528,384 518,390" fill="#131F3A"/>
-    <rect class="glass" x="452" y="266" width="66" height="124" rx="5" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.45)" stroke-width="1.3"/>
-    <rect id="invGlow" x="456" y="270" width="58" height="116" rx="4" fill="url(#invGrad)" opacity=".85"/>
-    <rect x="462" y="278" width="46" height="26" rx="2" fill="#0B1526" stroke="rgba(255,255,255,.25)" stroke-width="1"/>
-    <path d="M466 293 l7 -6 5 4 8 -8 6 5 9 -7" stroke="#7FE0B0" stroke-width="1.6" fill="none" stroke-linecap="round"/>
-    <circle id="invLed" cx="470" cy="316" r="4" fill="#F5A623" filter="url(#glow)"/>
-    <path class="stroke" d="M462 334h46M462 346h46M462 358h46M462 370h30" stroke="rgba(255,255,255,.5)" stroke-width="1.2" fill="none"/>
-    <path d="M458 390 v10 M512 390 v10" stroke="rgba(246,241,230,.4)" stroke-width="2.4" stroke-linecap="round"/>
-    <text class="label" x="485" y="432" >INVERTER</text>
+    <polygon points="468,396 528,396 552,406 492,406" fill="#0A0F26" opacity=".5" filter="url(#shB)"/>
+    <polygon points="520,266 530,262 530,386 520,392" fill="#0B1428"/>
+    <rect x="456" y="266" width="64" height="126" rx="6" fill="url(#bodyG)" stroke="#31406B" stroke-width="1.4"/>
+    <rect id="invGlow" x="460" y="270" width="56" height="118" rx="5" fill="url(#invGrad)"/>
+    <rect x="463" y="276" width="50" height="27" rx="2.5" fill="#0B1526" stroke="#31406B" stroke-width="1"/>
+    <path d="M468 292 l8 -7 5 4 9 -9 6 5 10 -8" stroke="#7FE0B0" stroke-width="1.7" fill="none" stroke-linecap="round"/>
+    <circle id="invLed" cx="470" cy="314" r="4" fill="#F5A623" filter="url(#glow)"/>
+    <g stroke="#31406B" stroke-width="1.6">
+      <line x1="464" y1="334" x2="512" y2="334"/><line x1="464" y1="346" x2="512" y2="346"/>
+      <line x1="464" y1="358" x2="512" y2="358"/><line x1="464" y1="370" x2="496" y2="370"/>
+    </g>
+    <line x1="456" y1="266" x2="456" y2="392" stroke="#FFC670" stroke-width="1.8" opacity=".55"/>
+    <path d="M462 392 v6 M514 392 v6" stroke="#2A3A60" stroke-width="4" stroke-linecap="round"/>
+    <text class="label" x="488" y="436">INVERTER</text>
   </g>
 
-  <!-- cavo verso batteria (verde, scende lungo il fianco) -->
-  <path class="rail" d="M518 372 L534 372 Q542 372 542 364 L542 330" fill="none" stroke="rgba(255,255,255,.10)" stroke-width="2" stroke-linecap="round"/>
-  <path id="flow3" class="energy" d="M518 372 L534 372 Q542 372 542 364 L542 330" fill="none" stroke="url(#flowBT)" stroke-width="2.6" stroke-linecap="round"/>
-  <path class="stream" d="M518 372 L534 372 Q542 372 542 364 L542 330" fill="none" stroke="#9BE9C4" stroke-width="1.6"/>
+  <!-- cavo verde inverter→batteria -->
+  <path class="rail" d="M520 366 L540 366 Q554 366 554 354 L554 342" fill="none" stroke="rgba(255,255,255,.10)" stroke-width="2" stroke-linecap="round"/>
+  <path id="flow3" class="energy" d="M520 366 L540 366 Q554 366 554 354 L554 342" fill="none" stroke="url(#flowBT)" stroke-width="3" stroke-linecap="round"/>
+  <path class="stream" d="M520 366 L540 366 Q554 366 554 354 L554 342" fill="none" stroke="#9BE9C4" stroke-width="1.6"/>
 
-  <!-- ACCUMULO: torre powerwall -->
+  <!-- L5: ACCUMULO — powerwall solida -->
   <g id="battG">
-    <polygon points="596,296 604,292 604,392 596,398" fill="#131F3A"/>
-    <rect class="glass" x="542" y="296" width="54" height="102" rx="6" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.45)" stroke-width="1.3"/>
-    <clipPath id="battClip"><rect x="546" y="300" width="46" height="94" rx="4"/></clipPath>
-    <g clip-path="url(#battClip)"><rect id="battFill" x="546" y="300" width="46" height="94" fill="url(#battGrad)"/></g>
-    <g stroke="rgba(11,21,38,.55)" stroke-width="2">
-      <line x1="546" y1="323" x2="592" y2="323"/><line x1="546" y1="347" x2="592" y2="347"/><line x1="546" y1="371" x2="592" y2="371"/>
+    <polygon points="564,396 618,396 640,406 586,406" fill="#0A0F26" opacity=".5" filter="url(#shB)"/>
+    <polygon points="610,298 618,294 618,390 610,396" fill="#0B1428"/>
+    <rect x="554" y="298" width="56" height="100" rx="7" fill="url(#bodyG)" stroke="#31406B" stroke-width="1.4"/>
+    <clipPath id="battClip"><rect x="558" y="302" width="48" height="92" rx="5"/></clipPath>
+    <g clip-path="url(#battClip)"><rect id="battFill" x="558" y="302" width="48" height="92" fill="url(#battGrad)"/></g>
+    <g stroke="rgba(10,18,38,.6)" stroke-width="2">
+      <line x1="558" y1="325" x2="606" y2="325"/><line x1="558" y1="348" x2="606" y2="348"/><line x1="558" y1="371" x2="606" y2="371"/>
     </g>
-    <circle cx="586" cy="306" r="2.6" fill="#7FE0B0"/>
-    <path d="M548 398 v8 M590 398 v8" stroke="rgba(246,241,230,.4)" stroke-width="2.4" stroke-linecap="round"/>
-    <text class="label" x="569" y="432" >ACCUMULO</text>
+    <circle cx="600" cy="308" r="2.6" fill="#7FE0B0"/>
+    <line x1="554" y1="298" x2="554" y2="396" stroke="#FFC670" stroke-width="1.8" opacity=".45"/>
+    <path d="M560 398 v5 M604 398 v5" stroke="#2A3A60" stroke-width="4" stroke-linecap="round"/>
+    <text class="label" x="582" y="436">ACCUMULO</text>
   </g>
 
-  <!-- cavo CA inverter→casa (azzurro) -->
-  <path class="rail" d="M518 304 C 566 282, 602 298, 636 326" fill="none" stroke="rgba(255,255,255,.10)" stroke-width="2" stroke-linecap="round"/>
-  <path id="flow2" class="energy" d="M518 304 C 566 282, 602 298, 636 326" fill="none" stroke="url(#flowAC)" stroke-width="2.6" stroke-linecap="round"/>
-  <path class="stream" d="M518 304 C 566 282, 602 298, 636 326" fill="none" stroke="#BFE4FF" stroke-width="1.6"/>
+  <!-- cavo CA inverter→casa -->
+  <path class="rail" d="M520 300 C 564 278, 602 292, 642 322" fill="none" stroke="rgba(255,255,255,.10)" stroke-width="2" stroke-linecap="round"/>
+  <path id="flow2" class="energy" d="M520 300 C 564 278, 602 292, 642 322" fill="none" stroke="url(#flowAC)" stroke-width="3" stroke-linecap="round"/>
+  <path class="stream" d="M520 300 C 564 278, 602 292, 642 322" fill="none" stroke="#BFE4FF" stroke-width="1.6"/>
 
-  <g id="glands" fill="#0F1930" stroke="rgba(255,255,255,.5)" stroke-width="1.2">
-    <circle cx="368" cy="322" r="3.2"/>
-    <circle cx="450" cy="336" r="3.2"/>
-    <circle cx="518" cy="304" r="3.2"/>
-    <circle cx="636" cy="326" r="3.2"/>
-    <circle cx="518" cy="372" r="3.2"/>
-    <circle cx="542" cy="330" r="3.2"/>
-  </g>
-  <!-- CASA: eco della Casa d'Oro in miniatura -->
+  <!-- L5: CASA — la Casa d'Oro in miniatura, solida -->
   <g id="houseG">
-    <rect class="glass" x="636" y="302" width="108" height="104" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.45)" stroke-width="1.3"/>
-    <path d="M628 302 L690 240 L752 302 Z" fill="#131F3A" stroke="rgba(255,255,255,.45)" stroke-width="1.3"/>
-    <rect x="714" y="252" width="12" height="26" fill="#131F3A" stroke="rgba(255,255,255,.35)" stroke-width="1"/>
-    <rect class="win" id="winA" x="652" y="322" width="26" height="24" rx="1.5" fill="url(#winGrad)"/>
-    <rect class="win" id="winB" x="700" y="322" width="26" height="24" rx="1.5" fill="url(#winGrad)"/>
-    <g stroke="rgba(255,255,255,.35)" stroke-width="1" fill="none">
-      <rect x="650" y="320" width="30" height="28" rx="2"/><rect x="698" y="320" width="30" height="28" rx="2"/>
+    <polygon points="646,396 752,396 760,408 682,408" fill="#0A0F26" opacity=".5" filter="url(#shB)"/>
+    <rect x="642" y="314" width="110" height="82" fill="#101B33"/>
+    <path d="M632 314 L697 246 L762 314 Z" fill="#0D1830"/>
+    <rect x="722" y="262" width="13" height="26" fill="#101B33"/>
+    <rect x="719" y="256" width="19" height="6" rx="1.5" fill="#1E2C4E"/>
+    <g stroke="#31406B" stroke-width="1.4" fill="none">
+      <rect x="654" y="330" width="30" height="27" rx="2"/><rect x="704" y="330" width="30" height="27" rx="2"/>
     </g>
-    <rect x="678" y="362" width="26" height="44" rx="2" fill="#0B1526" stroke="rgba(255,255,255,.35)" stroke-width="1"/>
-    <circle cx="699" cy="386" r="1.8" fill="#F5A623"/>
-    <!-- orli dorati verso il sole (a sinistra) -->
-    <g stroke="#FFC670" stroke-width="1.8" fill="none" stroke-linecap="round" opacity=".8">
-      <path d="M628 302 L690 240"/>
-      <line x1="636" y1="302" x2="636" y2="406"/>
+    <rect class="win" id="winA" x="656" y="332" width="26" height="23" rx="1.5" fill="url(#winGrad)"/>
+    <rect class="win" id="winB" x="706" y="332" width="26" height="23" rx="1.5" fill="url(#winGrad)"/>
+    <rect x="680" y="352" width="26" height="44" rx="2.5" fill="#0B1526" stroke="#31406B" stroke-width="1.2"/>
+    <circle cx="701" cy="376" r="1.8" fill="#F5A623"/>
+    <g stroke="#FFC670" stroke-width="2" fill="none" stroke-linecap="round" opacity=".85">
+      <path d="M632 314 L697 246"/>
+      <line x1="642" y1="314" x2="642" y2="396"/>
     </g>
-    <text class="label" x="690" y="432" >CASA</text>
+    <text class="label" x="697" y="436">CASA</text>
   </g>
+
+  <!-- passacavi -->
+  <g id="glands" fill="#0F1930" stroke="rgba(255,255,255,.5)" stroke-width="1.2">
+    <circle cx="382" cy="330" r="3.2"/>
+    <circle cx="456" cy="336" r="3.2"/>
+    <circle cx="520" cy="300" r="3.2"/>
+    <circle cx="642" cy="322" r="3.2"/>
+    <circle cx="520" cy="366" r="3.2"/>
+    <circle cx="554" cy="342" r="3.2"/>
+  </g>
+
+  <!-- L7: vignetta -->
+  <rect x="0" y="0" width="760" height="470" fill="url(#vin2G)"/>
 </svg>
     </div>
   </div>
@@ -2077,13 +2193,13 @@ document.querySelectorAll('[data-theme]').forEach(sec=>{
     return;
   }
   paths.forEach(p=>{const L=p.getTotalLength();p.style.strokeDasharray=L;p.style.strokeDashoffset=L});
-  gsap.set('#reactor',{scale:.55,opacity:0,transformOrigin:'96px 92px'});
+  gsap.set('#reactor',{scale:.55,opacity:0,transformOrigin:'110px 264px'});
   gsap.set(['#invLed','#winA','#winB','#invGlow'],{opacity:0});
   gsap.set('#battFill',{scaleY:0,transformOrigin:'center bottom'});
   const tl=gsap.timeline({scrollTrigger:{trigger:'.how',start:'top 62%',end:'bottom 55%',scrub:1},defaults:{ease:'none'}});
   tl.call(setStep,[0])
     .to('#reactor',{scale:1,opacity:1,duration:.8})
-    .to('#rays',{rotation:26,transformOrigin:'96px 92px',duration:1.6},'<')
+    .to('#rays',{rotation:26,transformOrigin:'110px 264px',duration:1.6},'<')
     .to(paths[0],{strokeDashoffset:0,duration:1},'-=.5')
     .add(()=>setStep(1))
     .to(paths[1],{strokeDashoffset:0,duration:1})
@@ -2469,6 +2585,28 @@ if(FX && simSvg){
 }
 setEnergy(((120-50)/450));
 function submitLead(){document.getElementById('formOk').style.display='block'}
+
+/* ---- 12c. menu mobile ---- */
+(function mobileNav(){
+  const nav=document.getElementById('nav'),btn=document.getElementById('navToggle'),menu=document.getElementById('navMenu');
+  if(!btn||!menu)return;
+  const scrim=document.createElement('div');scrim.className='nav-scrim';document.body.appendChild(scrim);
+  let open=false;
+  function set(o){
+    open=o;
+    menu.classList.toggle('open',o);
+    scrim.classList.toggle('show',o);
+    document.body.classList.toggle('menu-open',o);
+    btn.setAttribute('aria-expanded',o);
+    btn.setAttribute('aria-label',o?'Chiudi il menu':'Apri il menu');
+    menu.setAttribute('aria-hidden',!o);
+  }
+  btn.addEventListener('click',()=>set(!open));
+  scrim.addEventListener('click',()=>set(false));
+  menu.querySelectorAll('[data-mnav]').forEach(a=>a.addEventListener('click',()=>set(false)));
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&open)set(false)});
+  window.addEventListener('resize',()=>{if(open&&window.innerWidth>980)set(false)});
+})();
 
 /* ---------- 12b. MOTION LAYER — magnetismo + parallasse smorzata ---------- */
 (function motionLayer(){
