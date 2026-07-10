@@ -276,8 +276,11 @@ body.fxon #cursor{display:block}
 .hz-ui{position:absolute;left:6vw;bottom:34px;z-index:5;display:flex;align-items:center;gap:18px}
 .hz-count{font-variant-numeric:tabular-nums;font-weight:600;font-size:.88rem;color:var(--ink);mix-blend-mode:difference;filter:invert(0)}
 .hz-count,.hz-hint{color:#808a96;mix-blend-mode:normal}
-.hz-bar{width:150px;height:2px;background:rgba(16,24,34,.15);overflow:hidden;border-radius:2px}
+.hz-bar{position:relative;width:150px;height:2px;background:rgba(16,24,34,.15);overflow:hidden;border-radius:2px}
 .hz-bar i{display:block;height:100%;background:var(--fiamma);transform-origin:left;transform:scaleX(0)}
+/* v15 — tacche di capitolo: la barra racconta i 4 mondi */
+.hz-bar::after{content:'';position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(90deg,transparent 0 calc(25% - 1.5px),var(--giorno) calc(25% - 1.5px) 25%)}
 .hz-hint{font-size:.74rem;letter-spacing:.2em;text-transform:uppercase;font-weight:600}
 
 /* H 12:00 — i numeri · IL CONTATORE SOLARE
@@ -2498,6 +2501,7 @@ document.querySelectorAll('[data-theme]').forEach(sec=>{
   mm.add('(min-width: 981px)',()=>{
     const dist=()=>track.scrollWidth-window.innerWidth;
 
+    let lastI=-1;
     const tween=gsap.to(track,{
       x:()=>-dist(),
       ease:'none',
@@ -2512,33 +2516,85 @@ document.querySelectorAll('[data-theme]').forEach(sec=>{
         onUpdate:self=>{
           bar.style.transform=`scaleX(${self.progress})`;
           const i=Math.min(panels.length-1,Math.round(self.progress*(panels.length-1)));
-          count.textContent=pad(i+1)+' / '+pad(panels.length);
+          if(i!==lastI){lastI=i;
+            count.textContent=pad(i+1)+' / '+pad(panels.length);
+            /* il contatore "scatta" come un tachimetro a ogni pannello */
+            gsap.fromTo(count,{yPercent:55,opacity:0},{yPercent:0,opacity:1,duration:.35,ease:'power2.out',overwrite:'auto'});
+          }
         }
       }
     });
 
+    /* — coreografia testo: kicker → titolo → copy → tag entrano scaglionati
+         mentre il pannello attraversa lo schermo (scrub, reversibile) — */
+    const caps=panels.map(p=>p.querySelector('.m-cap'));
+    const bodies=panels.map(p=>p.querySelector('.p-body'));
+    const parts=panels.map(p=>p.querySelectorAll('.p-body > *'));
+
+    /* pannello 0: si prepara PRIMA del pin (stesso pattern della sua media) */
     gsap.set(medias[0],{clipPath:'inset(0 100% 0 0)'});
     gsap.set(imgs[0],{scale:1.28});
+    gsap.set(caps[0],{yPercent:140,opacity:0});
     gsap.timeline({scrollTrigger:{trigger:hz,start:'top 70%',end:'top top',scrub:1}})
       .to(medias[0],{clipPath:'inset(0 0% 0 0)',ease:'none'},0)
-      .to(imgs[0],{scale:1,ease:'none'},0);
+      .to(imgs[0],{scale:1.12,ease:'none'},0)   /* 1.12: margine per la parallasse xPercent, mai bordi scoperti */
+      .to(caps[0],{yPercent:0,opacity:1,ease:'none'},.4)
+      .fromTo(parts[0],{xPercent:8,opacity:0},{xPercent:0,opacity:1,stagger:.09,ease:'none'},0);
 
     panels.slice(1).forEach((p,k)=>{
       const media=medias[k+1],img=imgs[k+1];
       gsap.set(media,{clipPath:'inset(0 100% 0 0)'});
       gsap.set(img,{scale:1.28});
+      gsap.set(caps[k+1],{yPercent:140,opacity:0});
       gsap.timeline({scrollTrigger:{
         containerAnimation:tween,trigger:p,start:'left 85%',end:'left 15%',scrub:1
       }})
         .to(media,{clipPath:'inset(0 0% 0 0)',ease:'none'},0)
-        .to(img,{scale:1,ease:'none'},0);
-      gsap.fromTo(p.querySelector('.p-num'),{xPercent:14},{xPercent:-8,ease:'none',
+        .to(img,{scale:1.12,ease:'none'},0)
+        .to(caps[k+1],{yPercent:0,opacity:1,ease:'none'},.4);
+      /* testo: entra scaglionato nella prima metà della traversata */
+      gsap.timeline({scrollTrigger:{
+        containerAnimation:tween,trigger:p,start:'left 82%',end:'left 34%',scrub:1
+      }})
+        .fromTo(parts[k+1],{xPercent:9,opacity:0},{xPercent:0,opacity:1,stagger:.1,ease:'none'},0);
+      /* profondità: il blocco testo deriva più lento della pagina (wrapper,
+         i figli sono animati sopra: pattern hero, mina n.4 rispettata) */
+      gsap.fromTo(bodies[k+1],{xPercent:5},{xPercent:-5,ease:'none',
+        scrollTrigger:{containerAnimation:tween,trigger:p,start:'left right',end:'right left',scrub:1}});
+      gsap.fromTo(p.querySelector('.p-num'),{xPercent:26,opacity:.05},{xPercent:-16,opacity:.22,ease:'none',
         scrollTrigger:{containerAnimation:tween,trigger:p,start:'left right',end:'right left',scrub:1}});
     });
 
+    /* — parallasse interna: l'immagine scorre in controtempo dentro la
+         cornice clippata per tutta la traversata (proprietà xPercent,
+         mai in conflitto con lo scale della timeline sopra) — */
+    panels.forEach((p,k)=>{
+      gsap.fromTo(imgs[k],{xPercent:5},{xPercent:-5,ease:'none',
+        scrollTrigger:k===0
+          ?{trigger:hz,start:'top top',end:()=>'+='+dist()*.4,scrub:1}
+          :{containerAnimation:tween,trigger:p,start:'left right',end:'right left',scrub:1}});
+    });
+
+    /* — velocity skew: le cornici si inclinano con la furia dello scroll
+         e si raddrizzano con una molla (stessa fisica dei marquee).
+         skewX vive SOLO qui: nessun altro tween tocca transform delle .p-media — */
+    let sk=0;
+    const skewTick=()=>{
+      const v=gsap.utils.clamp(-46,46,scrollVel||0);
+      sk+=((v*.075)-sk)*.1;
+      if(Math.abs(sk)<.01&&Math.abs(v)<.01)return;
+      gsap.set(medias,{skewX:sk,force3D:true});
+    };
+    gsap.ticker.add(skewTick);
+
     return ()=>{
-      medias.forEach(m=>gsap.set(m,{clearProps:'clipPath'}));
+      gsap.ticker.remove(skewTick);
+      medias.forEach(m=>gsap.set(m,{clearProps:'clipPath,transform'}));
       imgs.forEach(i=>gsap.set(i,{clearProps:'transform'}));
+      caps.forEach(c=>gsap.set(c,{clearProps:'transform,opacity'}));
+      bodies.forEach(b=>gsap.set(b,{clearProps:'transform'}));
+      parts.forEach(ps=>gsap.set(ps,{clearProps:'transform,opacity'}));
+      panels.forEach(p=>gsap.set(p.querySelector('.p-num'),{clearProps:'transform,opacity'}));
       gsap.set(track,{clearProps:'transform'});
     };
   });
@@ -2551,9 +2607,16 @@ document.querySelectorAll('[data-theme]').forEach(sec=>{
         .to(m,{clipPath:'inset(0 0 0% 0)',ease:'none'},0)
         .to(imgs[k],{scale:1.04,ease:'none'},0);
     });
+    /* v15 — anche in verticale il testo entra scaglionato (once, leggero) */
+    const mobParts=panels.map(p=>p.querySelectorAll('.p-body > *'));
+    panels.forEach((p,k)=>{
+      gsap.from(mobParts[k],{y:24,opacity:0,duration:.6,stagger:.08,ease:'power3.out',
+        scrollTrigger:{trigger:p,start:'top 78%',once:true}});
+    });
     return ()=>{
       medias.forEach(m=>gsap.set(m,{clearProps:'clipPath'}));
       imgs.forEach(i=>gsap.set(i,{clearProps:'transform'}));
+      mobParts.forEach(ps=>gsap.set(ps,{clearProps:'transform,opacity'}));
     };
   });
 })();
