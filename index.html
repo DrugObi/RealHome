@@ -17,7 +17,7 @@ window.addEventListener('pageshow',function(e){
     window.hardScrollTop();
     /* Restore da bfcache: 'load' NON rifira, quindi il triplo giro
        (load → rAF → 120ms) che copre i ripristini tardivi qui non esiste.
-       In più il layout dei pin (#gseSplit, Servizi) non ha ancora finito di
+       In più il layout del pin (Servizi) non ha ancora finito di
        assestarsi: il refresh fatto dentro hardScrollTop misura trigger su una
        geometria stale. Ripetiamo la sequenza a layout fermo. */
     if(e.persisted){
@@ -463,36 +463,46 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.12)}
 input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;background:var(--giorno-2);border:3px solid var(--fiamma);cursor:pointer}
 
 /* H 18:10 — impatto */
-.impact{padding:48px 0;background:var(--giorno)}
-.impact h2{font-size:clamp(2.4rem,5vw,4.2rem);margin:18px 0 12px}
-.impact .sub{color:var(--muted-l);margin-bottom:32px;font-size:1.02rem}
-.imp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-.imp{position:relative;overflow:hidden;isolation:isolate;background:var(--giorno-2);border:1px solid var(--line-l);border-radius:16px;padding:30px 26px;transition:color .45s var(--ease),border-color .45s var(--ease)}
-.imp .ico{width:54px;margin-bottom:16px}
-.imp .big{font-family:'Bricolage Grotesque',sans-serif;font-weight:780;font-size:clamp(1.9rem,3.2vw,2.5rem);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
-.imp .big i{font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;font-size:.6em;color:var(--muted-l)}
-.imp h3{font-size:1rem;margin:8px 0 6px}
-.imp p{font-size:.9rem;color:var(--muted-l)}
-/* sfondo fotografico interattivo (dietro il contenuto, nessun salto di layout) */
-.imp::before{content:'';position:absolute;inset:0;z-index:-2;background-size:cover;background-position:center;opacity:0;transition:opacity .5s var(--ease)}
-.imp::after{content:'';position:absolute;inset:0;z-index:-1;background:rgba(0,0,0,.6);opacity:0;transition:opacity .5s var(--ease)}
-.imp-a::before{background-image:url(impatto-alberi.webp)}
-.imp-km::before{background-image:url(impatto-km.webp)}
-.imp-co2::before{background-image:url(impatto-co2.webp)}
-.imp .ico svg [fill]{transition:fill .45s var(--ease)}.imp .ico svg [stroke]{transition:stroke .45s var(--ease)}
-@media (hover:hover){
-  .imp:hover{border-color:transparent;color:#fff}
-  .imp:hover::before,.imp:hover::after{opacity:1}
-  .imp:hover h3,.imp:hover p,.imp:hover .big,.imp:hover .big i{color:#fff}
-  .imp:hover .ico svg [fill]{fill:#fff}.imp:hover .ico svg [stroke]{stroke:#fff}
-}
-/* touch: dissolvenza lenta quando la card entra in viewport */
-@media (hover:none){
-  .imp.in{border-color:transparent;color:#fff}
-  .imp.in::before,.imp.in::after{opacity:1}
-  .imp.in h3,.imp.in p,.imp.in .big,.imp.in .big i{color:#fff}
-  .imp.in .ico svg [fill]{fill:#fff}.imp.in .ico svg [stroke]{stroke:#fff}
-}
+/* ── v16. IMPATTO — viaggio a tutto schermo su position:sticky ──
+   La sezione è la pista (340svh), lo stage resta incollato al viewport.
+   Nessun pin GSAP: lo sticky è del browser, non ha spacer né misure
+   da ricalcolare. I crossfade sono classi + transizioni CSS: anche se
+   il progress arriva a scatti, la dissolvenza resta morbida. */
+.impact{position:relative;height:340svh;background:var(--notte)}
+.imp-stage{position:sticky;top:0;height:100svh;overflow:hidden;display:flex;align-items:center}
+.imp-scenes{position:absolute;inset:0}
+.imp-scene{position:absolute;inset:0;opacity:0;transition:opacity .65s var(--ease)}
+.imp-scene.is-on{opacity:1}
+.imp-bg{position:absolute;inset:-6%;background-size:cover;background-position:center;will-change:transform}
+.imp-scrim{position:absolute;inset:0;background:linear-gradient(90deg,rgba(7,12,22,.9) 0%,rgba(7,12,22,.62) 46%,rgba(7,12,22,.22) 100%),linear-gradient(0deg,rgba(7,12,22,.88),transparent 42%),linear-gradient(180deg,rgba(7,12,22,.72),transparent 26%)}
+.imp-ui{position:relative;z-index:2;width:100%;color:#F6F1E6;padding:96px 0 84px;display:flex;flex-direction:column;min-height:100svh;justify-content:center}
+.imp-head{margin-bottom:34px}
+.imp-title{font-size:clamp(1.7rem,3vw,2.5rem);margin:14px 0 8px;color:#F6F1E6}
+.imp-title em{font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;color:var(--sole)}
+.imp-note{font-size:.9rem;color:var(--muted-d)}
+/* i capitoli si sovrappongono nello stesso spazio: uno solo è acceso */
+.imp-chapters{position:relative;min-height:330px}
+.imp-ch{position:absolute;inset:0 auto auto 0;max-width:660px;opacity:0;visibility:hidden;transform:translateY(26px);transition:opacity .55s var(--ease),transform .55s var(--ease),visibility 0s .55s}
+.imp-ch.is-on{opacity:1;visibility:visible;transform:none;transition:opacity .55s var(--ease) .1s,transform .55s var(--ease) .1s,visibility 0s}
+.imp-eyebrow{font-size:.74rem;letter-spacing:.22em;text-transform:uppercase;font-weight:600;color:var(--sole)}
+.imp-num{font-family:'Bricolage Grotesque',sans-serif;font-weight:780;font-size:clamp(4rem,10vw,8rem);line-height:.95;letter-spacing:-.04em;font-variant-numeric:tabular-nums;margin:14px 0 18px;text-shadow:0 6px 40px rgba(0,0,0,.5)}
+.imp-num i{font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;font-size:.34em;color:#DCE3ED;margin-left:.18em;letter-spacing:0}
+.imp-ch h3{font-size:1.25rem;margin-bottom:10px;color:#F6F1E6}
+.imp-ch p{font-size:1rem;line-height:1.7;color:#C7CFDA;max-width:46ch}
+/* rail dei capitoli: tacche col nome, in basso */
+.imp-rail{display:flex;gap:26px;margin-top:44px}
+.imp-dot{position:relative;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:var(--muted-d);padding-top:12px;transition:color .4s var(--ease)}
+.imp-dot::before{content:'';position:absolute;top:0;left:0;width:34px;height:2px;background:rgba(246,241,230,.18);transition:background .4s var(--ease)}
+.imp-dot.is-on{color:#F6F1E6}
+.imp-dot.is-on::before{background:var(--sole);box-shadow:0 0 12px rgba(245,166,35,.7)}
+.imp-cue{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);font-size:.68rem;letter-spacing:.24em;text-transform:uppercase;color:var(--muted-d);transition:opacity .5s var(--ease)}
+.imp-cue.gone{opacity:0}
+/* fallback senza FX/JS: capitoli impilati, niente pista lunga */
+.impact.static{height:auto}
+.impact.static .imp-stage{position:relative;height:auto;padding:40px 0}
+.impact.static .imp-chapters{min-height:0}
+.impact.static .imp-ch{position:static;opacity:1;visibility:visible;transform:none;margin-bottom:56px}
+.impact.static .imp-rail,.impact.static .imp-cue{display:none}
 
 /* H 19:00 — recensioni: griglia pulita, stabile, leggibile */
 .reviews{position:relative;padding:48px 0;background:var(--giorno)}
@@ -648,7 +658,13 @@ footer .wrap{position:relative;z-index:2;display:flex;flex-direction:column;gap:
   .tw-total{text-align:left}
   .tw-stream{grid-template-columns:1fr 74px;grid-template-areas:'name val' 'bar bar';row-gap:8px}
   .tw-sname{grid-area:name}.tw-track{grid-area:bar}.tw-sval{grid-area:val}
-  .imp-grid{grid-template-columns:1fr}
+  /* impatto mobile: pista più corta, numeri e rail compatti */
+  .impact{height:300svh}
+  .imp-ui{padding:80px 0 70px}
+  .imp-num{font-size:clamp(3rem,16vw,4.6rem)}
+  .imp-chapters{min-height:300px}
+  .imp-rail{gap:16px;margin-top:30px}
+  .imp-dot{font-size:.62rem}
   /* recensioni: griglia in colonna singola */
   .reviews-grid{grid-template-columns:1fr;gap:16px;margin-top:36px}
   .rev-card{min-height:0}
@@ -1930,36 +1946,55 @@ input[type=range]:active::-moz-range-thumb{transform:scale(1.22)}
 </section>
 
 <!-- H 18:10 · impatto -->
-<section class="impact day" id="impatto" data-theme="giorno">
-  <div class="wrap">
-    <span class="kicker fx"><span class="ora">H 18:10</span><span class="sep">·</span>Impatto ambientale</span>
-    <h2 class="tr">Il tuo risparmio, <em>tradotto in pianeta.</em></h2>
-    <p class="sub fx">I valori si aggiornano in base alla bolletta che hai impostato nel simulatore qui sopra.</p>
-    <div class="imp-grid">
-      <div class="imp imp-a fx">
-        <div class="ico" aria-hidden="true">
-          <svg viewBox="0 0 64 64" fill="none"><path d="M32 58V34" stroke="#101822" stroke-width="4" stroke-linecap="round"/><path d="M32 40c-9 0-17-7-17-17 0-8 6-15 17-17 11 2 17 9 17 17 0 10-8 17-17 17z" fill="#3AA76A"/><path d="M32 34c-5-1-8-4-9-8" stroke="#1E6B3A" stroke-width="3" stroke-linecap="round"/></svg>
-        </div>
-        <div class="big"><span id="trees">70</span> <i>alberi</i></div>
-        <h3>Piantati ogni anno, virtualmente</h3>
-        <p>La CO₂ che il tuo impianto evita equivale al lavoro annuale di questi alberi adulti.</p>
+<!-- v16 — IMPATTO: da tre card a un VIAGGIO A TUTTO SCHERMO.
+     Architettura anti-bug: position:sticky (CSS puro, niente pin GSAP,
+     niente spacer). La sezione è la pista di scroll (340svh), lo stage
+     resta incollato al viewport e dentro si attraversano tre mondi:
+     la foresta → la strada → il tempo. Gli id trees/kmev/co2kg sono
+     NERVI: render() del simulatore ci scrive dentro. -->
+<section class="impact" id="impatto" data-theme="notte">
+  <div class="imp-stage">
+    <div class="imp-scenes" aria-hidden="true">
+      <div class="imp-scene is-on"><div class="imp-bg" style="background-image:url(impatto-alberi.webp)"></div></div>
+      <div class="imp-scene"><div class="imp-bg" style="background-image:url(impatto-km.webp)"></div></div>
+      <div class="imp-scene"><div class="imp-bg" style="background-image:url(impatto-co2.webp)"></div></div>
+      <div class="imp-scrim"></div>
+    </div>
+
+    <div class="wrap imp-ui">
+      <header class="imp-head">
+        <span class="kicker"><span class="ora">H 18:10</span><span class="sep">·</span>Impatto ambientale</span>
+        <h2 class="imp-title">Il tuo risparmio, <em>tradotto in pianeta.</em></h2>
+        <p class="imp-note">I valori seguono la bolletta che hai impostato nel simulatore.</p>
+      </header>
+
+      <div class="imp-chapters">
+        <article class="imp-ch is-on">
+          <span class="imp-eyebrow">01 — La foresta</span>
+          <div class="imp-num"><span id="trees">70</span><i>alberi</i></div>
+          <h3>Piantati ogni anno, virtualmente</h3>
+          <p>La CO₂ che il tuo impianto evita equivale al lavoro annuale di questi alberi adulti.</p>
+        </article>
+        <article class="imp-ch">
+          <span class="imp-eyebrow">02 — La strada</span>
+          <div class="imp-num"><span id="kmev">11.700</span><i>km</i></div>
+          <h3>Di auto a benzina evitati</h3>
+          <p>Le stesse emissioni di questi chilometri percorsi ogni anno con un'auto a benzina.</p>
+        </article>
+        <article class="imp-ch">
+          <span class="imp-eyebrow">03 — Il tempo</span>
+          <div class="imp-num"><span id="co2kg">1.400</span><i>kg CO₂</i></div>
+          <h3>In meno nell'atmosfera, ogni anno</h3>
+          <p>Per oltre 20 anni di vita dell'impianto: un lascito concreto, non uno slogan.</p>
+        </article>
       </div>
-      <div class="imp imp-km fx">
-        <div class="ico" aria-hidden="true">
-          <svg viewBox="0 0 64 64" fill="none"><path d="M10 40h44l-6-14c-1-3-3-4-6-4H22c-3 0-5 1-6 4l-6 14z" fill="#101822"/><rect x="8" y="38" width="48" height="12" rx="4" fill="#F4740B"/><circle cx="20" cy="50" r="6" fill="#101822" stroke="#F6F1E6" stroke-width="2"/><circle cx="44" cy="50" r="6" fill="#101822" stroke="#F6F1E6" stroke-width="2"/><path d="M28 20l-3 8M39 20l3 8" stroke="#F5A623" stroke-width="3" stroke-linecap="round"/></svg>
-        </div>
-        <div class="big"><span id="kmev">11.700</span> <i>km</i></div>
-        <h3>Di auto a benzina evitati</h3>
-        <p>Le stesse emissioni di questi chilometri percorsi ogni anno con un'auto a benzina.</p>
+
+      <div class="imp-rail" aria-hidden="true">
+        <span class="imp-dot is-on">La foresta</span>
+        <span class="imp-dot">La strada</span>
+        <span class="imp-dot">Il tempo</span>
       </div>
-      <div class="imp imp-co2 fx">
-        <div class="ico" aria-hidden="true">
-          <svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="24" stroke="#101822" stroke-width="4"/><path d="M32 14v18l12 8" stroke="#F4740B" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-        <div class="big"><span id="co2kg">1.400</span> <i>kg CO₂</i></div>
-        <h3>In meno nell'atmosfera, ogni anno</h3>
-        <p>Per oltre 20 anni di vita dell'impianto: un lascito concreto, non uno slogan.</p>
-      </div>
+      <span class="imp-cue" aria-hidden="true">Scorri per attraversare</span>
     </div>
   </div>
 </section>
@@ -2498,41 +2533,39 @@ if (FX){
   /* target del volo: centro del cassetto i, in coordinate locali di .arch */
   const tgt=i=>{const A=arch.getBoundingClientRect(),D=drawers[i].getBoundingClientRect();
     return {x:D.left-A.left+(D.width-132)/2, y:D.top-A.top+7};};
-  const tl=gsap.timeline({scrollTrigger:{trigger:split,start:'top 12%',end:'+=300%',scrub:1,pin:true,pinSpacing:true,anticipatePin:1,invalidateOnRefresh:true,
-    onRefreshInit:self=>{
-      /* prima che il pin ricalcoli lo spacer, scarta misure fatte su un layout
-         non ancora assestato (font/immagini tardivi): è ciò che gonfiava lo
-         spacer a "scroll infinito". */
-      self.animation&&self.animation.progress(0);
-    },
-    onUpdate:self=>{
-      const k=Math.min(3,Math.floor(self.progress*4));
-      if(archN.textContent!==NN[k]){archN.textContent=NN[k];
-        gsap.fromTo(archN,{y:14,opacity:.3},{y:0,opacity:1,duration:.35,ease:'power2.out',overwrite:'auto'});}
-    }}});
+
+  /* ── v16, DE-PIN DEFINITIVO ──
+     Il pin di questa sezione è stato rimosso per sempre: era la sorgente
+     ricorrente di sezioni sovrapposte e spacer infiniti (V13, V13-1, V15…).
+     Stessa coreografia — passo che si accende, modulo che vola ad arco,
+     slam del cassetto, polvere — ma TIME-BASED e once: parte quando la
+     cassettiera entra in viewport e vive di vita propria. Niente pin,
+     niente spacer, niente misure da ricalcolare: la classe di bug è morta. */
+  gsap.set(lis.slice(1),{opacity:.4});
+  const master=gsap.timeline({paused:true});
   for(let i=0;i<4;i++){
     const L='s'+i;
-    tl.addLabel(L);
-    /* sinistra: il passo si accende, il precedente resta "archiviato" */
-    if(i>0)tl.to(lis[i-1],{opacity:.55,x:0,duration:.35},L);
-    tl.to(lis[i],{opacity:1,x:8,duration:.4},L)
-      .to(mks[i],{scaleY:1,duration:.4,ease:'power2.out'},L);
-    /* il modulo materializza e vola ad arco verso il cassetto */
-    tl.fromTo(docs[i],{x:-190,y:26,rotation:-16,scale:1.05,opacity:0},
-        {x:()=>tgt(i).x*.45,y:()=>tgt(i).y*.35-46,rotation:9,opacity:1,duration:.55,ease:'power2.out'},L+'+=.1')
-      .to(drawers[i],{y:9,duration:.22,ease:'power2.out'},'<.25')
-      .to(docs[i],{x:()=>tgt(i).x,y:()=>tgt(i).y,rotation:0,scale:.62,duration:.5,ease:'power2.in'})
-      .to(docs[i],{y:()=>tgt(i).y+26,opacity:0,duration:.18,ease:'power1.in'})
-      /* slam: il cassetto si chiude, la cassettiera sobbalza, polvere */
-      .to(drawers[i],{y:0,duration:.55,ease:'elastic.out(1.1,.4)'},'<')
+    master.addLabel(L);
+    master.call(()=>{archN.textContent=NN[i];
+      gsap.fromTo(archN,{y:14,opacity:.3},{y:0,opacity:1,duration:.35,ease:'power2.out',overwrite:'auto'});},null,L);
+    if(i>0)master.to(lis[i-1],{opacity:.55,x:0,duration:.3},L);
+    master.to(lis[i],{opacity:1,x:8,duration:.35},L)
+      .to(mks[i],{scaleY:1,duration:.35,ease:'power2.out'},L);
+    master.fromTo(docs[i],{x:-190,y:26,rotation:-16,scale:1.05,opacity:0},
+        {x:()=>tgt(i).x*.45,y:()=>tgt(i).y*.35-46,rotation:9,opacity:1,duration:.45,ease:'power2.out'},L+'+=.08')
+      .to(drawers[i],{y:9,duration:.2,ease:'power2.out'},'<.2')
+      .to(docs[i],{x:()=>tgt(i).x,y:()=>tgt(i).y,rotation:0,scale:.62,duration:.4,ease:'power2.in'})
+      .to(docs[i],{y:()=>tgt(i).y+26,opacity:0,duration:.16,ease:'power1.in'})
+      .to(drawers[i],{y:0,duration:.5,ease:'elastic.out(1.1,.4)'},'<')
       .fromTo(cab,{y:0},{y:5,duration:.07,yoyo:true,repeat:1,ease:'power1.inOut'},'<')
-      .to(drawers[i].querySelector('.tab'),{color:'#F4740B',opacity:1,duration:.25},'<')
+      .to(drawers[i].querySelector('.tab'),{color:'#F4740B',opacity:1,duration:.22},'<')
       .fromTo(dust,{x:()=>tgt(i).x+66,y:()=>tgt(i).y+30,scale:.4,opacity:0},
         {x:(j)=>tgt(i).x+66+Math.cos(j*.9)*(46+j*7),y:(j)=>tgt(i).y+30+Math.sin(j*2.4)*(26+j*4)-14,
-         scale:1,opacity:.85,duration:.3,stagger:.015,ease:'power2.out'},'<.05')
-      .to(dust,{opacity:0,scale:.2,duration:.3,ease:'power1.in'},'>-.05')
-      .to({},{duration:.25});
+         scale:1,opacity:.85,duration:.28,stagger:.014,ease:'power2.out'},'<.05')
+      .to(dust,{opacity:0,scale:.2,duration:.28,ease:'power1.in'},'>-.05')
+      .to({},{duration:.18});
   }
+  ScrollTrigger.create({trigger:split,start:'top 62%',once:true,onEnter:()=>master.play()});
 })();
 
 /* ---------- 5e. RECENSIONI: entrata dai lati, stagger, power2.out ---------- */
@@ -3173,15 +3206,35 @@ document.querySelectorAll('img[loading="lazy"]').forEach(im=>{
   },{once:true});
 });
 
-/* ---------- impact cards: reveal foto su touch ---------- */
-(function impactReveal(){
-  if(window.matchMedia('(hover:hover)').matches) return;   // desktop usa :hover
-  const cards=document.querySelectorAll('.imp');
-  if(!cards.length||!('IntersectionObserver' in window)) return;
-  const io=new IntersectionObserver(es=>{es.forEach(en=>{
-    if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}
-  })},{threshold:.35});
-  cards.forEach(c=>io.observe(c));
+/* ---------- v16. IMPATTO — il viaggio a tre capitoli ----------
+   Nessun pin: lo stage è sticky (CSS), qui si decide solo QUALE capitolo
+   è acceso in base al progress della pista, più la parallasse del fondale.
+   I crossfade li fanno le transizioni CSS: robusto anche a scroll a scatti. */
+(function impactStory(){
+  const sec=document.querySelector('.impact');
+  if(!sec) return;
+  const scenes=[...sec.querySelectorAll('.imp-scene')];
+  const bgs=[...sec.querySelectorAll('.imp-bg')];
+  const chs=[...sec.querySelectorAll('.imp-ch')];
+  const dots=[...sec.querySelectorAll('.imp-dot')];
+  const cue=sec.querySelector('.imp-cue');
+  if(!FX){sec.classList.add('static');return;}
+  let cur=0;
+  const setC=k=>{
+    if(k===cur)return;cur=k;
+    scenes.forEach((s,i)=>s.classList.toggle('is-on',i===k));
+    chs.forEach((c,i)=>c.classList.toggle('is-on',i===k));
+    dots.forEach((d,i)=>d.classList.toggle('is-on',i===k));
+  };
+  ScrollTrigger.create({trigger:sec,start:'top top',end:'bottom bottom',scrub:true,
+    onUpdate:self=>{
+      const p=self.progress;
+      setC(Math.min(2,Math.floor(p*3)));
+      /* parallasse del fondale attivo: respira e sale lungo il suo terzo */
+      const frac=Math.min(1,Math.max(0,p*3-cur));
+      gsap.set(bgs[cur],{scale:1.1-.08*frac,yPercent:-3*frac});
+      cue.classList.toggle('gone',p>.06);
+    }});
 })();
 
 </script>
