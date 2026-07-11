@@ -200,7 +200,7 @@ body.fxon #cursor{display:block}
 .diagram .label{font-family:'Instrument Sans',sans-serif;font-size:11px;letter-spacing:.22em;fill:rgba(246,241,230,.55);text-anchor:middle;font-weight:600}
 .diagram .ring{fill:none;stroke:var(--sole)}
 .diagram #core{fill:url(#coreGrad)}
-.diagram .ring-b{animation:spin 14s linear infinite;transform-origin:110px 264px}
+.diagram .ring-b{animation:spin 14s linear infinite;transform-box:fill-box;transform-origin:center}
 @keyframes spin{to{transform:rotate(360deg)}}
 .diagram #panel-cells rect{fill:url(#cellGrad);stroke:#7FB0FF;stroke-width:.5;opacity:.92}
 .diagram #invGlow{fill:url(#invGrad);opacity:0}
@@ -543,23 +543,71 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
 /* ============================================================
    H 23:59 — FOOTER · di nuovo notte
    ============================================================ */
-footer{background:var(--notte);color:var(--muted-d);padding:100px 0;width:100%}
-footer .wrap{display:flex;flex-direction:column;gap:60px} /* separazione geometrica netta tra brand e blocco legale */
-.footer-top{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:start}
-.footer-bottom{border-top:1px solid var(--line-d);padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
-.flogo{display:flex;align-items:center;gap:10px;margin-bottom:16px}
-.flogo .word{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;color:#F6F1E6;letter-spacing:.05em}
-.flogo .word b{color:var(--sole)}
-footer p{font-size:.85rem;line-height:1.7}
-.legal{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px}
-.legal span:first-child{color:#F6F1E6;font-weight:600}
-.legal>*+*::before{content:'·';margin-right:14px;color:var(--line-d)}
-.legal a{color:inherit;text-decoration:none;border-bottom:1px solid transparent;transition:border-color .25s,color .25s}
-.legal a:hover{color:var(--sole);border-bottom-color:var(--sole)}
+footer{position:relative;background:var(--notte);color:var(--muted-d);padding:100px 0 0;width:100%;overflow:hidden}
+/* cielo stellato del congedo */
+.foot-sky{position:absolute;inset:0 0 auto;height:340px;pointer-events:none}
+.fstar{position:absolute;width:2px;height:2px;border-radius:50%;background:#F6F1E6;opacity:.5;animation:ftwinkle 4s ease-in-out infinite}
+.fstar:nth-child(2n){animation-delay:1.3s;width:1.5px;height:1.5px}
+.fstar:nth-child(3n){animation-delay:2.6s}
+@keyframes ftwinkle{0%,100%{opacity:.18;transform:scale(.8)}50%{opacity:.7;transform:scale(1.2)}}
+footer .wrap{position:relative;z-index:2;display:flex;flex-direction:column;gap:64px}
+
+/* congedo */
+.foot-hero{max-width:760px}
+.foot-claim{font-size:clamp(2rem,4.4vw,3.4rem);line-height:1.08;letter-spacing:-.02em;color:#F6F1E6;margin:18px 0 30px;text-wrap:balance}
+.foot-claim em{font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;color:var(--sole)}
+.foot-cta{display:inline-flex;align-items:center;gap:12px;padding:15px 26px;border-radius:100px;background:var(--sole);color:#0B1120;font-weight:650;font-size:1rem;text-decoration:none;transition:background .3s var(--ease),transform .3s var(--ease),box-shadow .3s var(--ease);box-shadow:0 10px 30px -10px rgba(245,166,35,.5)}
+.foot-cta svg{transition:transform .3s var(--ease)}
+.foot-cta:hover{background:#FFB937;transform:translateY(-2px);box-shadow:0 16px 40px -12px rgba(245,166,35,.6)}
+.foot-cta:hover svg{transform:translateX(4px)}
+
+/* colonne */
+.foot-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1.2fr;gap:40px;padding-bottom:56px;border-bottom:1px solid var(--line-d)}
+.foot-brand{max-width:360px}
+.foot-brand .flogo{display:flex;align-items:center;gap:11px;margin-bottom:20px}
+.foot-brand .word{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.15rem;color:#F6F1E6;letter-spacing:.04em}
+.foot-brand .word b{color:var(--sole)}
+.foot-mission{font-size:.9rem;line-height:1.7;color:var(--muted-d);margin-bottom:24px}
+.foot-social{display:flex;gap:12px}
+.foot-social a{display:grid;place-items:center;width:40px;height:40px;border-radius:11px;border:1px solid var(--line-d);color:var(--muted-d);transition:color .25s,border-color .25s,transform .25s,background .25s}
+.foot-social a:hover{color:#0B1120;background:var(--sole);border-color:var(--sole);transform:translateY(-3px)}
+.foot-h{font-size:.74rem;letter-spacing:.18em;text-transform:uppercase;font-weight:600;color:var(--sole);margin-bottom:20px}
+.foot-col nav,.foot-col{min-width:0}
+.foot-col>a{display:block;font-size:.92rem;color:#C7CFDA;text-decoration:none;padding:7px 0;width:fit-content;position:relative;transition:color .25s,padding-left .25s}
+.foot-col>a::before{content:'';position:absolute;left:-14px;top:50%;width:6px;height:1.5px;background:var(--sole);transform:scaleX(0);transform-origin:left;transition:transform .25s var(--ease)}
+.foot-col>a:hover{color:#F6F1E6;padding-left:4px}
+.foot-col>a:hover::before{transform:scaleX(1)}
+.foot-contact a{color:#F6F1E6;font-weight:600}
+.foot-contact p{font-size:.9rem;line-height:1.6;color:var(--muted-d);margin-top:14px}
+.foot-hours{display:flex;align-items:center;gap:8px}
+.foot-hours .dot{width:7px;height:7px;border-radius:50%;background:var(--verde);box-shadow:0 0 10px rgba(58,167,106,.8);animation:pulse 2.2s infinite}
+
+/* legale */
+.foot-legal{display:flex;flex-direction:column;gap:14px;padding-bottom:40px}
+.legal{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;font-size:.82rem;color:var(--muted-d)}
+.legal-brand{color:#F6F1E6;font-weight:600}
+.legal>*+*::before{content:'·';margin-right:12px;color:var(--line-d)}
+.legal .ph{font-style:normal;font-size:.66rem;letter-spacing:.05em;text-transform:uppercase;color:var(--fiamma);opacity:.7;margin-left:5px}
+.legal-links a{color:var(--muted-d);text-decoration:none;border-bottom:1px solid transparent;transition:color .25s,border-color .25s}
+.legal-links a:hover{color:var(--sole);border-bottom-color:var(--sole)}
+.disclaimer{font-size:.74rem;line-height:1.7;opacity:.6;max-width:76ch}
+
+/* ── L'INTERAZIONE DI CHIUSURA — fai sorgere il sole (torna su) ── */
+.sunrise{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;width:100%;padding:16px 0 26px;background:none;border:0;border-top:1px solid var(--line-d);cursor:pointer;color:var(--muted-d);overflow:hidden}
+.sunrise::after{content:'';position:absolute;inset:0;background:linear-gradient(0deg,rgba(245,166,35,.22),rgba(244,116,11,.12) 40%,transparent 72%);opacity:0;transition:opacity .5s var(--ease);pointer-events:none}
+.sunrise.rising::after{opacity:1}
+.sunrise-lbl{font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;font-weight:600;transition:color .3s var(--ease)}
+.sunrise-svg{width:220px;height:90px;overflow:visible}
+.sunrise-sun{transition:transform .55s cubic-bezier(.34,1.56,.64,1),filter .4s var(--ease)}
+.sunrise-rays{transition:opacity .4s var(--ease)}
+.sunrise-arrow{transition:transform .3s var(--ease)}
+.sunrise:hover .sunrise-lbl{color:var(--sole)}
+.sunrise:hover .sunrise-sun{transform:translateY(-24px);filter:drop-shadow(0 0 16px rgba(245,166,35,.6))}
+.sunrise:hover .sunrise-rays{opacity:.9}
+.sunrise:hover .sunrise-arrow{transform:translateY(-3px)}
+.sunrise.rising .sunrise-sun{transform:translateY(-40px);filter:drop-shadow(0 0 26px rgba(245,166,35,.85))}
+.sunrise.rising .sunrise-rays{opacity:1}
 .hero-badges b.pct{background:var(--fiamma);color:#fff;padding:2px 8px;border-radius:4px}
-.f-claim{font-family:'Instrument Serif',serif;font-style:italic;font-size:1.35rem;color:#DCE3ED;margin-bottom:18px;line-height:1.35}
-.f-claim b{color:var(--sole);font-style:normal;font-family:'Bricolage Grotesque',sans-serif;font-weight:750}
-.disclaimer{font-size:.74rem!important;opacity:.75;max-width:60ch}
 
 /* ---- utilità reveal ---- */
 .fx{will-change:transform,opacity}
@@ -605,8 +653,9 @@ footer p{font-size:.85rem;line-height:1.7}
   .reviews-grid{grid-template-columns:1fr;gap:16px;margin-top:36px}
   .rev-card{min-height:0}
   .contact .wrap{grid-template-columns:1fr;gap:44px}
-  .footer-top{grid-template-columns:1fr;gap:30px}
-  .footer-bottom{flex-direction:column;align-items:flex-start}
+  .foot-grid{grid-template-columns:1fr 1fr;gap:36px 28px}
+  .foot-brand{grid-column:1/-1;max-width:none}
+  .foot-legal{gap:12px}
   .nav-links{display:none}
   .nav-burger{display:flex}
   .alba-copy h2 em{font-size:.78em}
@@ -633,7 +682,8 @@ footer p{font-size:.85rem;line-height:1.7}
   .ctas .btn{width:100%;justify-content:center}
   .btn{padding:15px 24px}
   #nav .logo span{font-size:.95rem}
-  .footer-top{gap:24px}
+  .foot-grid{grid-template-columns:1fr;gap:30px}
+  .sunrise-svg{width:180px}
 }
 /* ============ rifinitura mobile trasversale (v12) ============ */
 @media (max-width:720px){
@@ -691,7 +741,6 @@ footer p{font-size:.85rem;line-height:1.7}
 
 /* clipping discendenti (.tr / footer) */
 .tr .mask{overflow:hidden!important;line-height:1.2!important;padding-bottom:.22em!important;margin-bottom:-.22em!important}
-.f-claim{line-height:1.4!important;padding-bottom:.08em!important}
 
 /* tag servizi */
 .p-tags{display:flex!important;justify-content:center!important;flex-wrap:wrap!important;gap:10px!important}
@@ -752,7 +801,7 @@ footer p{font-size:.85rem;line-height:1.7}
 
 /* ── v11. "Prime luci" — il diagramma è diventato un dipinto ── */
 .diagram{border-radius:24px;border:1px solid var(--line-d);box-shadow:0 34px 80px -36px rgba(7,12,22,.6);display:block}
-.diagram .ring-b{transform-origin:110px 264px}
+.diagram .ring-b{transform-box:fill-box;transform-origin:center}
 
 /* ── v14. HERO NOTTE — la casa che respira alle 03:47 ── */
 #heroScene{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:0}
@@ -2003,33 +2052,109 @@ input[type=range]:active::-moz-range-thumb{transform:scale(1.22)}
 
 <!-- ============ H 23:59 · di nuovo notte ============ -->
 <footer data-theme="notte">
+  <div class="foot-sky" aria-hidden="true">
+    <span class="fstar" style="top:18%;left:12%"></span><span class="fstar" style="top:30%;left:28%"></span>
+    <span class="fstar" style="top:14%;left:52%"></span><span class="fstar" style="top:42%;left:68%"></span>
+    <span class="fstar" style="top:22%;left:84%"></span><span class="fstar" style="top:52%;left:40%"></span>
+    <span class="fstar" style="top:12%;left:74%"></span><span class="fstar" style="top:38%;left:8%"></span>
+  </div>
+
   <div class="wrap">
-    <div class="footer-top">
-      <div>
+    <!-- il congedo emotivo: ultimo fotogramma del ciclo -->
+    <div class="foot-hero">
+      <span class="kicker"><span class="ora">H 23:59</span><span class="sep">·</span>Fine giornata</span>
+      <h2 class="foot-claim">Domani il sole sorge di nuovo.<br><em>E non ti manda la bolletta.</em></h2>
+      <a class="foot-cta" href="#preventivo" data-nav>
+        <span>Richiedi il preventivo gratuito</span>
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M4 9h10M10 5l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+
+    <div class="foot-grid">
+      <!-- brand -->
+      <div class="foot-col foot-brand">
         <div class="flogo">
-          <svg width="30" height="27" viewBox="0 0 44 40" fill="none" aria-hidden="true">
+          <svg width="34" height="31" viewBox="0 0 44 40" fill="none" aria-hidden="true">
             <g fill="#F5A623"><path d="M22 0l2.6 7.4-5.2 0z"/><path d="M9.5 4.6l6 5.2-4.4 2.8z"/><path d="M34.5 4.6l-1.6 8-4.4-2.8z"/><path d="M2 14.5l7.6 2.4-2.6 4.6z"/><path d="M42 14.5l-5 7-2.6-4.6z"/></g>
             <path d="M6 30 L22 16 L38 30" stroke="#F4740B" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
             <path d="M13 32.5h18M13 36.5h18" stroke="#F6F1E6" stroke-width="3" stroke-linecap="round"/>
           </svg>
           <span class="word">REAL<b>HOME</b></span>
         </div>
+        <p class="foot-mission">Case efficienti chiavi in mano: fotovoltaico, accumulo e pratiche GSE. Progettiamo la tua indipendenza energetica, dal primo sopralluogo all'ultimo bonifico.</p>
+        <div class="foot-social" aria-label="Social">
+          <!-- PLACEHOLDER: sostituire href con i profili reali -->
+          <a href="#" aria-label="Instagram" title="Instagram (da collegare)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor"/></svg></a>
+          <a href="#" aria-label="LinkedIn" title="LinkedIn (da collegare)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="4" stroke="currentColor" stroke-width="1.8"/><path d="M7 10v7M7 7v.01M11 17v-4a2 2 0 0 1 4 0v4M11 17v-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></a>
+          <a href="#" aria-label="Facebook" title="Facebook (da collegare)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M14 8h2M14 8a2 2 0 0 1 2-2h1V3h-3a3 3 0 0 0-3 3v3H8v3h3v9h3v-9h2l1-3h-3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        </div>
       </div>
-      <div>
-        <p class="f-claim"><span class="kicker" style="display:block;margin-bottom:10px"><span class="ora">H 23:59</span><span class="sep">·</span>Fine giornata</span>Domani il sole sorge di nuovo. <b>Gratis.</b></p>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p class="legal">
-        <span>RealHome S.r.l.</span>
-        <span>P.IVA 01234567890</span>
-        <span>Via dell'Innovazione, 10 — Modena</span>
+
+      <!-- servizi -->
+      <nav class="foot-col" aria-label="Servizi">
+        <h3 class="foot-h">Servizi</h3>
+        <a href="#servizi" data-nav>Fotovoltaico</a>
+        <a href="#servizi" data-nav>Pompe di calore</a>
+        <a href="#servizi" data-nav>Ristrutturazioni</a>
+        <a href="#servizi" data-nav>Case da zero</a>
+      </nav>
+
+      <!-- naviga -->
+      <nav class="foot-col" aria-label="Naviga">
+        <h3 class="foot-h">Naviga</h3>
+        <a href="#come-funziona" data-nav>Come funziona</a>
+        <a href="#risparmio" data-nav>Simulatore</a>
+        <a href="#caso-studio" data-nav>Caso studio</a>
+        <a href="#preventivo" data-nav>Preventivo</a>
+      </nav>
+
+      <!-- contatti -->
+      <div class="foot-col foot-contact">
+        <h3 class="foot-h">Contatti</h3>
         <a href="mailto:info@realhome.it">info@realhome.it</a>
         <a href="tel:+39059000000">+39 059 000000</a>
+        <p>Via dell'Innovazione, 10<br>41121 Modena (MO)</p>
+        <p class="foot-hours"><span class="dot"></span>Lun–Ven · 9:00–18:00</p>
+      </div>
+    </div>
+
+    <div class="foot-legal">
+      <p class="legal">
+        <span class="legal-brand">RealHome S.r.l.</span>
+        <span>P.IVA 01234567890</span>
+        <span>REA MO-XXXXXX <i class="ph">da inserire</i></span>
+        <span>Cap. soc. XX.XXX € i.v. <i class="ph">da inserire</i></span>
+      </p>
+      <p class="legal legal-links">
+        <span>© <span id="footYear">2026</span> RealHome S.r.l.</span>
+        <a href="#">Privacy</a>
+        <a href="#">Cookie</a>
+        <a href="#">Termini</a>
       </p>
       <p class="disclaimer">Le percentuali di detrazione fiscale indicate sono soggette alla normativa vigente e possono variare in base alla tipologia di immobile e alle leggi di bilancio. Risparmi, dimensionamenti ed equivalenze ambientali sono stime indicative: il calcolo preciso viene fornito con il preventivo personalizzato.</p>
     </div>
   </div>
+
+  <!-- l'interazione di chiusura: il ciclo ricomincia -->
+  <button class="sunrise" id="sunrise" aria-label="Torna all'inizio — fai sorgere il sole">
+    <span class="sunrise-lbl">Fai sorgere il sole</span>
+    <svg class="sunrise-svg" viewBox="0 0 220 90" fill="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="dawnSun" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#FFE7A8"/><stop offset="1" stop-color="#F5A623"/>
+        </linearGradient>
+        <clipPath id="horizonClip"><rect x="0" y="0" width="220" height="62"/></clipPath>
+      </defs>
+      <g clip-path="url(#horizonClip)">
+        <g class="sunrise-rays" stroke="#F5A623" stroke-width="2" stroke-linecap="round" opacity="0">
+          <path d="M110 20v-12M84 26l-6-9M136 26l6-9M64 40l-11-5M156 40l11-5"/>
+        </g>
+        <circle class="sunrise-sun" cx="110" cy="70" r="22" fill="url(#dawnSun)"/>
+      </g>
+      <line x1="0" y1="62" x2="220" y2="62" stroke="var(--line-d)" stroke-width="1.4"/>
+      <path class="sunrise-arrow" d="M104 84l6-6 6 6" stroke="#8B98AB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
@@ -2454,13 +2579,13 @@ document.querySelectorAll('[data-theme]').forEach(sec=>{
     return;
   }
   paths.forEach(p=>{const L=p.getTotalLength();p.style.strokeDasharray=L;p.style.strokeDashoffset=L});
-  gsap.set('#reactor',{scale:.55,opacity:0,transformOrigin:'110px 264px'});
+  gsap.set('#reactor',{scale:.55,opacity:0,svgOrigin:'110 264'});
   gsap.set(['#invLed','#winA','#winB','#invGlow'],{opacity:0});
   gsap.set('#battFill',{scaleY:0,transformOrigin:'center bottom'});
   const tl=gsap.timeline({scrollTrigger:{trigger:'.how',start:'top 62%',end:'bottom 55%',scrub:1},defaults:{ease:'none'}});
   tl.call(setStep,[0])
     .to('#reactor',{scale:1,opacity:1,duration:.8})
-    .to('#rays',{rotation:26,transformOrigin:'110px 264px',duration:1.6},'<')
+    .to('#rays',{rotation:26,svgOrigin:'110 264',duration:1.6},'<')
     .to(paths[0],{strokeDashoffset:0,duration:1},'-=.5')
     .add(()=>setStep(1))
     .to(paths[1],{strokeDashoffset:0,duration:1})
@@ -3059,6 +3184,31 @@ document.querySelectorAll('img[loading="lazy"]').forEach(im=>{
   cards.forEach(c=>io.observe(c));
 })();
 
+</script>
+<script>
+/* ---------- H 23:59 → di nuovo alba: il ciclo ricomincia ----------
+   Blocco INDIPENDENTE: il "torna su" del footer non deve dipendere da
+   GSAP/Lenis. Se sono caricati usa lo scroll fluido di Lenis, altrimenti
+   ricade sullo scroll nativo. Così funziona sempre. */
+(function sunriseLoop(){
+  const btn=document.getElementById('sunrise');
+  if(!btn) return;
+  const rm=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const yr=document.getElementById('footYear');
+  if(yr) yr.textContent=new Date().getFullYear();
+  let busy=false;
+  const goTop=()=>{
+    if(window.lenisRef){window.lenisRef.scrollTo(0,{duration:rm?0:1.6});}
+    else{window.scrollTo({top:0,behavior:rm?'auto':'smooth'});}
+  };
+  btn.addEventListener('click',()=>{
+    if(busy) return; busy=true;
+    btn.classList.add('rising');
+    if(rm){goTop();btn.classList.remove('rising');busy=false;return;}
+    setTimeout(goTop,650);
+    setTimeout(()=>{btn.classList.remove('rising');busy=false;},2400);
+  });
+})();
 </script>
 </body>
 </html>
