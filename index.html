@@ -887,7 +887,7 @@ body.menu-open{overflow:hidden}
 .nav-scrim.show{opacity:1;pointer-events:auto}
 
 /* BADGE DI VERIFICA DEPLOY — ELIMINARE DOPO IL TEST */
-body::after{content:'VER-2026-07-11-V15';position:fixed;bottom:8px;left:8px;z-index:99999;font:600 11px/1 monospace;color:#fff;background:#c0392b;padding:4px 8px;border-radius:4px;pointer-events:none}
+body::after{content:'VER-2026-07-11-V15-1';position:fixed;bottom:8px;left:8px;z-index:99999;font:600 11px/1 monospace;color:#fff;background:#c0392b;padding:4px 8px;border-radius:4px;pointer-events:none}
 
 /* iter gse — v7 archivio split-screen */
 .gse-split{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:center;min-height:64vh}
@@ -934,6 +934,47 @@ input[type=range]::-webkit-slider-thumb{transition:transform .45s cubic-bezier(.
 input[type=range]:active::-webkit-slider-thumb{transform:scale(1.22)}
 input[type=range]::-moz-range-thumb{transition:transform .45s cubic-bezier(.34,1.56,.64,1)}
 input[type=range]:active::-moz-range-thumb{transform:scale(1.22)}
+
+/* ============================================
+   VER-2026-07-11-V15 — rifiniture MOBILE
+   (solo ≤980; il desktop non è toccato)
+   ============================================ */
+@media (max-width:980px){
+  /* — 1. ALBA: hint su due righe, non più troncato, e alzato sopra il sole — */
+  .alba-hint{white-space:normal;max-width:min(84vw,340px);text-align:center;line-height:1.5;bottom:44px;font-size:.7rem;letter-spacing:.16em}
+  .alba-copy h2{max-width:16ch}
+
+  /* — 2. SERVIZI: meno aria verticale tra i pannelli — */
+  .panel{padding:44px 22px!important;gap:20px!important}
+  .panel .p-num{font-size:4rem!important;margin-bottom:-4px!important}
+  .p-media{height:48vw!important;min-height:210px!important}
+
+  /* — 3. BANDE FISCO: attivazione "notte" via classe .lit (IntersectionObserver, vedi JS) —
+     replica delle stesse regole hover desktop, ma pilotate dallo scroll su touch */
+  .band.lit{background:var(--notte)}
+  .band.lit .band-glow{opacity:1}
+  .band.lit .band-tag{color:var(--sole);opacity:1}
+  .band.lit .bn-ghost{-webkit-text-stroke-color:rgba(246,241,230,.22)}
+  .band.lit .bn-fill{filter:drop-shadow(0 0 26px rgba(245,166,35,.5))}
+  .band.lit .band-copy h3{color:#F6F1E6}
+  .band.lit .band-copy p{color:var(--muted-d)}
+  .band.lit .band-meter{background:rgba(255,255,255,.12)}
+}
+
+/* — 4. FORESTA/IMPATTO: lo sticky usa l'altezza dinamica reale del viewport,
+   così non "salta" quando la barra URL di Safari/Chrome mobile si nasconde — */
+@supports (height:100dvh){
+  @media (max-width:980px){
+    .imp-stage{height:100dvh}
+    .imp-ui{min-height:100dvh}
+  }
+}
+
+/* — 5. FOOTER / coda nera: la pista impatto su mobile è più corta,
+   i tre capitoli si alternano subito e sparisce lo scroll a vuoto nero — */
+@media (max-width:980px){
+  .impact{height:240svh}
+}
 
 </style>
 </head>
@@ -2502,6 +2543,18 @@ if (FX){
         glow.style.setProperty('--my',((e.clientY-r.top)/r.height*100).toFixed(1)+'%');
       });
     });
+  }
+
+  /* ── v15. ATTIVAZIONE NOTTE SU TOUCH ──
+     Su desktop l'accensione "notte" della banda è :hover (media hover:hover).
+     Su mobile non c'è hover: un IntersectionObserver accende .lit sulla banda
+     che entra nella fascia centrale e la spegne quando esce, UNA alla volta.
+     Non tocca il conteggio (già in scrub) né il desktop. */
+  if(!finePointer && 'IntersectionObserver' in window){
+    const io=new IntersectionObserver(es=>{
+      es.forEach(e=>e.target.classList.toggle('lit',e.isIntersecting));
+    },{rootMargin:'-42% 0px -42% 0px',threshold:0});
+    bands.forEach(b=>io.observe(b));
   }
 })();
 
