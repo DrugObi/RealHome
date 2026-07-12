@@ -887,7 +887,7 @@ body.menu-open{overflow:hidden}
 .nav-scrim.show{opacity:1;pointer-events:auto}
 
 /* BADGE DI VERIFICA DEPLOY — ELIMINARE DOPO IL TEST */
-body::after{content:'VER-2026-07-11-V15-2';position:fixed;bottom:8px;left:8px;z-index:99999;font:600 11px/1 monospace;color:#fff;background:#c0392b;padding:4px 8px;border-radius:4px;pointer-events:none}
+body::after{content:'VER-2026-07-11-V15-3';position:fixed;bottom:8px;left:8px;z-index:99999;font:600 11px/1 monospace;color:#fff;background:#c0392b;padding:4px 8px;border-radius:4px;pointer-events:none}
 
 /* iter gse — v7 archivio split-screen */
 .gse-split{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:center;min-height:64vh}
@@ -984,6 +984,11 @@ input[type=range]:active::-moz-range-thumb{transform:scale(1.22)}
   .imp-ch{transition:opacity .38s var(--ease),transform .38s var(--ease),visibility 0s .38s}
   .imp-ch.is-on{transition:opacity .38s var(--ease) .06s,transform .38s var(--ease) .06s,visibility 0s}
 }
+
+/* — guard v15-3: se le librerie CDN non caricano, .no-anim rivela tutto
+   ciò che parte nascosto in attesa di GSAP, così il sito resta leggibile — */
+.no-anim .tr .mask,.no-anim .fx{opacity:1!important;transform:none!important}
+.no-anim .imp-ch,.no-anim .gse-step{opacity:1!important;visibility:visible!important;transform:none!important}
 
 </style>
 </head>
@@ -2372,6 +2377,17 @@ input[type=range]:active::-moz-range-thumb{transform:scale(1.22)}
      e la pagina passa dalla notte al giorno.
    - NAV camaleonte: legge il data-theme della sezione corrente.
    ============================================================ */
+/* v15-3 — RETE DIFENSIVA: se una libreria CDN (GSAP/ScrollTrigger)
+   non si carica — offline, rate-limit, o risponde con una pagina HTML
+   che il browser prova a eseguire come JS ("Unexpected token '<'") —
+   NON facciamo crashare la pagina: mostriamo il sito in versione
+   statica leggibile e usciamo. Il sito resta usabile comunque. */
+if(typeof gsap==='undefined' || typeof ScrollTrigger==='undefined'){
+  console.warn('RealHome: libreria di animazione non caricata dal CDN — modalità statica.');
+  document.documentElement.classList.add('no-anim');
+  document.querySelectorAll('.impact,.reviews,.gse-split,.hz,.how,.diagram')
+    .forEach(el=>el.classList.add('static'));
+}else{
 gsap.registerPlugin(ScrollTrigger);
 /* v15 — la barra URL di Safari mobile che appare/scompare è un "resize":
    senza questo flag ScrollTrigger rifà i calcoli a metà scroll e i pin
@@ -3523,6 +3539,8 @@ document.querySelectorAll('img[loading="lazy"]').forEach(im=>{
       cue.classList.toggle('gone',p>.06);
     }});
 })();
+
+} /* /else — fine engine con librerie caricate (guard v15-3) */
 
 </script>
 <script>
