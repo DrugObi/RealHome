@@ -155,7 +155,6 @@ body.fxon #cursor{display:block}
 /* orologio di bordo */
 .hero-hud{position:absolute;top:112px;right:32px;z-index:3;text-align:right;font-variant-numeric:tabular-nums}
 .hero-hud .hh-time{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:1.05rem;color:#F6F1E6;letter-spacing:.04em}
-.hero-hud .hh-lbl{font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted-d)}
 .hero-hud .hh-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--verde);margin-right:7px;box-shadow:0 0 10px rgba(58,167,106,.8);animation:pulse 2.2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
 
@@ -877,7 +876,7 @@ body.menu-open{overflow:hidden}
 .nav-scrim.show{opacity:1;pointer-events:auto}
 
 /* BADGE DI VERIFICA DEPLOY — ELIMINARE DOPO IL TEST */
-body::after{content:'VER-2026-07-13-V17';position:fixed;bottom:8px;left:8px;z-index:99999;font:600 11px/1 monospace;color:#fff;background:#c0392b;padding:4px 8px;border-radius:4px;pointer-events:none}
+body::after{content:'VER-2026-07-14-V18';position:fixed;bottom:8px;left:8px;z-index:99999;font:600 11px/1 monospace;color:#fff;background:#c0392b;padding:4px 8px;border-radius:4px;pointer-events:none}
 
 /* iter gse — v7 archivio split-screen */
 .gse-split{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:center;min-height:64vh}
@@ -1233,13 +1232,12 @@ input[type=range]:active::-moz-range-thumb{transform:scale(1.22)}
 </svg>
   <div class="hero-hud fx" aria-hidden="true">
     <div class="hh-time"><span class="hh-dot"></span>03:47</div>
-    <div class="hh-lbl">La batteria alimenta la casa</div>
   </div>
   <div class="wrap hero-copy">
     <h1 class="tr">Il sole non manda bollette.</h1>
     <p class="hero-sub tr">Il tuo tetto nemmeno.</p>
     <div class="ctas fx">
-      <a class="btn btn-accent" href="#preventivo" data-nav><span>Richiedi il preventivo gratuito</span></a>
+      <a class="btn btn-accent" href="#preventivo" data-nav><span>Richiedi un preventivo</span></a>
     </div>
   </div>
   <div class="hero-cue" aria-hidden="true"><i></i>Scorri</div>
