@@ -479,9 +479,19 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
    il progress arriva a scatti, la dissolvenza resta morbida. */
 .impact{position:relative;height:340svh;background:var(--notte)}
 .imp-stage{position:sticky;top:0;height:100svh;overflow:hidden;display:flex;align-items:center}
-.imp-scenes{position:absolute;inset:0}
-.imp-scene{position:absolute;inset:0;opacity:0;transition:opacity .65s var(--ease);will-change:opacity;transform:translateZ(0)}
-.imp-scene.is-on{opacity:1}
+.imp-scenes{position:absolute;inset:0;z-index:1}
+/* v25 — crossfade STRATIFICATO, non simmetrico. Il vecchio schema (out e in
+   insieme, entrambi semitrasparenti a metà corsa) garantiva un buco scuro su
+   --notte a OGNI cambio scena: su desktop (.65s, rotella) invisibile, su
+   mobile (flick) sempre visibile. Era questo il "nero", non la pista (v24)
+   né il box-model (v23). Ora: la scena uscente riceve .is-under e resta a
+   opacità 1 SOTTO (senza transizione: era già a 1, nessun salto); la nuova
+   entra in fade SOPRA (z-index 2). In ogni istante c'è una foto a copertura
+   piena. z-index:1 su .imp-scenes = stacking context: gli z dei layer non
+   competono con .imp-ui (z2). */
+.imp-scene{position:absolute;inset:0;opacity:0;transition:opacity .65s var(--ease);will-change:opacity;transform:translateZ(0);z-index:0}
+.imp-scene.is-under{opacity:1;transition:none;z-index:1}
+.imp-scene.is-on{opacity:1;z-index:2}
 .imp-bg{position:absolute;inset:-6%;background-size:cover;background-position:center;will-change:transform;transform:translateZ(0)}
 .imp-scrim{position:absolute;inset:0;background:linear-gradient(90deg,rgba(7,12,22,.9) 0%,rgba(7,12,22,.62) 46%,rgba(7,12,22,.22) 100%),linear-gradient(0deg,rgba(7,12,22,.88),transparent 42%),linear-gradient(180deg,rgba(7,12,22,.72),transparent 26%)}
 .imp-ui{position:relative;z-index:2;width:100%;color:#F6F1E6;padding:96px 0 84px;display:flex;flex-direction:column;min-height:100svh;justify-content:center}
@@ -879,7 +889,7 @@ body.menu-open{overflow:hidden}
 .nav-scrim.show{opacity:1;pointer-events:auto}
 
 /* BADGE DI VERIFICA DEPLOY — ELIMINARE DOPO IL TEST */
-body::after{content:'VER-2026-07-14-V24';position:fixed;bottom:8px;left:8px;z-index:99999;font:600 11px/1 monospace;color:#fff;background:#c0392b;padding:4px 8px;border-radius:4px;pointer-events:none}
+body::after{content:'VER-2026-07-14-V25';position:fixed;bottom:8px;left:8px;z-index:99999;font:600 11px/1 monospace;color:#fff;background:#c0392b;padding:4px 8px;border-radius:4px;pointer-events:none}
 
 /* iter gse — v7 archivio split-screen */
 .gse-split{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:center;min-height:64vh}
@@ -3576,11 +3586,28 @@ window.addEventListener('resize',()=>{
   if(!FX){sec.classList.add('static');return;}
   let cur=0;
   const setC=k=>{
-    if(k===cur)return;cur=k;
-    scenes.forEach((s,i)=>s.classList.toggle('is-on',i===k));
+    if(k===cur)return;
+    const prev=cur;cur=k;
+    /* v25 — la scena che esce diventa .is-under: resta opaca SOTTO mentre
+       la nuova sfuma sopra. Niente più istante a doppia semitrasparenza
+       su --notte (il "nero" di mina 29). */
+    scenes.forEach((s,i)=>{
+      s.classList.toggle('is-on',i===k);
+      s.classList.toggle('is-under',i===prev);
+    });
     chs.forEach((c,i)=>c.classList.toggle('is-on',i===k));
     dots.forEach((d,i)=>d.classList.toggle('is-on',i===k));
   };
+  /* v25 — snap sui CENTRI delle tre scene, solo mobile. La pista lunga (v24)
+     non basta: un flick con momentum iOS copre 1000-2000px e attraversa un
+     capitolo comunque. Lo snap assesta ogni gesto sul capitolo più vicino =
+     "la sezione oppone resistenza". Bordi liberi (p<.06 / p>.94) per non
+     imprigionare l'utente dentro la sezione. */
+  const snapMob=window.matchMedia('(max-width:980px)').matches?{
+    snap:{snapTo:v=>{if(v<.06||v>.94)return v;
+        const c=[1/6,.5,5/6];return c.reduce((a,b)=>Math.abs(b-v)<Math.abs(a-v)?b:a);},
+      duration:{min:.25,max:.7},ease:'power2.out',delay:.08}
+  }:{};
   /* v22 — end sulla CORSA STICKY REALE, non 'bottom bottom'.
      'bottom bottom' chiudeva il trigger quando il fondo sezione toccava il
      fondo viewport, ma lo sticky resta incollato per un altro viewport:
@@ -3588,7 +3615,7 @@ window.addEventListener('resize',()=>{
      scena non completava. offsetHeight-innerHeight = la corsa vera.
      In funzione: rivalutata a ogni refresh (resize v20). */
   ScrollTrigger.create({trigger:sec,start:'top top',
-    end:()=>'+='+Math.max(1,sec.offsetHeight-window.innerHeight),scrub:.5,
+    end:()=>'+='+Math.max(1,sec.offsetHeight-window.innerHeight),scrub:.5,...snapMob,
     onUpdate:self=>{
       const p=self.progress;
       setC(Math.min(2,Math.floor(p*3)));
