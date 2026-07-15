@@ -260,6 +260,17 @@ body.fxon #cursor{display:block}
 .p-tags .hot{background:var(--sole);border-color:var(--sole);color:var(--notte)}
 .p-media{position:relative;aspect-ratio:4/3;min-height:320px;overflow:hidden;border-radius:14px}
 .p-media img{width:100%;height:100%;object-fit:cover;will-change:transform}
+/* v30 — PERF: il reveal delle foto (servicesHZ) animava clip-path su .p-media
+   ad ogni frame di scrub, su 4 pannelli quasi a schermo intero: clip-path non è
+   compositabile via GPU, forza repaint continuo → stutter percepito sia desktop
+   (pin+scrub) sia mobile (scrub verticale, stesso meccanismo). Fix: una "tendina"
+   opaca che copre la foto e si ritira via transform (scaleX desktop, scaleY
+   mobile) — stesso effetto visivo, zero repaint, tutto sul compositor. */
+.p-curtain{position:absolute;inset:0;z-index:1;background:var(--giorno);
+  will-change:transform;pointer-events:none}
+.panel.dark .p-curtain{background:var(--notte-2)}
+.panel.deep .p-curtain{background:var(--notte)}
+.m-cap{z-index:2}
 /* v27 — .card-img (servizio2): il cover era già garantito da .p-media img sopra.
    Lo "zoom" percepito non veniva da qui: veniva dallo scale GSAP applicato in JS
    (servicesHZ). Il fix vero è là (imgs[1] escluso dai tween); questa classe resta
@@ -932,7 +943,7 @@ body.menu-open{overflow:hidden}
 .nav-scrim.show{opacity:1;pointer-events:auto}
 
 /* BADGE DI VERIFICA DEPLOY — ELIMINARE DOPO IL TEST */
-body::after{content:'VER-2026-07-15-V29';position:fixed;bottom:8px;left:8px;z-index:99999;font:600 11px/1 monospace;color:#fff;background:#c0392b;padding:4px 8px;border-radius:4px;pointer-events:none}
+body::after{content:'VER-2026-07-15-V30';position:fixed;bottom:8px;left:8px;z-index:99999;font:600 11px/1 monospace;color:#fff;background:#c0392b;padding:4px 8px;border-radius:4px;pointer-events:none}
 
 /* iter gse — v7 archivio split-screen */
 .gse-split{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:center;min-height:64vh}
@@ -1655,6 +1666,7 @@ input[type=range]:active::-moz-range-thumb{transform:scale(1.22)}
           <div class="p-tags"><span class="hot">Pratica GSE inclusa</span><span>Detrazione 50%</span><span>Accumulo</span></div>
         </div>
         <div class="p-media">
+          <div class="p-curtain" aria-hidden="true"></div>
           <div class="zoom"><img src="./servizio1.webp" alt="Pannelli fotovoltaici monocristallini su tetto"></div>
           <div class="m-cap">Pannelli fotovoltaici</div>
         </div>
@@ -1669,6 +1681,7 @@ input[type=range]:active::-moz-range-thumb{transform:scale(1.22)}
           <div class="p-tags"><span class="hot">Detrazione 65%</span><span>Caldo + freddo</span><span>Addio gas</span></div>
         </div>
         <div class="p-media">
+          <div class="p-curtain" aria-hidden="true"></div>
           <div class="zoom"><img class="card-img" loading="lazy" src="./servizio2.webp" alt="Pompa di calore moderna installata su facciata"></div>
           <div class="m-cap">Pompe di calore</div>
         </div>
@@ -1683,6 +1696,7 @@ input[type=range]:active::-moz-range-thumb{transform:scale(1.22)}
           <div class="p-tags"><span class="hot">Detrazione 65% infissi</span><span>Isolamento</span><span>Chiavi in mano</span></div>
         </div>
         <div class="p-media">
+          <div class="p-curtain" aria-hidden="true"></div>
           <div class="zoom"><img loading="lazy" src="./servizio3.webp" alt="Soggiorno ristrutturato con nuovi infissi a tutta altezza"></div>
           <div class="m-cap">Ristrutturazioni e infissi</div>
         </div>
@@ -1697,6 +1711,7 @@ input[type=range]:active::-moz-range-thumb{transform:scale(1.22)}
           <div class="p-tags"><span class="hot">Chiavi in mano</span><span>Classe A4</span><span>Fotovoltaico integrato</span></div>
         </div>
         <div class="p-media">
+          <div class="p-curtain" aria-hidden="true"></div>
           <div class="zoom"><img loading="lazy" src="./servizio4.webp" alt="Casa moderna di nuova costruzione con fotovoltaico integrato"></div>
           <div class="m-cap">Case da zero</div>
         </div>
@@ -3135,13 +3150,15 @@ document.querySelectorAll('[data-theme]').forEach(sec=>{
   const track=document.getElementById('hzTrack');
   const panels=gsap.utils.toArray('.panel');
   const medias=gsap.utils.toArray('.p-media');
+  const curtains=medias.map(m=>m.querySelector('.p-curtain'));
   const imgs=medias.map(m=>m.querySelector('img'));
   const count=document.getElementById('hzCount');
   const bar=document.getElementById('hzBar');
   const pad=n=>String(n).padStart(2,'0');
 
   if(!FX){
-    medias.forEach(m=>m.style.clipPath='inset(0 0 0 0)');
+    /* v30: niente più clip-path qui — la tendina va semplicemente rimossa */
+    curtains.forEach(c=>{if(c)c.style.display='none'});
     /* v27: servizio2 (imgs[1]) resta a scale naturale, mai "zoomata" — vedi .card-img */
     imgs.forEach((i,k)=>{if(k!==1)i.style.transform='scale(1.02)'});
     return;
@@ -3210,25 +3227,28 @@ document.querySelectorAll('[data-theme]').forEach(sec=>{
     const parts=panels.map(p=>p.querySelectorAll('.p-body > *'));
 
     /* pannello 0: si prepara PRIMA del pin (stesso pattern della sua media) */
-    gsap.set(medias[0],{clipPath:'inset(0 100% 0 0)'});
+    /* v30 — tendina invece di clip-path: scaleX da 1 (copre tutto) a 0, origin a
+       destra così il bordo destro resta fermo e la foto si rivela da sinistra —
+       stesso verso del vecchio inset(0 100%→0% 0 0). Compositor-only. */
+    gsap.set(curtains[0],{scaleX:1,transformOrigin:'100% 50%'});
     gsap.set(imgs[0],{scale:1.28});
     gsap.set(caps[0],{yPercent:140,opacity:0});
     gsap.timeline({scrollTrigger:{trigger:hz,start:'top 70%',end:'top top',scrub:1}})
-      .to(medias[0],{clipPath:'inset(0 0% 0 0)',ease:'none'},0)
+      .to(curtains[0],{scaleX:0,ease:'none'},0)
       .to(imgs[0],{scale:1.12,ease:'none'},0)   /* 1.12: margine per la parallasse xPercent, mai bordi scoperti */
       .to(caps[0],{yPercent:0,opacity:1,ease:'none'},.4)
       .fromTo(parts[0],{xPercent:8,opacity:0},{xPercent:0,opacity:1,stagger:.09,ease:'none'},0);
 
     panels.slice(1).forEach((p,k)=>{
-      const media=medias[k+1],img=imgs[k+1];
+      const curtain=curtains[k+1],img=imgs[k+1];
       const isStaticImg=(k+1)===1; /* v27: servizio2 non zooma, vedi .card-img */
-      gsap.set(media,{clipPath:'inset(0 100% 0 0)'});
+      gsap.set(curtain,{scaleX:1,transformOrigin:'100% 50%'});
       if(!isStaticImg)gsap.set(img,{scale:1.28});
       gsap.set(caps[k+1],{yPercent:140,opacity:0});
       const tl=gsap.timeline({scrollTrigger:{
         containerAnimation:tween,trigger:p,start:'left 85%',end:'left 15%',scrub:1
       }})
-        .to(media,{clipPath:'inset(0 0% 0 0)',ease:'none'},0);
+        .to(curtain,{scaleX:0,ease:'none'},0);
       if(!isStaticImg)tl.to(img,{scale:1.12,ease:'none'},0);
       tl.to(caps[k+1],{yPercent:0,opacity:1,ease:'none'},.4);
       /* testo: entra scaglionato nella prima metà della traversata */
@@ -3272,7 +3292,8 @@ document.querySelectorAll('[data-theme]').forEach(sec=>{
     return ()=>{
       clearTimeout(snapT);
       gsap.ticker.remove(skewTick);
-      medias.forEach(m=>gsap.set(m,{clearProps:'clipPath,transform'}));
+      medias.forEach(m=>gsap.set(m,{clearProps:'transform'}));
+      curtains.forEach(c=>gsap.set(c,{clearProps:'transform'}));
       imgs.forEach(i=>gsap.set(i,{clearProps:'transform'}));
       caps.forEach(c=>gsap.set(c,{clearProps:'transform,opacity'}));
       bodies.forEach(b=>gsap.set(b,{clearProps:'transform'}));
@@ -3283,12 +3304,16 @@ document.querySelectorAll('[data-theme]').forEach(sec=>{
   });
 
   mm.add('(max-width: 980px)',()=>{
+    /* v30 — stessa tendina del desktop, asse verticale: scaleY da 1 a 0, origin
+       in alto così il bordo superiore resta fermo e la foto si rivela dall'alto
+       — stesso verso del vecchio inset(0 0 100%→0% 0). Compositor-only. */
     medias.forEach((m,k)=>{
       const isStaticImg=k===1; /* v27: servizio2 statica anche su mobile */
-      gsap.set(m,{clipPath:'inset(0 0 100% 0)'});
+      const curtain=curtains[k];
+      gsap.set(curtain,{scaleY:1,transformOrigin:'50% 0%'});
       if(!isStaticImg)gsap.set(imgs[k],{scale:1.18});
       const tl=gsap.timeline({scrollTrigger:{trigger:m,start:'top 85%',end:'top 40%',scrub:1}})
-        .to(m,{clipPath:'inset(0 0 0% 0)',ease:'none'},0);
+        .to(curtain,{scaleY:0,ease:'none'},0);
       if(!isStaticImg)tl.to(imgs[k],{scale:1.04,ease:'none'},0);
     });
     /* v15 — anche in verticale il testo entra scaglionato (once, leggero) */
@@ -3298,7 +3323,7 @@ document.querySelectorAll('[data-theme]').forEach(sec=>{
         scrollTrigger:{trigger:p,start:'top 78%',once:true}});
     });
     return ()=>{
-      medias.forEach(m=>gsap.set(m,{clearProps:'clipPath'}));
+      curtains.forEach(c=>gsap.set(c,{clearProps:'transform'}));
       imgs.forEach(i=>gsap.set(i,{clearProps:'transform'}));
       mobParts.forEach(ps=>gsap.set(ps,{clearProps:'transform,opacity'}));
     };
