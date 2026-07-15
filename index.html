@@ -36,6 +36,13 @@ window.addEventListener('pageshow',function(e){
 <meta name="description" content="Fotovoltaico chiavi in mano con pratica GSE inclusa e detrazione fiscale 50%. Calcola il tuo risparmio: preventivo gratuito.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- PERF V27: handshake anticipato verso i CDN degli script (GSAP/ScrollTrigger su cdnjs, Lenis su jsdelivr).
+     crossorigin OBBLIGATORIO: gli script sono richieste CORS; senza, la connessione aperta non viene riusata.
+     dns-prefetch = fallback per i browser che ignorano preconnect. Puramente additivo: rimuovibile senza effetti. -->
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Instrument+Serif:ital@0;1&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
@@ -253,6 +260,11 @@ body.fxon #cursor{display:block}
 .p-tags .hot{background:var(--sole);border-color:var(--sole);color:var(--notte)}
 .p-media{position:relative;height:66vh;min-height:320px;overflow:hidden;border-radius:14px}
 .p-media img{width:100%;height:100%;object-fit:cover;will-change:transform}
+/* v27 — .card-img (servizio2): il cover era già garantito da .p-media img sopra.
+   Lo "zoom" percepito non veniva da qui: veniva dallo scale GSAP applicato in JS
+   (servicesHZ). Il fix vero è là (imgs[1] escluso dai tween); questa classe resta
+   come marker esplicito + guardia CSS, innocua e ridondante col resto. */
+.card-img{width:100%;height:100%;object-fit:cover;object-position:center}
 .m-cap{position:absolute;left:16px;bottom:14px;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:#fff;background:rgba(16,24,34,.55);backdrop-filter:blur(8px);padding:8px 14px;border-radius:100px}
 /* pannelli notturni alternati: il ritmo giorno/notte continua anche qui */
 .panel.dark,.panel.deep{color:#F6F1E6}
@@ -291,6 +303,17 @@ body.fxon #cursor{display:block}
   transition:background .45s var(--ease)}
 .band-glow{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .45s var(--ease);
   background:radial-gradient(360px circle at var(--mx,50%) var(--my,50%),rgba(245,166,35,.16),transparent 65%)}
+/* v27 — profondità sulla prima card (richiesta cliente): niente più oro piatto,
+   toni notte/grigio che sfumano nel trasparente. Scoped SOLO alla card 1 col
+   selettore esatto richiesto: le altre tre restano sul glow oro invariato.
+   Nota onesta: il backdrop-filter qui è innocuo oggi (dietro c'è il colore
+   piatto --notte di .band.lit, sfocare una tinta piatta non produce effetto
+   visibile) — resta pronto se in futuro lo sfondo della card avesse texture. */
+#numeri > div > div > article:nth-child(1) > span.band-glow{
+  background:radial-gradient(480px circle at var(--mx,50%) var(--my,50%),rgba(140,152,171,.30),rgba(12,22,38,.16) 55%,transparent 78%);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border-top:1px solid rgba(220,227,237,.16);
+}
 .band-tag{position:absolute;top:22px;left:clamp(8px,2vw,28px);display:inline-flex;align-items:center;gap:8px;
   font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;
   font-size:.64rem;letter-spacing:.15em;font-weight:500;color:var(--muted-l);opacity:.75;
@@ -885,6 +908,25 @@ body::after{content:'VER-2026-07-14-V26';position:fixed;bottom:8px;left:8px;z-in
 @media (min-width:981px){
   .gse-track.live{height:320svh}
   .gse-track.live .gse-split{position:sticky;top:12vh}
+  /* v27 — #impatto, sticky/crossfade SOLO desktop (richiesta cliente).
+     NON è un ripristino: il meccanismo V26 cancellato (.imp-stage/.imp-scene/
+     impactStory) resta morto, zero occorrenze. Questo è un meccanismo nuovo,
+     stessa architettura del gse-track qui sopra: sticky del browser (non pin
+     GSAP), le 3 .imp-page sovrapposte nella stessa cella di grid, il JS
+     (impattoDesktop) sceglie quale ha opacity:1 in base al progress scroll.
+     Si accende SOLO con .live (gsap.matchMedia, JS più sotto): sotto i 981px
+     .live non viene mai aggiunta, .impact resta la V26 pura, tre pagine vere
+     in flusso normale, invariata. Nessun conflitto con la mina 35: quella
+     regola (overflow-x:hidden sotto i 720px) non tocca mai questo ramo. */
+  .impact.live{display:grid;grid-template-rows:1fr;height:300vh}
+  .impact.live .imp-page{grid-row:1;grid-column:1;position:sticky;top:0;
+    min-height:100lvh;opacity:0;pointer-events:none;transition:opacity .6s ease}
+  .impact.live .imp-page.is-live{opacity:1;pointer-events:auto}
+  /* il respiro impBreath (bonus V26) è pensato per pagine che scorrono in
+     flusso; con grid+sticky il suo animation-timeline:view() non è
+     verificabile senza device (collaudo obbligatorio) — disattivato qui,
+     il crossfade stesso è il movimento della foto su desktop. */
+  .impact.live .imp-bg{animation:none}
 }
 .gse-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
 .gse-step{position:relative;display:flex;gap:18px;align-items:flex-start;padding:20px 22px 20px 28px;border-radius:14px;opacity:.35;will-change:transform,opacity}
@@ -1587,7 +1629,7 @@ input[type=range]:active::-moz-range-thumb{transform:scale(1.22)}
           <div class="p-tags"><span class="hot">Detrazione 65%</span><span>Caldo + freddo</span><span>Addio gas</span></div>
         </div>
         <div class="p-media">
-          <div class="zoom"><img loading="lazy" src="./servizio2.webp" alt="Pompa di calore moderna installata su facciata"></div>
+          <div class="zoom"><img class="card-img" loading="lazy" src="./servizio2.webp" alt="Pompa di calore moderna installata su facciata"></div>
           <div class="m-cap">Pompe di calore</div>
         </div>
       </article>
@@ -2787,6 +2829,49 @@ if (FX){
   }
 })();
 
+/* ============ 5f. v27 — #IMPATTO, sticky/crossfade SOLO DESKTOP ============
+   Richiesta cliente: ripristinare l'effetto per >980px, mobile intatta.
+   NON risuscita il meccanismo V26 cancellato (imp-stage/imp-scene/
+   impactStory restano a zero occorrenze, verificato sotto). È un meccanismo
+   NUOVO, stessa architettura del gse-track qui sopra: sticky del browser
+   (non pin GSAP, niente spacer, niente misure fragili), le 3 .imp-page
+   sovrapposte via CSS grid (vedi @media 981px), il JS sceglie solo quale
+   ha opacity:1 in base al progress. Sotto i 981px gsap.matchMedia non
+   aggiunge mai .live: .impact resta la V26 pura, invariata.
+   gsap.matchMedia invece di window.innerWidth>980 per coerenza con il resto
+   del file (v. servicesHZ, gse-track) e perché reagisce al resize live. */
+(function impattoDesktop(){
+  const impact=document.getElementById('impatto');
+  if(!impact) return;
+  const pages=gsap.utils.toArray('.imp-page',impact);
+  if(pages.length<2) return;
+  const mm=gsap.matchMedia();
+  mm.add('(min-width:981px)',()=>{
+    impact.classList.add('live');
+    let lastI=-1;
+    const setActive=i=>{
+      if(i===lastI) return;
+      lastI=i;
+      pages.forEach((p,k)=>p.classList.toggle('is-live',k===i));
+    };
+    setActive(0); /* stato iniziale sincrono: niente attesa del primo scroll */
+    const st=ScrollTrigger.create({
+      trigger:impact,start:'top top',end:'bottom bottom',scrub:1,
+      invalidateOnRefresh:true,
+      onUpdate:self=>{
+        const i=Math.min(pages.length-1,Math.floor(self.progress*pages.length));
+        setActive(i);
+      }
+    });
+    return ()=>{
+      st.kill();
+      impact.classList.remove('live');
+      pages.forEach(p=>p.classList.remove('is-live'));
+      lastI=-1;
+    };
+  });
+})();
+
 /* ---------- 5e. v16 — IL FIUME DELLE RECENSIONI ----------
    Due file in controcorrente con la fisica dei marquee (scrollVel condivisa),
    che rallentano con dolcezza sotto il mouse. Tilt 3D + spotlight sulle card
@@ -3002,7 +3087,8 @@ document.querySelectorAll('[data-theme]').forEach(sec=>{
 
   if(!FX){
     medias.forEach(m=>m.style.clipPath='inset(0 0 0 0)');
-    imgs.forEach(i=>i.style.transform='scale(1.02)');
+    /* v27: servizio2 (imgs[1]) resta a scale naturale, mai "zoomata" — vedi .card-img */
+    imgs.forEach((i,k)=>{if(k!==1)i.style.transform='scale(1.02)'});
     return;
   }
 
@@ -3080,15 +3166,16 @@ document.querySelectorAll('[data-theme]').forEach(sec=>{
 
     panels.slice(1).forEach((p,k)=>{
       const media=medias[k+1],img=imgs[k+1];
+      const isStaticImg=(k+1)===1; /* v27: servizio2 non zooma, vedi .card-img */
       gsap.set(media,{clipPath:'inset(0 100% 0 0)'});
-      gsap.set(img,{scale:1.28});
+      if(!isStaticImg)gsap.set(img,{scale:1.28});
       gsap.set(caps[k+1],{yPercent:140,opacity:0});
-      gsap.timeline({scrollTrigger:{
+      const tl=gsap.timeline({scrollTrigger:{
         containerAnimation:tween,trigger:p,start:'left 85%',end:'left 15%',scrub:1
       }})
-        .to(media,{clipPath:'inset(0 0% 0 0)',ease:'none'},0)
-        .to(img,{scale:1.12,ease:'none'},0)
-        .to(caps[k+1],{yPercent:0,opacity:1,ease:'none'},.4);
+        .to(media,{clipPath:'inset(0 0% 0 0)',ease:'none'},0);
+      if(!isStaticImg)tl.to(img,{scale:1.12,ease:'none'},0);
+      tl.to(caps[k+1],{yPercent:0,opacity:1,ease:'none'},.4);
       /* testo: entra scaglionato nella prima metà della traversata */
       gsap.timeline({scrollTrigger:{
         containerAnimation:tween,trigger:p,start:'left 82%',end:'left 34%',scrub:1
@@ -3106,6 +3193,7 @@ document.querySelectorAll('[data-theme]').forEach(sec=>{
          cornice clippata per tutta la traversata (proprietà xPercent,
          mai in conflitto con lo scale della timeline sopra) — */
     panels.forEach((p,k)=>{
+      if(k===1)return; /* v27: servizio2 statica, niente parallasse xPercent */
       gsap.fromTo(imgs[k],{xPercent:5},{xPercent:-5,ease:'none',
         scrollTrigger:k===0
           ?{trigger:hz,start:'top top',end:()=>'+='+dist()*.4,scrub:1}
@@ -3141,11 +3229,12 @@ document.querySelectorAll('[data-theme]').forEach(sec=>{
 
   mm.add('(max-width: 980px)',()=>{
     medias.forEach((m,k)=>{
+      const isStaticImg=k===1; /* v27: servizio2 statica anche su mobile */
       gsap.set(m,{clipPath:'inset(0 0 100% 0)'});
-      gsap.set(imgs[k],{scale:1.18});
-      gsap.timeline({scrollTrigger:{trigger:m,start:'top 85%',end:'top 40%',scrub:1}})
-        .to(m,{clipPath:'inset(0 0 0% 0)',ease:'none'},0)
-        .to(imgs[k],{scale:1.04,ease:'none'},0);
+      if(!isStaticImg)gsap.set(imgs[k],{scale:1.18});
+      const tl=gsap.timeline({scrollTrigger:{trigger:m,start:'top 85%',end:'top 40%',scrub:1}})
+        .to(m,{clipPath:'inset(0 0 0% 0)',ease:'none'},0);
+      if(!isStaticImg)tl.to(imgs[k],{scale:1.04,ease:'none'},0);
     });
     /* v15 — anche in verticale il testo entra scaglionato (once, leggero) */
     const mobParts=panels.map(p=>p.querySelectorAll('.p-body > *'));
