@@ -705,7 +705,7 @@ footer .wrap{position:relative;z-index:2;display:flex;flex-direction:column;gap:
 body.menu-open{overflow:hidden}
 .nav-scrim{position:fixed;inset:0;background:rgba(4,8,15,.5);z-index:100;opacity:0;pointer-events:none;transition:opacity .42s var(--ease)}
 .nav-scrim.show{opacity:1;pointer-events:auto}
-body::after{content:'VER-2026-07-22-V68';position:fixed;bottom:8px;left:8px;z-index:99999;font:600 11px/1 monospace;color:#fff;background:#c0392b;padding:4px 8px;border-radius:4px;pointer-events:none}
+body::after{content:'VER-2026-07-22-V69';position:fixed;bottom:8px;left:8px;z-index:99999;font:600 11px/1 monospace;color:#fff;background:#c0392b;padding:4px 8px;border-radius:4px;pointer-events:none}
 .gse-split{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:center;min-height:64vh}
 .gse-track{position:relative}
 @media (min-width:981px){
@@ -880,10 +880,20 @@ input[type=range]:active::-moz-range-thumb{transform:scale(1.22)}
 .cmp-new{width:100%;padding:0;margin:0;border:none;box-shadow:none}
 .cmp-new b{font-size:1.6rem}
 .cmp-vs{justify-self:center;align-self:center;
-  position:static;margin:16px 0 0;width:auto;height:auto;
-  padding:7px 18px;border-width:1.5px;border-radius:100px;
-  font-size:.85rem;white-space:nowrap;
-  box-shadow:0 8px 20px -6px rgba(245,166,35,.4)}
+  position:static;margin:22px 0 2px;width:auto;height:auto;
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  padding:16px 30px;border:1.5px solid rgba(245,166,35,.4);border-radius:20px;
+  background:rgba(245,166,35,.06);white-space:nowrap;
+  box-shadow:0 10px 30px -8px rgba(245,166,35,.35)}
+.cmp-vs-lbl{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;
+  font-weight:600;color:var(--muted-d)}
+.cmp-vs-num{font-family:'Bricolage Grotesque',sans-serif;font-weight:780;
+  font-size:2.6rem;line-height:1;color:var(--sole);letter-spacing:-.03em;
+  font-variant-numeric:tabular-nums;text-shadow:0 4px 30px rgba(245,166,35,.4)}
+@media (max-width:600px){
+  .cmp-vs{padding:14px 26px}
+  .cmp-vs-num{font-size:2.2rem}
+}
 .stg-chip{overflow:visible;border:none;background:rgba(255,255,255,.035)}
 .stg-chips{gap:1px;background:var(--line-d);border:1px solid var(--line-d);
   border-radius:20px;overflow:visible}
@@ -951,10 +961,7 @@ input[type=range]:active::-moz-range-thumb{transform:scale(1.22)}
   .stg-chip{padding:16px 14px;gap:6px}
   .stg-chip .lblc{min-height:2.2em}
 }
-.foot-h{margin-bottom:16px}
-@media (max-width:720px){
-  .foot-h{text-align:center;margin-bottom:4px}
-}
+.foot-contact-row{margin-top:22px}
 @media (min-width:721px){
   .foot-contact-row{flex-wrap:nowrap;gap:12px;align-items:stretch}
   .fc-link{flex:1 1 0;min-width:0;justify-content:center;text-align:center}
@@ -967,13 +974,13 @@ input[type=range]:active::-moz-range-thumb{transform:scale(1.22)}
 .band:nth-child(1) .band-bg{
   opacity:1;
   background-image:
-    radial-gradient(120% 85% at 20% 118%, rgba(245,166,35,.55) 0%, rgba(244,116,11,.28) 30%, rgba(245,166,35,.06) 52%, transparent 68%),
-    radial-gradient(90% 70% at 88% -12%, rgba(255,196,90,.20) 0%, rgba(244,116,11,.08) 38%, transparent 64%),
-    conic-gradient(from 210deg at 22% 112%, rgba(255,190,80,.16), transparent 42%, transparent 78%, rgba(255,190,80,.10)),
-    repeating-linear-gradient(122deg, rgba(255,255,255,.045) 0px, rgba(255,255,255,.045) 1px, transparent 1px, transparent 30px),
-    repeating-linear-gradient(32deg, rgba(255,255,255,.03) 0px, rgba(255,255,255,.03) 1px, transparent 1px, transparent 30px),
+    linear-gradient(105deg, rgba(7,12,22,.86) 0%, rgba(7,12,22,.62) 30%, rgba(7,12,22,.30) 55%, rgba(7,12,22,.12) 100%),
+    radial-gradient(120% 90% at 18% 116%, rgba(245,166,35,.34) 0%, rgba(244,116,11,.14) 34%, transparent 62%),
+    url('https://d8j0ntlcm91z4.cloudfront.net/user_37wLEcgtT99OWtuf2iqxdzZdDOJ/hf_20260722_203257_3df05680-3cfb-40ed-94c0-a8aa4dc2a65d.png'),
+    radial-gradient(120% 85% at 20% 118%, rgba(245,166,35,.5) 0%, rgba(244,116,11,.26) 30%, transparent 60%),
+    repeating-linear-gradient(122deg, rgba(255,255,255,.04) 0px, rgba(255,255,255,.04) 1px, transparent 1px, transparent 30px),
     linear-gradient(158deg, #0F1A32 0%, #0A1122 46%, #070C16 100%);
-  background-size:cover;background-position:center;
+  background-size:cover;background-position:center;background-repeat:no-repeat;
 }
 .band:nth-child(1):hover .band-bg,.band:nth-child(1).lit .band-bg{opacity:1}
 </style>
@@ -1730,7 +1737,7 @@ input[type=range]:active::-moz-range-thumb{transform:scale(1.22)}
         <div class="stg-compare">
           <div class="cmp"><span class="cmp-lbl">Oggi spendi</span><b id="barOld">1.440 €/anno</b></div>
           <div class="cmp cmp-new"><span class="cmp-lbl">Con REALHOME</span><b id="barNew">216 €/anno</b></div>
-          <div class="cmp-vs" aria-hidden="true">&minus;85%</div>
+          <div class="cmp-vs" aria-hidden="true"><span class="cmp-vs-lbl">Il tuo risparmio</span><span class="cmp-vs-num" id="vsPct">&minus;85%</span></div>
         </div>
         <div class="stg-chips">
           <div class="stg-chip"><svg class="ci" viewBox="0 0 22 22" aria-hidden="true"><rect x="3" y="5" width="16" height="12" rx="1.5"/><line x1="3" y1="11" x2="19" y2="11"/><line x1="8.3" y1="5" x2="8.3" y2="17"/><line x1="13.6" y1="5" x2="13.6" y2="17"/></svg><span class="lblc">Pannelli consigliati</span><b><span id="nPanels">9</span> × 450 W</b></div>
@@ -1918,10 +1925,6 @@ input[type=range]:active::-moz-range-thumb{transform:scale(1.22)}
       <span class="kicker fx"><span class="ora">H 19:42</span><span class="sep">·</span>L'ora d'oro</span>
       <h2 class="tr">Il primo passo <em>è gratis.</em></h2>
       <p class="sub fx">Sopralluogo e analisi dei consumi, senza impegno. Ti ricontattiamo entro 24 ore con un preventivo su misura.</p>
-      <div class="c-info fx">
-        <div><b>Contatti</b>Telefono · Email<br>Indirizzo sede</div>
-        <div><b>Orari</b>Lun – Ven 9:00 – 18:00</div>
-      </div>
     </div>
     <div class="form-card fx">
       <div class="field"><label for="fname">Nome e cognome</label><input id="fname" type="text" autocomplete="name" placeholder="Mario Rossi"></div>
@@ -1956,7 +1959,6 @@ input[type=range]:active::-moz-range-thumb{transform:scale(1.22)}
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M4 9h10M10 5l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </a>
       <div class="foot-contact">
-        <h3 class="foot-h">Contatti</h3>
         <div class="foot-contact-row">
           <a class="fc-link" href="tel:+39059000000"><svg class="fc-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4H5.3c-1 0-1.9.9-1.8 1.9.4 4 2.1 7.8 5 10.6s6.6 4.6 10.6 5c1 .1 1.9-.8 1.9-1.8V18c0-.9-.6-1.6-1.5-1.8l-2.3-.5c-.7-.2-1.5.1-1.9.7l-.7 1c-2.4-1.2-4.3-3.1-5.5-5.5l1-.7c.6-.4.9-1.2.7-1.9l-.5-2.3C8.6 5.6 7.9 5 7 5z"/></svg><span>+39 059 000000</span></a>
           <a class="fc-link" href="mailto:info@realhome.it"><svg class="fc-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 7l8 6 8-6"/></svg><span>info@realhome.it</span></a>
@@ -3223,7 +3225,13 @@ function submitLead(){
   });
   add('.hero h1',12);add('.hero-sub',14);add('.ctas',9);add('.hero-hud',6);
   add('#heroSky',3);add('#heroMid',7);add('#heroFg',13);
-  add('.stg-head',10);add('.stg-chips',5);add('.stg-compare',7);
+  add('.stg-head',10);
+  /* V69 — .stg-chips e .stg-compare NON sono più layer di parallasse:
+     essendo mossi da quickTo(x/y) su mousemove, al primo caricamento
+     restavano decentrati di qualche px finché il primo movimento del
+     mouse non li assestava a 0 (il cliente li vedeva "slittare"). Sono
+     tessere interattive con valori da leggere: devono stare dritte e
+     fisse fin dal primo frame, quindi le escludo dal motion layer. */
   add('.arch',9);
   window.addEventListener('mousemove',e=>{
     const nx=e.clientX/innerWidth-.5, ny=e.clientY/innerHeight-.5;
