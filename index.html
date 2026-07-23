@@ -717,7 +717,7 @@ footer .wrap{position:relative;z-index:2;display:flex;flex-direction:column;gap:
 body.menu-open{overflow:hidden}
 .nav-scrim{position:fixed;inset:0;background:rgba(4,8,15,.5);z-index:100;opacity:0;pointer-events:none;transition:opacity .42s var(--ease)}
 .nav-scrim.show{opacity:1;pointer-events:auto}
-body::after{content:'VER-2026-07-23-V71';position:fixed;bottom:8px;left:8px;z-index:99999;font:600 11px/1 monospace;color:#fff;background:#c0392b;padding:4px 8px;border-radius:4px;pointer-events:none}
+body::after{content:'VER-2026-07-23-V72';position:fixed;bottom:8px;left:8px;z-index:99999;font:600 11px/1 monospace;color:#fff;background:#c0392b;padding:4px 8px;border-radius:4px;pointer-events:none}
 .gse-split{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:center;min-height:64vh}
 .gse-track{position:relative}
 @media (min-width:981px){
@@ -973,18 +973,24 @@ input[type=range]:active::-moz-range-thumb{transform:scale(1.22)}
   .stg-chip{padding:16px 14px;gap:6px}
   .stg-chip .lblc{min-height:2.2em}
 }
+.stg-chip,
+.stg-chip:hover,
+.stg-chip:active,
+.stg-chip:focus{
+  transform:none!important;
+  will-change:auto!important;
+  transition:border-color .15s ease,background-color .15s ease!important;
+}
+.stg-chips,.stg-chip{cursor:default}
 .foot-contact-row{margin-top:22px}
 @media (min-width:721px){
-  .foot-contact-row{flex-wrap:nowrap;gap:12px;align-items:stretch}
-  .fc-link{flex:1 1 0;min-width:0;justify-content:center;text-align:center}
+  .foot-contact-row{flex-wrap:wrap;gap:12px;align-items:stretch;
+    justify-content:flex-start}
+  .fc-link{flex:0 1 auto;min-width:0;justify-content:center;text-align:center}
   .fc-link span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-}
-@media (max-width:900px) and (min-width:721px){
-  .foot-contact-row{flex-wrap:wrap}
-  .fc-link{flex:1 1 46%}
+  .fc-link:nth-child(3){max-width:230px}
 }
 .band:nth-child(1) .band-bg{
-  opacity:1;
   background-image:
     linear-gradient(105deg, rgba(7,12,22,.86) 0%, rgba(7,12,22,.62) 30%, rgba(7,12,22,.30) 55%, rgba(7,12,22,.12) 100%),
     radial-gradient(120% 90% at 18% 116%, rgba(245,166,35,.34) 0%, rgba(244,116,11,.14) 34%, transparent 62%),
@@ -994,7 +1000,6 @@ input[type=range]:active::-moz-range-thumb{transform:scale(1.22)}
     linear-gradient(158deg, #0F1A32 0%, #0A1122 46%, #070C16 100%);
   background-size:cover;background-position:center;background-repeat:no-repeat;
 }
-.band:nth-child(1):hover .band-bg,.band:nth-child(1).lit .band-bg{opacity:1}
 html.preintro,html.preintro body{overflow:hidden!important;height:100%;touch-action:none}
 #preintro{position:fixed;inset:0;z-index:300;
   display:flex;align-items:center;justify-content:center;
@@ -2190,7 +2195,7 @@ html:not([data-preintro="1"]) #preintro{display:none}
         <div class="foot-contact-row">
           <a class="fc-link" href="tel:+39059000000"><svg class="fc-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4H5.3c-1 0-1.9.9-1.8 1.9.4 4 2.1 7.8 5 10.6s6.6 4.6 10.6 5c1 .1 1.9-.8 1.9-1.8V18c0-.9-.6-1.6-1.5-1.8l-2.3-.5c-.7-.2-1.5.1-1.9.7l-.7 1c-2.4-1.2-4.3-3.1-5.5-5.5l1-.7c.6-.4.9-1.2.7-1.9l-.5-2.3C8.6 5.6 7.9 5 7 5z"/></svg><span>+39 059 000000</span></a>
           <a class="fc-link" href="mailto:info@realhome.it"><svg class="fc-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 7l8 6 8-6"/></svg><span>info@realhome.it</span></a>
-          <a class="fc-link" href="https://www.google.com/maps/search/?api=1&amp;query=Via+dell%27Innovazione+10+41121+Modena+MO" target="_blank" rel="noopener"><svg class="fc-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s7-7.5 7-12.5A7 7 0 0 0 5 9.5C5 14.5 12 22 12 22z"/><circle cx="12" cy="9.5" r="2.3"/></svg><span>Via dell'Innovazione, 10 · Modena (MO)</span></a>
+          <a class="fc-link" href="https://www.google.com/maps/search/?api=1&amp;query=Via+dell%27Innovazione+10+41121+Modena+MO" target="_blank" rel="noopener" title="Via dell'Innovazione, 10 · Modena (MO)"><svg class="fc-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s7-7.5 7-12.5A7 7 0 0 0 5 9.5C5 14.5 12 22 12 22z"/><circle cx="12" cy="9.5" r="2.3"/></svg><span>Via dell'Innovazione, 10 · Modena (MO)</span></a>
         </div>
         <p class="foot-hours"><span class="dot"></span>Lun–Ven · 9:00–18:00</p>
       </div>
@@ -3304,7 +3309,11 @@ function update(){
   if(FX){
     hideHint();
     gsap.fromTo('#saveY',{scale:1.06},{scale:1,duration:.9,ease:'elastic.out(1,.35)',overwrite:'auto'});
-    gsap.fromTo('.stg-chip',{y:7},{y:0,duration:.75,ease:'elastic.out(1,.5)',stagger:.045,overwrite:'auto'});
+    /* V72 — RIMOSSO il rimbalzo elastico delle .stg-chip a ogni movimento
+       dello slider (era: fromTo y:7→0, stagger .045). Richiesta esplicita:
+       le 4 tessere devono restare TOTALMENTE statiche. I valori dentro
+       continuano ad aggiornarsi normalmente: si muovono i numeri, non le
+       tessere. */
   }
   if(!FX){Object.assign(state,t);render();return}
   gsap.to(state,{...t,duration:.75,ease:'power3.out',overwrite:true,onUpdate:render});
@@ -3336,17 +3345,19 @@ if(FX && simSvg){
     setPanels(state.panels,true);
     gsap.fromTo('#saveY',{scale:.88},{scale:1,duration:1,ease:'elastic.out(1,.45)',overwrite:'auto'});
     gsap.from('.stg-compare>*',{y:18,opacity:0,duration:.6,ease:'power3.out',stagger:.1});
-    gsap.from('.stg-chip',{y:26,opacity:0,duration:.7,ease:'power3.out',stagger:.08});
+    /* V72 — RIMOSSA l'entrata animata delle .stg-chip (era: from y:26,
+       opacity:0, stagger .08). Era la causa dello "slittamento al primo
+       caricamento": le tessere partivano 26px più in basso e trasparenti,
+       poi salivano a posto. Ora nascono già ferme nella loro posizione
+       finale, al millimetro, dal primo frame. */
   }});
   gsap.to('#sunBreath',{scale:1.05,yoyo:true,repeat:-1,duration:3.2,ease:'sine.inOut'});
   gsap.to('#stgHint',{opacity:.35,yoyo:true,repeat:-1,duration:1.1,ease:'sine.inOut'});
-  if(window.matchMedia('(hover:hover)').matches){
-    document.querySelectorAll('.stg-chip').forEach(ch=>{
-      ch.addEventListener('mousemove',e=>{const r=ch.getBoundingClientRect();
-        gsap.to(ch,{x:(e.clientX-r.left-r.width/2)*.12,y:(e.clientY-r.top-r.height/2)*.18,duration:.4,ease:'power2.out',overwrite:'auto'})});
-      ch.addEventListener('mouseleave',()=>gsap.to(ch,{x:0,y:0,duration:.6,ease:'elastic.out(1,.4)',overwrite:'auto'}));
-    });
-  }
+  /* V72 — RIMOSSO il magnetismo al mouse delle .stg-chip. Ogni tessera
+     seguiva il cursore (gsap.to x/y su mousemove, ritorno elastico su
+     mouseleave): era il "movimento legato al mouse" segnalato dal cliente.
+     Le tessere sono dati da leggere, non elementi interattivi: ora sono
+     completamente immobili. */
 }else if(simSvg){
   /* scena compiuta: ora d'oro piena, pannelli montati, niente moto */
   gsap.set('#skyShade',{opacity:0});
@@ -3422,7 +3433,9 @@ function submitLead(){
 
   /* B. cursore solare: si dilata sugli elementi interattivi */
   const cur=document.getElementById('cursor');
-  if(cur)document.querySelectorAll('a,button,input[type=range],.stg-chip,.gse-step').forEach(el=>{
+  /* V72 — .stg-chip TOLTA da questa lista: il cursore si dilatava sopra le
+     tessere segnalandole come interattive, ma sono dati statici. */
+  if(cur)document.querySelectorAll('a,button,input[type=range],.gse-step').forEach(el=>{
     el.addEventListener('mouseenter',()=>gsap.to(cur,{scale:2.6,opacity:.5,duration:.3,ease:'power2.out'}));
     el.addEventListener('mouseleave',()=>gsap.to(cur,{scale:1,opacity:.9,duration:.45,ease:'elastic.out(1,.4)'}));
   });
