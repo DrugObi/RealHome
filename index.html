@@ -714,7 +714,7 @@ footer .wrap{position:relative;z-index:2;display:flex;flex-direction:column;gap:
 body.menu-open{overflow:hidden}
 .nav-scrim{position:fixed;inset:0;background:rgba(4,8,15,.5);z-index:100;opacity:0;pointer-events:none;transition:opacity .42s var(--ease)}
 .nav-scrim.show{opacity:1;pointer-events:auto}
-body::after{content:'VER-2026-07-23-V74';position:fixed;bottom:8px;left:8px;z-index:99999;font:600 11px/1 monospace;color:#fff;background:#c0392b;padding:4px 8px;border-radius:4px;pointer-events:none}
+body::after{content:'VER-2026-07-23-V75';position:fixed;bottom:8px;left:8px;z-index:99999;font:600 11px/1 monospace;color:#fff;background:#c0392b;padding:4px 8px;border-radius:4px;pointer-events:none}
 .gse-split{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:center;min-height:64vh}
 .gse-track{position:relative}
 @media (min-width:981px){
@@ -1052,6 +1052,142 @@ html:not([data-preintro="1"]) #preintro{display:none}
 @media (prefers-reduced-motion:reduce){
   #preintro{transition:none}
 }
+
+/* ============================================================
+   VER-2026-07-23-V75 — conformità legale (GDPR/ePrivacy/Codice
+   del Consumo) + badge risparmio orizzontale + allineamento footer.
+   In coda al foglio come da convenzione: nessuna regola sopra è
+   stata modificata, tutto ciò che segue vince per ordine di cascata.
+   ============================================================ */
+
+/* ---- 1. BADGE RISPARMIO: da blocco quadrato a banner orizzontale ----
+   Su desktop il badge era una colonna (label sopra, numero sotto) in una
+   griglia a colonna singola: un quadrotto centrato che lasciava due vuoti
+   laterali dentro .stg-compare. Da 721px in su diventa una BARRA che
+   occupa tutta la larghezza della card, con label a sinistra e numero a
+   destra, allineati sulla stessa linea di base ottica.
+   Sotto 721px resta esattamente il blocco verticale attuale (invariato):
+   su schermi stretti la barra orizzontale spezzerebbe "Il tuo risparmio". */
+@media (min-width:721px){
+  .stg-compare{justify-items:stretch}
+  .cmp-vs{
+    justify-self:stretch;align-self:auto;
+    width:100%;margin:20px 0 0;
+    flex-direction:row;align-items:center;justify-content:space-between;
+    gap:24px;padding:16px 28px;border-radius:16px;
+    background:linear-gradient(90deg,rgba(245,166,35,.12),rgba(245,166,35,.05));
+  }
+  .cmp-vs-lbl{font-size:.78rem;letter-spacing:.16em;line-height:1}
+  .cmp-vs-num{font-size:2.3rem;line-height:1}
+}
+@media (min-width:1024px){
+  .cmp-vs{padding:18px 34px}
+  .cmp-vs-num{font-size:2.6rem}
+}
+
+/* ---- 2. ALLINEAMENTO CONTATTI FOOTER (desktop) ----
+   V74 aveva verificato staticamente la regola V72 senza poterla vedere a
+   schermo. Il disallineamento residuo non veniva dal flex dei tasti ma dal
+   fatto che .foot-contact / .foot-contact-row non avevano un vincolo di
+   box proprio: ereditavano il padding di contesto e il loro bordo sinistro
+   poteva scostarsi da quello del CTA. Qui azzero esplicitamente margini e
+   padding laterali di entrambi i contenitori e del .foot-hours, così il
+   bordo sinistro dei tasti coincide al pixel con quello di .foot-cta e
+   dell'h2 .foot-claim — l'allineamento non dipende più da nulla di
+   ereditato. Il tetto sul terzo tasto resta (V72). */
+@media (min-width:721px){
+  .foot-hero>.foot-contact{
+    width:100%;max-width:100%;
+    margin-left:0;margin-right:0;padding-left:0;padding-right:0;
+  }
+  .foot-hero>.foot-contact>.foot-contact-row{
+    margin-left:0;margin-right:0;padding-left:0;padding-right:0;
+    justify-content:flex-start;align-items:stretch;
+  }
+  .foot-hero>.foot-contact>.foot-hours{margin-left:0;padding-left:0}
+  .foot-hero>.foot-cta{margin-left:0}
+}
+
+/* ---- 3. CONSENSO COOKIE ----
+   Nessuno script non essenziale parte prima del consenso: il gate è in JS
+   (vedi blocco "CONSENSO" in fondo al documento). Qui solo la presentazione.
+   z-index 100000: sopra al badge di versione (99999) e a ogni overlay. */
+.cc-scrim{position:fixed;inset:0;z-index:99998;background:rgba(4,8,16,.55);
+  backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:opacity .35s}
+.cc-scrim.show{opacity:1;pointer-events:auto}
+.cc{position:fixed;z-index:100000;left:50%;bottom:24px;transform:translate(-50%,140%);
+  width:min(880px,calc(100vw - 32px));
+  background:linear-gradient(165deg,#0E1626,#0A1220);
+  border:1px solid rgba(245,166,35,.34);border-radius:20px;
+  box-shadow:0 30px 90px -20px rgba(0,0,0,.75),0 0 60px -30px rgba(245,166,35,.4);
+  padding:26px 28px;color:#F6F1E6;
+  font-family:'Instrument Sans',system-ui,sans-serif;
+  transition:transform .5s cubic-bezier(.16,.84,.44,1),opacity .4s;opacity:0}
+.cc.show{transform:translate(-50%,0);opacity:1}
+.cc[hidden]{display:none}
+.cc-h{display:flex;align-items:center;gap:10px;margin:0 0 10px;
+  font-family:'Bricolage Grotesque',sans-serif;font-weight:780;
+  font-size:1.12rem;letter-spacing:-.01em;color:#F6F1E6}
+.cc-h svg{flex:none;width:22px;height:22px;stroke:#F5A623;fill:none;stroke-width:1.7;
+  stroke-linecap:round;stroke-linejoin:round}
+.cc-txt{margin:0 0 18px;font-size:.92rem;line-height:1.6;color:rgba(246,241,230,.78)}
+.cc-txt a{color:#F5A623;font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.cc-acts{display:flex;flex-wrap:wrap;gap:10px}
+.cc-btn{flex:0 1 auto;cursor:pointer;font:600 .9rem/1 'Instrument Sans',sans-serif;
+  padding:14px 24px;border-radius:100px;border:1px solid rgba(246,241,230,.26);
+  background:rgba(246,241,230,.04);color:#F6F1E6;
+  transition:border-color .25s,background .25s,transform .2s}
+.cc-btn:hover{border-color:#F5A623;background:rgba(245,166,35,.1);transform:translateY(-2px)}
+.cc-btn-yes{margin-left:auto;border-color:transparent;color:#0A1220;font-weight:700;
+  background:linear-gradient(120deg,#F5A623,#F4740B);
+  box-shadow:0 10px 30px -10px rgba(245,166,35,.7)}
+.cc-btn-yes:hover{background:linear-gradient(120deg,#F7B23F,#F5820F);border-color:transparent}
+/* pannello preferenze */
+.cc-prefs{display:none;margin:18px 0 4px;border-top:1px solid rgba(246,241,230,.14);padding-top:18px}
+.cc.open .cc-prefs{display:block}
+.cc-row{display:flex;align-items:flex-start;gap:14px;padding:12px 0;
+  border-bottom:1px solid rgba(246,241,230,.09)}
+.cc-row:last-child{border-bottom:none}
+.cc-row-txt{flex:1 1 auto;min-width:0}
+.cc-row-t{display:block;font-weight:700;font-size:.9rem;margin-bottom:3px}
+.cc-row-d{display:block;font-size:.82rem;line-height:1.5;color:rgba(246,241,230,.66)}
+.cc-sw{flex:none;position:relative;width:46px;height:26px;margin-top:2px}
+.cc-sw input{position:absolute;inset:0;width:100%;height:100%;opacity:0;margin:0;cursor:pointer}
+.cc-sw i{position:absolute;inset:0;border-radius:100px;background:rgba(246,241,230,.16);
+  border:1px solid rgba(246,241,230,.24);transition:background .25s,border-color .25s;pointer-events:none}
+.cc-sw i::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;
+  border-radius:50%;background:#F6F1E6;transition:transform .25s}
+.cc-sw input:checked+i{background:rgba(245,166,35,.5);border-color:#F5A623}
+.cc-sw input:checked+i::after{transform:translateX(20px)}
+.cc-sw input:focus-visible+i{outline:2px solid #F5A623;outline-offset:2px}
+.cc-sw input:disabled+i{opacity:.55;cursor:not-allowed}
+.cc-sw input:disabled{cursor:not-allowed}
+/* richiamo permanente per revocare il consenso (obbligo ePrivacy/EDPB) */
+.cc-reopen{background:none;border:none;padding:0;cursor:pointer;
+  font:inherit;color:inherit;text-decoration:underline;text-underline-offset:3px}
+@media (max-width:720px){
+  .cc{left:0;right:0;bottom:0;width:100%;transform:translateY(100%);
+    border-radius:20px 20px 0 0;padding:22px 18px calc(22px + env(safe-area-inset-bottom))}
+  .cc.show{transform:translateY(0)}
+  .cc-acts{flex-direction:column-reverse}
+  .cc-btn{width:100%;text-align:center}
+  .cc-btn-yes{margin-left:0}
+}
+@media (prefers-reduced-motion:reduce){
+  .cc,.cc-scrim{transition:none}
+}
+
+/* ---- 4. CONSENSO PRIVACY NEL FORM (art. 6 e 7 GDPR) ----
+   Checkbox NON pre-spuntata: il consenso deve essere un atto positivo
+   inequivocabile. Lo stile è quello del form chiaro, non del banner. */
+.field-consent{display:flex;align-items:flex-start;gap:11px;margin:4px 0 18px}
+.field-consent input[type=checkbox]{flex:none;width:19px;height:19px;margin:2px 0 0;
+  accent-color:#F4740B;cursor:pointer}
+.field-consent label{font-size:.82rem;line-height:1.55;color:#39424E;cursor:pointer}
+.field-consent a{color:#F4740B;font-weight:600;text-decoration:underline;text-underline-offset:2px}
+.field-consent.err label{color:#C4373B}
+.field-consent.err input[type=checkbox]{outline:2px solid #E5484D;outline-offset:2px}
+.form-legal{margin-top:12px;font-size:.72rem;line-height:1.55;color:var(--muted-l)}
 </style>
 </head>
 <body>
@@ -1975,7 +2111,7 @@ html:not([data-preintro="1"]) #preintro{display:none}
           <div class="stg-chip"><svg class="ci" viewBox="0 0 22 22" aria-hidden="true"><ellipse cx="11" cy="6.5" rx="7" ry="3"/><path d="M4 6.5v4.5c0 1.7 3.1 3 7 3s7-1.3 7-3V6.5"/><path d="M4 11v4.5c0 1.7 3.1 3 7 3s7-1.3 7-3V11"/></svg><span class="lblc">Risparmio in 20 anni</span><b id="save20">24.480 €</b></div>
           <div class="stg-chip"><svg class="ci" viewBox="0 0 22 22" aria-hidden="true"><path d="M18 3.5C8.5 5.5 4.5 11 5.5 18.5 12.5 17.5 18 12.5 18 3.5z"/><path d="M5.5 18.5C9 14 13 10 16.5 6.5"/></svg><span class="lblc">CO₂ evitata ogni anno</span><b id="co2Val">1,4 t</b></div>
         </div>
-        <p class="stg-note">Stime indicative: prezzo energia 0,30 €/kWh, resa 1.200 kWh/kWp anno, pannelli da 450 W, autoconsumo medio 85%. Il dimensionamento preciso arriva col sopralluogo gratuito.</p>
+        <p class="stg-note"><b>Simulazione non vincolante.</b> Stime indicative: prezzo energia 0,30 €/kWh, resa 1.200 kWh/kWp anno, pannelli da 450 W, autoconsumo medio 85%. Il dimensionamento preciso arriva col sopralluogo gratuito. I valori mostrati non costituiscono offerta contrattuale ai sensi dell'art. 1336 c.c. n&eacute; garanzia di risultato: dipendono da esposizione, consumi reali e prezzi dell'energia, variabili nel tempo.</p>
       </div>
     </div>
   </div>
@@ -2165,9 +2301,18 @@ html:not([data-preintro="1"]) #preintro{display:none}
           <option>Fotovoltaico</option><option>Fotovoltaico + pompa di calore</option><option>Ristrutturazione / infissi</option><option>Casa da zero</option>
         </select>
       </div>
+      <!-- V75 — consenso privacy: checkbox obbligatoria e NON pre-spuntata
+           (art. 6.1.a e art. 7 GDPR: il consenso deve essere un atto positivo
+           inequivocabile; una casella già barrata non è consenso valido —
+           C-673/17 Planet49). La validazione è in submitLead(). -->
+      <div class="field-consent" id="consentWrap">
+        <input type="checkbox" id="fprivacy">
+        <label for="fprivacy">Ho letto l'<a href="privacy.html" target="_blank" rel="noopener">informativa privacy</a> e acconsento al trattamento dei miei dati per essere ricontattato in merito alla richiesta di preventivo.<span aria-hidden="true"> *</span></label>
+      </div>
       <button class="btn btn-ink" style="width:100%" onclick="submitLead()"><span>Voglio il preventivo gratuito</span></button>
       <div class="form-ok" id="formOk">✓ Richiesta inviata! Ti ricontatteremo entro 24 ore.</div>
-      <p class="form-note">Inviando accetti l'informativa privacy. Nessuno spam, solo il tuo preventivo.</p>
+      <p class="form-note">Campi contrassegnati con * obbligatori. Nessuno spam, solo il tuo preventivo.</p>
+      <p class="form-legal">Titolare del trattamento: RealHome S.r.l., Via dell'Innovazione 10, 41121 Modena (MO) &middot; <a href="mailto:info@realhome.it">info@realhome.it</a>. I dati sono trattati solo per rispondere alla tua richiesta e conservati per il tempo necessario a gestirla. Puoi chiederne accesso, rettifica o cancellazione in ogni momento: vedi l'<a href="privacy.html">informativa completa</a>.</p>
     </div>
   </div>
 </section>
@@ -2236,16 +2381,20 @@ html:not([data-preintro="1"]) #preintro{display:none}
       <p class="legal">
         <span class="legal-brand">RealHome S.r.l.</span>
         <span>P.IVA 01234567890</span>
-        <span>REA MO-XXXXXX <i class="ph">da inserire</i></span>
-        <span>Cap. soc. XX.XXX € i.v. <i class="ph">da inserire</i></span>
+        <span>Iscritta al Registro Imprese di Modena &middot; REA MO-XXXXXX <i class="ph">da inserire</i></span>
+        <span>Cap. soc. XX.XXX &euro; i.v. <i class="ph">da inserire</i></span>
+        <span>PEC realhome@pec.it <i class="ph">da inserire</i></span>
       </p>
       <p class="legal legal-links">
         <span>© <span id="footYear">2026</span> RealHome S.r.l.</span>
         <a href="privacy.html">Privacy</a>
         <a href="cookie.html">Cookie</a>
         <a href="termini.html">Termini</a>
+        <!-- V75 — revoca del consenso: deve restare accessibile in ogni pagina
+             e in ogni momento (EDPB 03/2022). NON rimuovere questo link. -->
+        <a href="cookie.html" id="ccReopen" role="button">Preferenze cookie</a>
       </p>
-      <p class="disclaimer">Le percentuali di detrazione fiscale indicate sono soggette alla normativa vigente e possono variare in base alla tipologia di immobile e alle leggi di bilancio. Risparmi, dimensionamenti ed equivalenze ambientali sono stime indicative: il calcolo preciso viene fornito con il preventivo personalizzato.</p>
+      <p class="disclaimer">Le percentuali di detrazione fiscale indicate sono soggette alla normativa vigente e possono variare in base alla tipologia di immobile e alle leggi di bilancio. Risparmi, dimensionamenti ed equivalenze ambientali sono stime indicative: il calcolo preciso viene fornito con il preventivo personalizzato. Per i contratti conclusi fuori dai locali commerciali il consumatore ha diritto di recesso entro 14 giorni (artt. 52 ss. Codice del Consumo). Per le controversie &egrave; disponibile la piattaforma europea ODR: <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener">ec.europa.eu/consumers/odr</a>.</p>
     </div>
   </div>
   <button class="sunrise" id="sunrise" aria-label="Torna all'inizio — fai sorgere il sole">
@@ -3367,6 +3516,7 @@ function submitLead(){
      (Formspree/EmailJS) va agganciato qui: vedi §8 dell'handoff. */
   const name=document.getElementById('fname'), phone=document.getElementById('fphone');
   const ok=document.getElementById('formOk');
+  const priv=document.getElementById('fprivacy'), pw=document.getElementById('consentWrap');
   const bad=[];
   [name,phone].forEach(f=>{
     const empty=!f.value.trim();
@@ -3377,6 +3527,11 @@ function submitLead(){
   if(phone.value.trim()&&phone.value.replace(/\D/g,'').length<6){
     phone.style.borderColor='#E5484D';if(!bad.includes(phone))bad.push(phone);
   }
+  /* V75 — senza consenso privacy non si invia nulla: il trattamento sarebbe
+     privo di base giuridica. Il controllo sta QUI, prima di qualunque invio,
+     e va mantenuto anche quando submitLead() verrà collegato a un endpoint reale. */
+  if(pw)pw.classList.toggle('err',!(priv&&priv.checked));
+  if(!(priv&&priv.checked)){bad.push(priv||name);}
   if(bad.length){bad[0].focus();ok.style.display='none';return;}
   /* — qui andrà la fetch() all'endpoint reale — */
   ok.style.display='block';
@@ -3388,6 +3543,10 @@ function submitLead(){
   const el=document.getElementById(id);
   if(el)el.addEventListener('input',()=>{el.style.borderColor='';});
 });
+(function(){
+  const p=document.getElementById('fprivacy'), w=document.getElementById('consentWrap');
+  if(p&&w)p.addEventListener('change',()=>{if(p.checked)w.classList.remove('err');});
+})();
 
 /* ---- 12c. menu mobile ---- */
 (function mobileNav(){
@@ -4102,6 +4261,169 @@ window.addEventListener('resize',()=>{
       document.hidden?stop():start();
     });
   }
+})();
+</script>
+
+<!-- ============================================================
+     CONSENSO COOKIE (V75) — ePrivacy/GDPR, linee guida EDPB 03/2022
+     e provvedimento Garante 10 giugno 2021.
+
+     Requisiti implementati, da NON smontare senza rileggerli:
+       · appare al primo accesso, con scrim che oscura ma NON blocca lo
+         scroll della pagina (nessun "cookie wall": la navigazione resta
+         possibile anche senza scegliere);
+       · "Accetta tutti" e "Rifiuta tutti" hanno lo STESSO peso di
+         interazione (stesso livello, stessa riga, un solo click) — un
+         "rifiuta" nascosto o a due click è la contestazione più
+         frequente mossa dal Garante;
+       · i cookie tecnici sono dichiarati e non disattivabili (base
+         giuridica: legittimo interesse/necessità tecnica, non consenso);
+       · analitici/marketing partono SOLO dopo consenso esplicito
+         (vedi runConsented() nel blocco JS in fondo al documento);
+       · la scelta è revocabile in ogni momento dal link permanente nel
+         footer ("Preferenze cookie") — obbligo spesso dimenticato.
+
+     DA COMPLETARE quando verranno effettivamente installati script di
+     terze parti (oggi il sito NON ne carica di traccianti): elencare
+     ciascun servizio in cookie.html e agganciarlo dentro runConsented().
+     ============================================================ -->
+<div class="cc-scrim" id="ccScrim" aria-hidden="true"></div>
+<div class="cc" id="cookieBanner" role="dialog" aria-modal="false"
+     aria-labelledby="ccTitle" aria-describedby="ccTxt" hidden>
+  <h2 class="cc-h" id="ccTitle">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9 3.2 3.2 0 0 1-4.2-4.2A3.2 3.2 0 0 1 12 3z"/><circle cx="9.4" cy="10.2" r="1.05" fill="#F5A623" stroke="none"/><circle cx="14.2" cy="14.4" r="1.05" fill="#F5A623" stroke="none"/><circle cx="9.8" cy="15.4" r=".9" fill="#F5A623" stroke="none"/></svg>
+    Rispettiamo la tua privacy
+  </h2>
+  <p class="cc-txt" id="ccTxt">
+    Usiamo cookie tecnici necessari al funzionamento del sito e, solo con il tuo
+    consenso, cookie analitici per capire come viene usato. Nessuno script di
+    misurazione o di terze parti viene attivato prima della tua scelta.
+    Leggi la <a href="privacy.html">Privacy Policy</a> e la
+    <a href="cookie.html">Cookie Policy</a>.
+  </p>
+
+  <div class="cc-prefs" id="ccPrefs">
+    <div class="cc-row">
+      <div class="cc-row-txt">
+        <span class="cc-row-t">Cookie tecnici e funzionali</span>
+        <span class="cc-row-d">Necessari per la navigazione, la sicurezza e per ricordare le tue preferenze sui cookie. Non richiedono consenso e non possono essere disattivati.</span>
+      </div>
+      <span class="cc-sw"><input type="checkbox" checked disabled aria-label="Cookie tecnici (sempre attivi)"><i aria-hidden="true"></i></span>
+    </div>
+    <div class="cc-row">
+      <div class="cc-row-txt">
+        <span class="cc-row-t">Cookie analitici</span>
+        <span class="cc-row-d">Statistiche aggregate sulle pagine più visitate, per migliorare il sito. Attivati solo se dai il consenso.</span>
+      </div>
+      <span class="cc-sw"><input type="checkbox" id="ccAnalytics" aria-label="Cookie analitici"><i aria-hidden="true"></i></span>
+    </div>
+    <div class="cc-row">
+      <div class="cc-row-txt">
+        <span class="cc-row-t">Cookie di marketing</span>
+        <span class="cc-row-d">Profilazione e annunci personalizzati. Oggi non ne utilizziamo: se in futuro verranno introdotti, resteranno disattivi finché non li autorizzi.</span>
+      </div>
+      <span class="cc-sw"><input type="checkbox" id="ccMarketing" aria-label="Cookie di marketing"><i aria-hidden="true"></i></span>
+    </div>
+  </div>
+
+  <div class="cc-acts">
+    <button type="button" class="cc-btn" id="ccReject">Rifiuta</button>
+    <button type="button" class="cc-btn" id="ccManage" aria-expanded="false" aria-controls="ccPrefs">Gestisci preferenze</button>
+    <button type="button" class="cc-btn cc-btn-yes" id="ccAccept">Accetta tutti</button>
+  </div>
+</div>
+
+<!-- ============================================================
+     CONSENSO — logica (V75). Deliberatamente in coda e senza dipendenze
+     (niente GSAP): deve funzionare anche se una CDN non risponde, perché
+     da esso dipende la liceità del trattamento, non un'animazione.
+     ============================================================ -->
+<script>
+(function consent(){
+  var KEY='rh_consent_v1';           /* versionata: se cambiano le finalità, si alza la versione e si richiede di nuovo il consenso */
+  var MAXAGE=180*24*3600*1000;       /* 6 mesi: oltre, si richiede di nuovo (prassi raccomandata dal Garante) */
+  var bn=document.getElementById('cookieBanner'),
+      scrim=document.getElementById('ccScrim'),
+      an=document.getElementById('ccAnalytics'),
+      mk=document.getElementById('ccMarketing');
+  if(!bn)return;
+
+  function read(){
+    try{
+      var raw=localStorage.getItem(KEY); if(!raw)return null;
+      var v=JSON.parse(raw);
+      if(!v||!v.t||(Date.now()-v.t)>MAXAGE)return null;   /* scaduto → si ripropone */
+      return v;
+    }catch(e){return null;}                                /* storage negato (Safari privato): si ripropone, non si assume il consenso */
+  }
+  function write(v){
+    v.t=Date.now(); v.v=1;
+    try{localStorage.setItem(KEY,JSON.stringify(v));}catch(e){}
+    apply(v);
+  }
+
+  /* UNICO punto in cui possono partire script non essenziali.
+     Finché è vuoto, il sito non traccia nulla: è la condizione attuale.
+     Chi aggancerà Google Analytics/Meta Pixel/Hotjar lo faccia QUI DENTRO
+     e in nessun altro punto del documento. */
+  function runConsented(c){
+    if(c.analytics && !window.__rhAnalytics){
+      window.__rhAnalytics=true;
+      /* es.: inserire qui lo snippet analytics, mai nell'<head> */
+    }
+    if(c.marketing && !window.__rhMarketing){
+      window.__rhMarketing=true;
+      /* es.: inserire qui i tag di remarketing */
+    }
+  }
+  function apply(c){
+    document.documentElement.dataset.consent =
+      c.analytics||c.marketing ? 'granted' : 'denied';
+    runConsented(c);
+  }
+
+  function show(){
+    bn.hidden=false;
+    requestAnimationFrame(function(){bn.classList.add('show');scrim.classList.add('show');});
+  }
+  function hide(){
+    bn.classList.remove('show','open');scrim.classList.remove('show');
+    setTimeout(function(){bn.hidden=true;},500);
+  }
+
+  document.getElementById('ccAccept').addEventListener('click',function(){
+    if(an)an.checked=true; if(mk)mk.checked=true;
+    write({analytics:true,marketing:true}); hide();
+  });
+  document.getElementById('ccReject').addEventListener('click',function(){
+    if(an)an.checked=false; if(mk)mk.checked=false;
+    write({analytics:false,marketing:false}); hide();
+  });
+  var mg=document.getElementById('ccManage');
+  mg.addEventListener('click',function(){
+    var open=bn.classList.toggle('open');
+    mg.setAttribute('aria-expanded',open);
+    mg.textContent=open?'Salva le preferenze':'Gestisci preferenze';
+    if(!open){                                   /* secondo click = salva quanto selezionato */
+      write({analytics:!!(an&&an.checked),marketing:!!(mk&&mk.checked)});
+      hide();
+    }
+  });
+
+  /* revoca/modifica dal footer: obbligatoria, deve restare raggiungibile sempre */
+  var re=document.getElementById('ccReopen');
+  if(re)re.addEventListener('click',function(e){
+    e.preventDefault();
+    var c=read()||{analytics:false,marketing:false};
+    if(an)an.checked=!!c.analytics; if(mk)mk.checked=!!c.marketing;
+    bn.classList.add('open');
+    mg.setAttribute('aria-expanded','true');
+    mg.textContent='Salva le preferenze';
+    show();
+  });
+
+  var cur=read();
+  if(cur)apply(cur); else show();
 })();
 </script>
 </body>
