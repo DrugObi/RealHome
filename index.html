@@ -118,10 +118,7 @@ body.fxon #cursor{display:block}
 #nav.nav-day .nav-cta{border-color:var(--ink);color:var(--ink)!important}
 #nav.nav-day .nav-cta:hover{background:var(--ink);color:var(--giorno)!important}
 #nav.nav-day.shrunk{background:rgba(246,241,230,.95);border-bottom:1px solid var(--line-l)}
-.reviews,footer,.stats{content-visibility:auto}
-.reviews{contain-intrinsic-size:auto 900px}
-footer{contain-intrinsic-size:auto 520px}
-.stats{contain-intrinsic-size:auto 1400px}
+footer{content-visibility:auto;contain-intrinsic-size:auto 520px}
 .hero{position:relative;min-height:100svh;background:radial-gradient(120% 90% at 50% -10%, #0D1930 0%, var(--notte) 55%);display:flex;flex-direction:column;justify-content:center;overflow:hidden;padding:140px 0 0}
 .hero .wrap{position:relative;z-index:2}
 .hero h1{font-size:clamp(2.8rem,6.6vw,5.8rem);line-height:1.04;letter-spacing:-.015em;color:#F6F1E6;max-width:19ch;text-wrap:balance}
@@ -541,7 +538,7 @@ footer .wrap{position:relative;z-index:2;display:flex;flex-direction:column;gap:
   .tw-grid2{grid-template-columns:1fr;gap:28px}
   .tw-scene{order:-1}
   .tw-house{width:min(240px,72%)}
-  .imp-rail{display:flex;gap:0;padding-left:0;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;perspective:900px}
+  .imp-rail{display:flex;gap:0;padding-left:0;overflow-x:auto;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;scrollbar-width:none;perspective:900px}
   .imp-rail::-webkit-scrollbar{display:none}
   .imp-page{flex:0 0 100%;scroll-snap-align:center;scroll-snap-stop:always;min-height:auto;height:100svh;padding:72px 0;border-radius:0;transform:rotateY(calc(var(--k,0)*-9deg)) scale(calc(1 - var(--ka,0)*.06));opacity:calc(1 - var(--ka,0)*.4);transition:transform .05s linear;will-change:transform,opacity}
   .imp-meta{display:flex;flex-direction:column;gap:12px;position:absolute;top:0;left:0;right:0;z-index:5;padding:18px 22px 0;pointer-events:none}
@@ -717,7 +714,7 @@ footer .wrap{position:relative;z-index:2;display:flex;flex-direction:column;gap:
 body.menu-open{overflow:hidden}
 .nav-scrim{position:fixed;inset:0;background:rgba(4,8,15,.5);z-index:100;opacity:0;pointer-events:none;transition:opacity .42s var(--ease)}
 .nav-scrim.show{opacity:1;pointer-events:auto}
-body::after{content:'VER-2026-07-23-V72';position:fixed;bottom:8px;left:8px;z-index:99999;font:600 11px/1 monospace;color:#fff;background:#c0392b;padding:4px 8px;border-radius:4px;pointer-events:none}
+body::after{content:'VER-2026-07-23-V73';position:fixed;bottom:8px;left:8px;z-index:99999;font:600 11px/1 monospace;color:#fff;background:#c0392b;padding:4px 8px;border-radius:4px;pointer-events:none}
 .gse-split{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:center;min-height:64vh}
 .gse-track{position:relative}
 @media (min-width:981px){
@@ -3523,13 +3520,27 @@ const netRefresh=()=>{ScrollTrigger.refresh();stH=document.documentElement.scrol
 /* le immagini lazy che montano tardi (sezioni Servizi/Impatto raggiunte in
    profondità) sono l'altro reflow tardivo: un refresh una-tantum per immagine,
    coalescato nel frame successivo. Insieme finito → loop impossibile. */
-let imgRaf=0;
-document.querySelectorAll('img[loading="lazy"]').forEach(im=>{
-  if(im.complete)return;
-  im.addEventListener('load',()=>{
+/* V73 — il refresh non parte più MENTRE si scorre. Un'immagine lazy monta
+   quasi sempre nell'istante esatto in cui la si sta raggiungendo col dito:
+   ScrollTrigger.refresh() rimisura tutti i trigger (due pin compresi) in un
+   frame solo e su mobile si vede come uno scatto/blocco dello scroll. Ora
+   il refresh viene messo in coda e sparato solo dopo 180ms di scroll fermo;
+   se nel frattempo montano altre immagini si coalescono tutte in uno. */
+let imgRaf=0,pendingRefresh=false,idleT=0;
+const refreshWhenIdle=()=>{
+  pendingRefresh=true;
+  clearTimeout(idleT);
+  idleT=setTimeout(()=>{
+    if(!pendingRefresh)return;
+    pendingRefresh=false;
     cancelAnimationFrame(imgRaf);
     imgRaf=requestAnimationFrame(netRefresh);
-  },{once:true});
+  },180);
+};
+window.addEventListener('scroll',()=>{ if(pendingRefresh) refreshWhenIdle(); },{passive:true});
+document.querySelectorAll('img[loading="lazy"]').forEach(im=>{
+  if(im.complete)return;
+  im.addEventListener('load',refreshWhenIdle,{once:true});
 });
 
 /* v20 — resize refresh SOLO su cambio LARGHEZZA. Su mobile la barra URL che
@@ -3778,6 +3789,7 @@ window.addEventListener('resize',()=>{
      V58 — axis-lock: vedi commento in testa al file per il perché. */
   var sx=0,sy=0,tracking=false,axis=null;
   var AXIS_THRESH=10;   /* px prima di decidere orizzontale/verticale */
+  var AXIS_RATIO=1.5;   /* V73 — quanto dx deve DOMINARE dy per bloccare la pagina */
   var SWIPE_THRESH=50;  /* px minimi per cambiare pannello */
   track.addEventListener('touchstart',function(e){
     sx=e.touches[0].clientX; sy=e.touches[0].clientY;
@@ -3786,8 +3798,13 @@ window.addEventListener('resize',()=>{
   track.addEventListener('touchmove',function(e){
     if(!tracking) return;
     var dx=e.touches[0].clientX-sx, dy=e.touches[0].clientY-sy;
-    if(axis===null && (Math.abs(dx)>AXIS_THRESH || Math.abs(dy)>AXIS_THRESH)){
-      axis=Math.abs(dx)>Math.abs(dy)?'x':'y';
+    var ax=Math.abs(dx), ay=Math.abs(dy);
+    if(axis===null && (ax>AXIS_THRESH || ay>AXIS_THRESH)){
+      /* V73 — in caso di dubbio si sceglie la VERTICALE. Prima bastava
+         ax>ay: uno swipe quasi diagonale (11px contro 10px) si dichiarava
+         orizzontale e da lì in poi la pagina non scorreva più per tutto il
+         gesto. Ora l'orizzontale va CONQUISTATA (ax > ay*1.5). */
+      axis=(ax>ay*AXIS_RATIO)?'x':'y';
     }
     if(axis==='x') e.preventDefault();  /* blocca lo scroll verticale della pagina */
   },{passive:false});
@@ -3798,6 +3815,12 @@ window.addEventListener('resize',()=>{
       if(Math.abs(dx)>SWIPE_THRESH) goTo(current+(dx<0?1:-1));
     }
     axis=null;
+  },{passive:true});
+  /* V73 — touchcancel (chiamata in arrivo, gesto rubato dal sistema, dito
+     che esce dallo schermo): senza questo, tracking restava true e l'asse
+     restava congelato fino al gesto successivo. */
+  track.addEventListener('touchcancel',function(){
+    tracking=false; axis=null;
   },{passive:true});
 
   apply();
