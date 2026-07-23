@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="it" data-preintro="1">
 <head>
 <meta charset="UTF-8">
 <script>
@@ -717,7 +717,7 @@ footer .wrap{position:relative;z-index:2;display:flex;flex-direction:column;gap:
 body.menu-open{overflow:hidden}
 .nav-scrim{position:fixed;inset:0;background:rgba(4,8,15,.5);z-index:100;opacity:0;pointer-events:none;transition:opacity .42s var(--ease)}
 .nav-scrim.show{opacity:1;pointer-events:auto}
-body::after{content:'VER-2026-07-22-V70';position:fixed;bottom:8px;left:8px;z-index:99999;font:600 11px/1 monospace;color:#fff;background:#c0392b;padding:4px 8px;border-radius:4px;pointer-events:none}
+body::after{content:'VER-2026-07-23-V71';position:fixed;bottom:8px;left:8px;z-index:99999;font:600 11px/1 monospace;color:#fff;background:#c0392b;padding:4px 8px;border-radius:4px;pointer-events:none}
 .gse-split{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:center;min-height:64vh}
 .gse-track{position:relative}
 @media (min-width:981px){
@@ -1032,6 +1032,18 @@ html:not([data-preintro="1"]) #preintro{display:none}
   z-index:2;background:rgba(255,255,255,.08)}
 #preintro .pi-bar>i{display:block;height:100%;width:0;background:var(--sole);
   transition:width .2s linear}
+#preintro .pi-play{position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);z-index:4;
+  display:inline-flex;align-items:center;gap:11px;
+  padding:15px 28px;border-radius:100px;cursor:pointer;border:none;
+  font-family:'Instrument Sans',sans-serif;font-weight:600;font-size:1rem;
+  color:var(--notte);background:var(--sole);
+  box-shadow:0 16px 40px -10px rgba(245,166,35,.5);
+  transition:transform .3s var(--ease),box-shadow .3s var(--ease)}
+#preintro .pi-play:hover{transform:translate(-50%,-50%) translateY(-2px);
+  box-shadow:0 20px 46px -10px rgba(245,166,35,.6)}
+#preintro .pi-play:active{transform:translate(-50%,-50%) scale(.97)}
+#preintro .pi-play svg{width:17px;height:17px;fill:currentColor;stroke:none}
 @media (max-width:600px){
   #preintro .pi-skip{padding:11px 18px;font-size:.86rem}
 }
@@ -1043,8 +1055,11 @@ html:not([data-preintro="1"]) #preintro{display:none}
 <body>
 <div id="preintro" role="dialog" aria-label="Introduzione RealHome">
   <span class="pi-brand" aria-hidden="true">REAL<b>HOME</b></span>
-  <video class="pi-video" id="piVideo" muted autoplay playsinline preload="none"
-         aria-label="Video di introduzione">
+  <video class="pi-video" id="piVideo" muted autoplay playsinline preload="auto"
+         poster="intro-poster.jpg" aria-label="Video di introduzione">
+    
+    <source src="intro.webm" type="video/webm">
+    <source src="intro.mp4"  type="video/mp4">
   </video>
   <div class="pi-veil" aria-hidden="true"></div>
   <div class="pi-bar" aria-hidden="true"><i id="piBar"></i></div>
@@ -1094,8 +1109,10 @@ html:not([data-preintro="1"]) #preintro{display:none}
   }
   function finish(){
     if(done) return; done=true;
-    /* ferma e libera il video per non tenere memoria/decoder attivi */
-    try{ if(video){ video.pause(); video.removeAttribute('autoplay'); } }catch(e){}
+    /* ferma il video per non tenere decoder/memoria attivi. NON tocchiamo
+       l'attributo autoplay: rimuoverlo non serve (il video è già in pausa)
+       e complica soltanto un'eventuale ripresa. */
+    try{ if(video){ video.pause(); } }catch(e){}
     ov.classList.add('is-hiding');
     unlock();
     var end=function(){ ov.classList.add('is-done'); ov.removeEventListener('transitionend',end); };
@@ -1122,37 +1139,76 @@ html:not([data-preintro="1"]) #preintro{display:none}
   document.addEventListener('keydown',function(e){ if(e.key==='Escape') finish(); });
 
   if(video){
-    var started=false; /* diventa true appena il tempo avanza davvero */
-    /* barra di avanzamento + rilevamento "sta effettivamente andando" */
+    var started=false; /* diventa true appena il video sta davvero andando */
+    /* 'playing' è il segnale più tempestivo che la riproduzione è iniziata */
+    video.addEventListener('playing',function(){ started=true; });
+    /* barra di avanzamento + conferma che il tempo avanza */
     video.addEventListener('timeupdate',function(){
       if(video.currentTime>0) started=true;
       if(bar && video.duration){ bar.style.width=(video.currentTime/video.duration*100)+'%'; }
     });
     /* fine naturale del video → chiusura */
     video.addEventListener('ended',finish);
-    /* qualunque fallimento di caricamento/decodifica → non intrappolare l'utente */
-    ['error','stalled','abort','emptied'].forEach(function(ev){
-      video.addEventListener(ev,function(){ if(!started) finish(); });
-    });
-    /* tentativo di play esplicito (con preload=none + <source> nel markup,
-       alcuni browser non fanno autoplay da soli): muted+playsinline lo rende
-       lecito. Se la policy lo blocca, chiudiamo invece di bloccare il sito. */
-    var p;
-    try{ video.load(); p=video.play(); }catch(e){ finish(); }
-    if(p && typeof p.catch==='function'){ p.catch(function(){ finish(); }); }
-    /* rete di sicurezza RAPIDA: se dopo 2.5s il video non è mai partito
-       (currentTime ancora 0), qualcosa non va (file assente/aperto da file://
-       /autoplay negato) → sblocca subito, niente frame congelato per 12s. */
-    setTimeout(function(){ if(!done && !started) finish(); },2500);
-    /* rete di sicurezza LUNGA: anche se è partito ma per qualche motivo non
-       arriva mai l'evento 'ended' (durata ignota), chiudi dopo la durata
-       reale +1s, o dopo 20s se la durata non è nota. */
+    /* SOLO un errore vero di caricamento chiude l'intro. NB: 'abort' e
+       'emptied' NON sono errori — vengono emessi anche da un reset normale
+       dell'elemento e, se li trattassimo come fallimenti, chiuderemmo
+       l'intro mentre sta partendo (bug osservato in test: il video partiva
+       e veniva chiuso subito dopo). */
+    video.addEventListener('error',function(){ if(!started) finish(); });
+
+    /* V71 — AUTOPLAY NEGATO (tipico di iOS Safari in risparmio energetico):
+       invece di far sparire l'intro senza che l'utente la veda, mostriamo un
+       invito a toccare per avviarla. Un tap è un gesto utente valido e sblocca
+       la riproduzione. Se ignora l'invito, le reti di sicurezza sotto chiudono
+       comunque: non si resta mai bloccati. */
+    var promptEl=null;
+    function askToPlay(){
+      if(done||started||promptEl) return;
+      promptEl=document.createElement('button');
+      promptEl.type='button';
+      promptEl.className='pi-play';
+      promptEl.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5l12 7.5-12 7.5z"/></svg><span>Guarda l\'intro</span>';
+      promptEl.addEventListener('click',function(){
+        try{ var q=video.play(); if(q&&q.catch) q.catch(function(){ finish(); }); }catch(e){ finish(); }
+        if(promptEl&&promptEl.parentNode) promptEl.parentNode.removeChild(promptEl);
+        promptEl=null;
+      });
+      ov.appendChild(promptEl);
+    }
+
+    /* Spinta al play SENZA load(): l'attributo autoplay fa già partire il
+       video da solo: chiamare load() qui lo INTERROMPEREBBE (abort+emptied).
+       Ci limitiamo a un play() difensivo per i browser che non fanno
+       autoplay spontaneo; se la policy lo nega, proponiamo il tap. */
+    if(video.paused){
+      var p;
+      try{ p=video.play(); }catch(e){ askToPlay(); }
+      if(p && typeof p.catch==='function'){ p.catch(function(){ askToPlay(); }); }
+    }
+
+    /* RETE DI SICUREZZA — adattiva, non a tempo fisso.
+       Il video pesa qualche MB: su rete lenta il buffering può richiedere
+       parecchi secondi, quindi NON chiudiamo solo perché non è ancora partito.
+       Chiudiamo solo se non sta nemmeno caricando (readyState fermo a 0 e
+       nessun progresso di rete): quello sì è un fallimento vero. */
+    var sawProgress=false;
+    video.addEventListener('progress',function(){ sawProgress=true; });
+    video.addEventListener('loadeddata',function(){ sawProgress=true; });
+    setTimeout(function(){
+      if(done||started) return;
+      /* nessun byte arrivato e nessun dato pronto → file assente o rete morta */
+      if(!sawProgress && video.readyState===0) finish();
+      else if(video.paused && !promptEl) askToPlay(); /* carica ma non parte: invita al tap */
+    },4000);
+
+    /* RETE DI SICUREZZA LUNGA: se è partito ma 'ended' non arriva mai,
+       chiudi dopo la durata reale +1,5s (o 30s se la durata resta ignota). */
     setTimeout(function(){
       if(done) return;
       var d=video.duration;
-      if(d && isFinite(d)){ setTimeout(function(){ if(!done) finish(); },(d*1000)+1000); }
-      else { setTimeout(function(){ if(!done) finish(); },20000); }
-    },1200);
+      if(d && isFinite(d)){ setTimeout(function(){ if(!done) finish(); },(d*1000)+1500); }
+      else { setTimeout(function(){ if(!done) finish(); },30000); }
+    },1500);
   } else {
     finish();
   }
