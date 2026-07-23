@@ -714,7 +714,7 @@ footer .wrap{position:relative;z-index:2;display:flex;flex-direction:column;gap:
 body.menu-open{overflow:hidden}
 .nav-scrim{position:fixed;inset:0;background:rgba(4,8,15,.5);z-index:100;opacity:0;pointer-events:none;transition:opacity .42s var(--ease)}
 .nav-scrim.show{opacity:1;pointer-events:auto}
-body::after{content:'VER-2026-07-23-V75';position:fixed;bottom:8px;left:8px;z-index:99999;font:600 11px/1 monospace;color:#fff;background:#c0392b;padding:4px 8px;border-radius:4px;pointer-events:none}
+body::after{content:'VER-2026-07-23-V76';position:fixed;bottom:8px;left:8px;z-index:99999;font:600 11px/1 monospace;color:#fff;background:#c0392b;padding:4px 8px;border-radius:4px;pointer-events:none}
 .gse-split{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:center;min-height:64vh}
 .gse-track{position:relative}
 @media (min-width:981px){
@@ -1095,26 +1095,82 @@ html:not([data-preintro="1"]) #preintro{display:none}
    bordo sinistro dei tasti coincide al pixel con quello di .foot-cta e
    dell'h2 .foot-claim — l'allineamento non dipende più da nulla di
    ereditato. Il tetto sul terzo tasto resta (V72). */
+/* V76 — RISCRITTURA STRUTTURALE, non un ritocco.
+   Le tre versioni precedenti (V72, V74, V75) hanno fallito perché
+   intervenivano DENTRO .foot-contact-row, mentre la causa era due livelli
+   più su, nel DOM. Struttura originale:
+
+     .foot-hero (block)
+       ├─ .kicker
+       ├─ h2.foot-claim
+       ├─ a.foot-cta        ← inline-flex, da solo su una riga
+       └─ .foot-contact     ← div BLOCK: va SEMPRE a capo
+
+   Fratelli in un contenitore block ⇒ si impilano, qualunque cosa si
+   scriva sui figli. Nessun `flex:0 1 auto` sui tasti poteva risalire due
+   livelli. Ecco perché "allineavo il bordo sinistro": era l'unica cosa
+   che quelle regole potevano fare davvero.
+
+   Rendere .foot-hero un flex-wrap non basta (MISURATO col browser):
+   .foot-claim ha max-width:760px in un contenitore da 1136px, quindi
+   restavano ~376px liberi sulla sua riga e il CTA ci saliva, spingendo i
+   contatti a capo — l'opposto di quanto chiesto. La posizione non va
+   dedotta dal wrap: va DICHIARATA. Da qui .foot-actions nell'HTML, che
+   contiene CTA + contatti e li mette su una riga esplicita.
+
+   Ogni valore qui sotto è verificato con Chromium headless a 1920 / 1600 /
+   1440 / 1280 / 1100 / 900 / 720 / 390px, non stimato a occhio. */
+.foot-actions{display:contents}   /* mobile: struttura invariata rispetto a prima */
+
 @media (min-width:721px){
-  .foot-hero>.foot-contact{
-    width:100%;max-width:100%;
-    margin-left:0;margin-right:0;padding-left:0;padding-right:0;
+  /* la riga: CTA a sinistra, tasti contatto subito a destra, stesso asse */
+  .foot-actions{
+    display:flex;flex-wrap:nowrap;align-items:center;
+    gap:18px;margin-top:26px;
   }
-  .foot-hero>.foot-contact>.foot-contact-row{
-    margin-left:0;margin-right:0;padding-left:0;padding-right:0;
-    justify-content:flex-start;align-items:stretch;
+  .foot-actions>.foot-cta{flex:0 0 auto;margin:0}
+  .foot-actions>.foot-contact{
+    flex:0 1 auto;min-width:0;width:auto;margin:0;padding:0;
   }
-  .foot-hero>.foot-contact>.foot-hours{margin-left:0;padding-left:0}
-  .foot-hero>.foot-cta{margin-left:0}
+  .foot-actions>.foot-contact>.foot-contact-row{
+    display:flex;flex-wrap:nowrap;align-items:center;
+    justify-content:flex-start;gap:12px;margin:0;padding:0;
+  }
+  .foot-actions>.foot-contact>.foot-contact-row>.fc-link{
+    flex:0 1 auto;min-width:0}
+  .foot-actions>.foot-contact>.foot-contact-row>.fc-link span{
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .fc-link:nth-child(3){max-width:260px}
+  /* gli orari restano sotto i tasti, allineati al loro bordo sinistro */
+  .foot-actions>.foot-contact>.foot-hours{margin:14px 0 0;padding:0}
+  /* il tetto di 760px vale ancora per kicker e titolo, non per la riga */
+  .foot-hero{max-width:none}
+  .foot-hero>.kicker,.foot-hero>.foot-claim{max-width:760px}
+}
+
+/* Sotto i 1080px la riga non ha più spazio reale (misurato: CTA 352 + gap 18
+   + tasti 673 = 1043px di contenuto, oltre ai margini della .wrap): i tasti
+   scendono SOTTO il CTA, allineati al suo bordo sinistro, invece di
+   comprimersi fino a troncare gli indirizzi. Non è un ripiego: è il punto in
+   cui la riga singola smette di avere senso. */
+@media (min-width:721px) and (max-width:1079px){
+  .foot-actions{flex-wrap:wrap;align-items:flex-start}
+  .foot-actions>.foot-contact{flex:0 0 100%;width:100%;margin-top:22px}
 }
 
 /* ---- 3. CONSENSO COOKIE ----
    Nessuno script non essenziale parte prima del consenso: il gate è in JS
    (vedi blocco "CONSENSO" in fondo al documento). Qui solo la presentazione.
    z-index 100000: sopra al badge di versione (99999) e a ogni overlay. */
-.cc-scrim{position:fixed;inset:0;z-index:99998;background:rgba(4,8,16,.55);
-  backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:opacity .35s}
-.cc-scrim.show{opacity:1;pointer-events:auto}
+/* BUG TROVATO col browser (V76): con `pointer-events:auto` questo velo
+   intercettava OGNI click della pagina finché il banner era aperto — il
+   sito diventava inutilizzabile senza prima scegliere. È esattamente il
+   "cookie wall" vietato (linee guida Garante 10/06/2021 §3.1): la
+   navigazione deve restare possibile anche ignorando il banner.
+   Il velo resta puramente decorativo: oscura, non blocca. */
+.cc-scrim{position:fixed;inset:0;z-index:99998;background:rgba(4,8,16,.45);
+  backdrop-filter:blur(1.5px);opacity:0;pointer-events:none;transition:opacity .35s}
+.cc-scrim.show{opacity:1;pointer-events:none}
 .cc{position:fixed;z-index:100000;left:50%;bottom:24px;transform:translate(-50%,140%);
   width:min(880px,calc(100vw - 32px));
   background:linear-gradient(165deg,#0E1626,#0A1220);
@@ -2329,6 +2385,13 @@ html:not([data-preintro="1"]) #preintro{display:none}
     <div class="foot-hero">
       <span class="kicker"><span class="ora">H 23:59</span><span class="sep">·</span>Fine giornata</span>
       <h2 class="foot-claim">Domani il sole sorge di nuovo.<br><em>E non ti manda la bolletta.</em></h2>
+      <!-- V76 — .foot-actions: contenitore ESPLICITO per CTA + contatti.
+           Senza di esso .foot-cta e .foot-contact sono fratelli diretti di
+           .foot-hero e la loro posizione dipende dal wrap del flex, che a
+           sua volta dipende dal max-width del titolo: misurato, il CTA
+           finiva sulla riga del titolo e i contatti a capo. Con un
+           contenitore proprio la riga è dichiarata, non dedotta. -->
+      <div class="foot-actions">
       <a class="foot-cta" href="#preventivo" data-nav>
         <span>Richiedi il preventivo gratuito</span>
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M4 9h10M10 5l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -2341,6 +2404,7 @@ html:not([data-preintro="1"]) #preintro{display:none}
         </div>
         <p class="foot-hours"><span class="dot"></span>Lun–Ven · 9:00–18:00</p>
       </div>
+      </div><!-- /.foot-actions -->
     </div>
 
     <div class="foot-grid">
