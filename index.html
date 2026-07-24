@@ -1394,6 +1394,12 @@ html:not([data-preintro="1"]) #preintro{display:none}
   }
   var reduce = false;
   try{ reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){}
+  /* V78e — SU MOBILE il pre-intro (video case/vigneti) e disattivato: l'hero
+     mobile ha il proprio video-logo che deve partire appena l'utente entra.
+     Sotto i 981px trattiamo il pre-intro come non-armato -> uscita immediata,
+     scroll subito libero, nessun overlay. Desktop invariato. */
+  var isMobile = false;
+  try{ isMobile = window.matchMedia('(max-width: 980px)').matches; }catch(e){}
 
   var done=false;
   function unlock(){
@@ -1424,7 +1430,7 @@ html:not([data-preintro="1"]) #preintro{display:none}
 
   /* USCITA IMMEDIATA — nessun video pronto, intro non attivata, o utente
      con reduced-motion: niente overlay, sito subito navigabile. */
-  if(!armed || !hasSource || reduce){
+  if(!armed || !hasSource || reduce || isMobile){
     /* assicura che il lock precoce (se mai messo) sia rimosso */
     html.classList.remove('preintro');
     ov.classList.add('is-done');
@@ -4425,6 +4431,10 @@ window.addEventListener('resize',()=>{
       });
     });
     v.addEventListener('ended',freeze);
+    /* V78e — garanzia di partenza dall'inizio: se il video ha gia bufferizzato
+       o e stato toccato, riportiamo currentTime a 0 così l'utente vede sempre
+       l'animazione del logo dal primo frame, mai gia congelata. */
+    try{ if(v.currentTime>0.05 && !v.ended) v.currentTime=0; }catch(e){}
     var p=v.play&&v.play();
     if(p&&p.catch){ p.catch(function(){ freeze(); }); }
   });
