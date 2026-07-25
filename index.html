@@ -141,12 +141,16 @@ footer{content-visibility:auto;contain-intrinsic-size:auto 520px}
 /* V78h — lo still (ultimo frame) sta SOPRA il video e appare ISTANTANEO
    al freeze (niente transition: la vecchia .12s lasciava vedere il fondo
    blu sotto per ~120ms -> il 'flash blu' tra video e schermata). */
-.hero-cue{z-index:2}
+.hero-cue{z-index:4}
 /* V78b — HERO FADE: sfumatura in fondo all'hero verso --notte (#070C16),
    per fondere il nero del video con il blu del marquee sottostante senza
    stacco netto. Rampa multi-stop con easing (piu fitta in basso) = niente
    banding percepibile. Sta sopra il video ma sotto il cue "Scorri". */
-.hero-fade{position:absolute;left:0;right:0;bottom:0;z-index:1;height:42vh;min-height:280px;pointer-events:none;background:linear-gradient(to bottom,rgba(7,12,22,0) 0%,rgba(7,12,22,.03) 12%,rgba(7,12,22,.09) 24%,rgba(7,12,22,.19) 36%,rgba(7,12,22,.32) 48%,rgba(7,12,22,.48) 60%,rgba(7,12,22,.65) 72%,rgba(7,12,22,.82) 84%,rgba(7,12,22,.94) 93%,rgba(7,12,22,1) 100%)}
+/* V82 — z-index 3, non 1: .hero-still sta a 2, quindi con z-index 1 il
+   gradiente spariva sotto il fotogramma congelato e in fondo alla hero
+   restava uno stacco netto fra il nero del video e il #070C16 del
+   marquee. Il fade deve stare sopra TUTTO cio' che riempie la hero. */
+.hero-fade{position:absolute;left:0;right:0;bottom:0;z-index:3;height:42vh;min-height:280px;pointer-events:none;background:linear-gradient(to bottom,rgba(7,12,22,0) 0%,rgba(7,12,22,.03) 12%,rgba(7,12,22,.09) 24%,rgba(7,12,22,.19) 36%,rgba(7,12,22,.32) 48%,rgba(7,12,22,.48) 60%,rgba(7,12,22,.65) 72%,rgba(7,12,22,.82) 84%,rgba(7,12,22,.94) 93%,rgba(7,12,22,1) 100%)}
 
 /* V78d — HERO: video dedicati per formato.
    .hero-d (desktop, 16:9 orizzontale) e .hero-m (mobile, 9:16 verticale) sono
@@ -441,8 +445,8 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
    ingannevole (Cod. Consumo artt. 21-22; dir. Omnibus 2019/2161 sulle
    recensioni dei consumatori). Qui non c'e nessun claim di terzi: solo
    domande reali con risposte che riguardano il nostro operato o fatti
-   verificabili. La domanda 01 mette l'assenza di recensioni in prima fila
-   invece di nasconderla.
+   verificabili. Nessuna risposta commenta l'assenza di recensioni: toglierle
+   bastava, spiegarle a ogni riga suonava come una giustificazione (V81).
    Metafora visiva: ogni domanda e un modulo fotovoltaico scuro appoggiato sul
    crema del giorno. Aprendola il modulo "si accende": le celle passano dal
    blu all'oro e una lama di luce attraversa il pannello una volta sola. */
@@ -501,10 +505,6 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
 .qs-a p{margin:0 24px 26px;padding-top:15px;border-top:1px solid rgba(127,176,255,.14);
   font-size:.95rem;line-height:1.62;color:#AEBACB;opacity:0;transition:opacity .35s var(--ease)}
 .qs-cell.on .qs-a p{opacity:1;transition-delay:.16s}
-.qs-foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:18px 28px;
-  margin-top:34px;padding-top:24px;border-top:1px solid var(--line-l)}
-.qs-foot p{font-size:1rem;color:var(--muted-l);max-width:54ch}
-.qs-foot p b{color:var(--ink);font-weight:600}
 @media (hover:hover) and (pointer:fine){
   .qs-cell:hover{border-color:rgba(127,176,255,.34)}
   .qs-cell:hover::before{opacity:.72}
@@ -689,7 +689,6 @@ footer .wrap{position:relative;z-index:2;display:flex;flex-direction:column;gap:
   .imp-scrim{background:linear-gradient(0deg,rgba(7,12,22,.82),rgba(7,12,22,.3) 42%,rgba(7,12,22,.18) 70%),linear-gradient(180deg,rgba(7,12,22,.62),rgba(7,12,22,.22) 38%,transparent 62%)}
   .imp-ui{text-shadow:0 1px 2px rgba(7,12,22,.5),0 6px 24px rgba(7,12,22,.4)}
   .qs-grid{grid-template-columns:1fr;gap:14px;margin-top:34px}
-  .qs-foot{margin-top:28px}
   .contact .wrap{grid-template-columns:1fr;gap:44px}
   .tram-sun{left:auto;right:-6vmin;top:20vh;width:44vmin;height:44vmin}
   .contact h2 em{text-shadow:0 1px 2px rgba(7,12,22,.28),0 4px 26px rgba(7,12,22,.45)}
@@ -841,7 +840,7 @@ footer .wrap{position:relative;z-index:2;display:flex;flex-direction:column;gap:
 body.menu-open{overflow:hidden}
 .nav-scrim{position:fixed;inset:0;background:rgba(4,8,15,.5);z-index:100;opacity:0;pointer-events:none;transition:opacity .42s var(--ease)}
 .nav-scrim.show{opacity:1;pointer-events:auto}
-body::after{content:'VER-2026-07-25-V80';position:fixed;bottom:8px;left:8px;z-index:99999;font:600 11px/1 monospace;color:#fff;background:#c0392b;padding:4px 8px;border-radius:4px;pointer-events:none}
+body::after{content:'VER-2026-07-26-V83';position:fixed;bottom:8px;left:8px;z-index:99999;font:600 11px/1 monospace;color:#fff;background:#c0392b;padding:4px 8px;border-radius:4px;pointer-events:none}
 .gse-split{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:center;min-height:64vh}
 .gse-track{position:relative}
 @media (min-width:981px){
@@ -1519,7 +1518,18 @@ html:not([data-preintro="1"]) #preintro{display:none}
     try{ if(video){ video.pause(); } }catch(e){}
     ov.classList.add('is-hiding');
     unlock();
-    var end=function(){ ov.classList.add('is-done'); ov.removeEventListener('transitionend',end); };
+    var end=function(){
+      ov.classList.add('is-done');
+      ov.removeEventListener('transitionend',end);
+      /* V82 — ora che l'overlay e' sparito davvero, il video-logo della hero
+         parte DAL PRIMO FOTOGRAMMA. Prima girava sotto l'intro e chi saltava
+         trovava l'animazione gia' conclusa. Si avvia qui e non in finish()
+         perche' il dissolvimento dura .7s: partendo prima si perderebbe il
+         primo mezzo secondo di animazione, che e' proprio quello che si
+         voleva far vedere. heroStart() e' idempotente, quindi la doppia
+         chiamata (transitionend + rete di sicurezza) e' innocua. */
+      try{ if(typeof window.heroStart==='function') window.heroStart(); }catch(e){}
+    };
     ov.addEventListener('transitionend',end);
     /* rete di sicurezza: se transitionend non scatta (es. display forzato),
        nascondi comunque dopo il tempo della transizione */
@@ -2472,8 +2482,9 @@ html:not([data-preintro="1"]) #preintro{display:none}
      presentate come genuine: pratica commerciale ingannevole (Cod. Consumo
      artt. 21-22, dir. Omnibus 2019/2161). Qui non si attribuisce nulla a
      nessun terzo: sono domande reali con risposte che impegnano noi o che
-     riportano fatti verificabili. La 01 affronta di petto l'assenza di
-     recensioni e la usa come primo argomento di fiducia.
+     riportano fatti verificabili. V81: tolto il piedino che ripeteva "non
+     abbiamo recensioni" e riscritta la 01, che era l'unica domanda su due
+     righe e sbilanciava la griglia proprio nella prima card letta.
      I moduli si aprono con uno script autonomo (fuori dal ramo GSAP): se il
      CDN delle animazioni cade, le risposte restano comunque apribili.
      ============================================================ -->
@@ -2488,11 +2499,11 @@ html:not([data-preintro="1"]) #preintro{display:none}
       <article class="qs-cell">
         <button class="qs-q" id="qsq1" type="button" aria-expanded="false" aria-controls="qsa1">
           <span class="qs-n">01</span>
-          <span class="qs-qt">Perch&eacute; non trovo nemmeno una recensione su di voi?</span>
+          <span class="qs-qt">Quanto costa, davvero?</span>
           <span class="qs-ico" aria-hidden="true"></span>
         </button>
         <div class="qs-a" id="qsa1" role="region" aria-labelledby="qsq1"><div class="qs-a-in">
-          <p>Perch&eacute; RealHome &egrave; nata nel 2026 e le recensioni si guadagnano, non si scrivono. Quando i primi impianti avranno un anno di dati alle spalle li pubblicheremo con nome, comune e produzione reale, e solo con il consenso di chi ci ha scelto. Fino a quel giorno preferiamo essere giudicati su come lavoriamo: nomi di fantasia e cinque stelle ce li potremmo inventare in dieci minuti, ed &egrave; esattamente per questo che non valgono niente.</p>
+          <p>Dipende dal tetto, dai consumi e dall'accumulo, e chi ti spara una cifra prima di aver visto l'impianto sta tirando a indovinare. Quello che possiamo dirti gi&agrave; ora &egrave; cosa la fa salire o scendere: la potenza in kWp, l'accesso al tetto, se il quadro elettrico va rifatto, se serve la batteria. Dal sopralluogo esci con un numero scritto e con l'elenco di cosa &egrave; compreso e cosa no &mdash; ed &egrave; quella seconda lista che fa la differenza fra due preventivi.</p>
         </div></div>
       </article>
       <article class="qs-cell">
@@ -2508,7 +2519,7 @@ html:not([data-preintro="1"]) #preintro{display:none}
       <article class="qs-cell">
         <button class="qs-q" id="qsq3" type="button" aria-expanded="false" aria-controls="qsa3">
           <span class="qs-n">03</span>
-          <span class="qs-qt">Quanto dura davvero un impianto?</span>
+          <span class="qs-qt">Quanto dura un impianto?</span>
           <span class="qs-ico" aria-hidden="true"></span>
         </button>
         <div class="qs-a" id="qsa3" role="region" aria-labelledby="qsq3"><div class="qs-a-in">
@@ -2548,7 +2559,7 @@ html:not([data-preintro="1"]) #preintro{display:none}
       <article class="qs-cell">
         <button class="qs-q" id="qsq7" type="button" aria-expanded="false" aria-controls="qsa7">
           <span class="qs-n">07</span>
-          <span class="qs-qt">Quanto ci mettete davvero?</span>
+          <span class="qs-qt">Quando lo accendo?</span>
           <span class="qs-ico" aria-hidden="true"></span>
         </button>
         <div class="qs-a" id="qsa7" role="region" aria-labelledby="qsq7"><div class="qs-a-in">
@@ -2565,10 +2576,6 @@ html:not([data-preintro="1"]) #preintro{display:none}
           <p>Ti conviene. Chiedi tre preventivi e mettili accanto guardando le stesse tre righe: potenza reale in kWp, marca e garanzia dei componenti, cosa &egrave; incluso nella pratica GSE. Se uno costa molto meno degli altri di solito manca qualcosa: trovala. E se dopo il confronto scegli un'altra azienda, hai fatto comunque la cosa giusta.</p>
         </div></div>
       </article>
-    </div>
-    <div class="qs-foot fx">
-      <p><b>Non abbiamo recensioni da mostrarti.</b> Abbiamo un sopralluogo gratuito, un numero a cui risponde una persona e la disponibilit&agrave; a dirti che non conviene, se non conviene.</p>
-      <a class="btn btn-ink" href="#preventivo" data-nav>Prenota il sopralluogo</a>
     </div>
   </div>
 </section>
@@ -4693,12 +4700,30 @@ window.addEventListener('resize',()=>{
     {v:document.getElementById('heroVideoM'), s:document.getElementById('heroStillM'), c:document.getElementById('heroCoverM')}
   ];
   var RM=false; try{ RM=matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){}
+
+  /* V82 — IL VIDEO-LOGO NON PARTE SOTTO IL PRE-INTRO.
+     Fino alla V81 i due <video> avevano autoplay e partivano subito, mentre
+     l'overlay del pre-intro copriva ancora tutto lo schermo. Chi premeva
+     "Salta" arrivava sulla hero e trovava l'animazione gia' finita, congelata
+     sull'ultimo fotogramma, senza averla mai vista.
+     Ora: se il pre-intro e' attivo si resta in ATTESA (video in pausa e
+     riportato a zero) e l'avvio lo da' il pre-intro stesso, chiamando
+     window.heroStart() quando l'overlay e' sparito del tutto.
+     La classe .preintro sull'<html> e' il segnale: viene messa in testa alla
+     pagina e tolta dal pre-intro quando esce. Questo script gira in fondo al
+     body, quindi la legge gia' aggiornata: se il pre-intro non c'e' (mobile,
+     reduced-motion, file dell'intro mancanti) la classe non c'e' e il video
+     parte subito come prima. */
+  var attesa = false;
+  try{ attesa = document.documentElement.classList.contains('preintro'); }catch(e){}
+  var partenze = [];
+
   pairs.forEach(function(pair){
     var v=pair.v, still=pair.s, cover=pair.c;
     if(!v||!still) return;
     var frozen=false;
     function freeze(){
-      if(frozen) return; frozen=true;
+      if(frozen || attesa) return; frozen=true;
       /* ORDINE ANTI-FLASH: prima rendo opaco lo still (istantaneo, sta sopra),
          poi nel frame successivo nascondo il video. Mai un buco sul fondo. */
       still.style.opacity='1';
@@ -4724,7 +4749,7 @@ window.addEventListener('resize',()=>{
     /* --- AVVIO ROBUSTO --- */
     var tries=0;
     function tryPlay(){
-      if(frozen) return;
+      if(frozen || attesa) return;
       tries++;
       /* al primo tentativo forzo load(): su iOS inizializza il decoder e
          sblocca l'autoplay di un video muted+playsinline anche quando l'elemento
@@ -4757,9 +4782,34 @@ window.addEventListener('resize',()=>{
     /* se dopo un attimo non e ancora partito (autoplay silenziosamente negato),
        armo comunque il recupero al gesto, senza aspettare un catch. */
     setTimeout(function(){
-      if(!frozen && !v.classList.contains('is-playing') && v.paused) armGesture();
+      if(!frozen && !attesa && !v.classList.contains('is-playing') && v.paused) armGesture();
     },350);
+
+    /* (ri)partenza da zero: rimette la coppia allo stato iniziale — still
+       trasparente, video visibile, pannello nero di nuovo davanti — e rilancia
+       l'avvio robusto. Usata da window.heroStart() all'uscita del pre-intro. */
+    partenze.push(function(){
+      frozen=false; tries=0; gestured=false;
+      still.style.opacity='0';
+      v.style.opacity='';
+      v.classList.remove('is-playing');
+      if(cover) cover.classList.remove('gone');
+      try{ v.currentTime=0; }catch(e){}
+      tryPlay();
+    });
+
+    /* finche' si aspetta, il video sta fermo sul primo fotogramma: l'autoplay
+       del browser puo' averlo gia' fatto partire sotto l'overlay. */
+    if(attesa){ try{ v.pause(); v.currentTime=0; }catch(e){} }
   });
+
+  /* Chiamata dal pre-intro quando l'overlay e' sparito. Se il pre-intro non
+     era attivo non fa niente: il video e' gia' partito per conto suo. */
+  window.heroStart=function(){
+    if(!attesa) return;
+    attesa=false;
+    partenze.forEach(function(f){ try{ f(); }catch(e){} });
+  };
 })();
 </script>
 </body>
