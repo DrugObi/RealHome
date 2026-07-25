@@ -435,40 +435,86 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
     @keyframes impBreath{from{transform:scale(1.08)}to{transform:scale(1)}}
   }
 }
-.reviews{position:relative;padding:48px 0;background:var(--giorno);overflow:hidden}
-.reviews-head h2{font-size:clamp(2.4rem,5vw,4.2rem);margin:18px 0 10px}
-.reviews-sub{color:var(--muted-l);font-size:1rem}
-.reviews-sub em{opacity:.75}
-.rev-river{display:flex;flex-direction:column;gap:22px;margin-top:52px}
-.rev-row{overflow:hidden;perspective:900px;
-  -webkit-mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);
-  mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent)}
-.rev-flow{display:flex;width:max-content;will-change:transform}
-.rev-set{display:flex;gap:22px;padding-right:22px}
-.rev-card{position:relative;isolation:isolate;overflow:hidden;flex:0 0 auto;width:400px;display:flex;flex-direction:column;
-  background:var(--giorno-2);border:1px solid var(--line-l);border-radius:16px;padding:26px 26px 24px;
-  transform-style:preserve-3d;transition:border-color .35s var(--ease),box-shadow .35s var(--ease)}
-.rev-card:hover{border-color:rgba(245,166,35,.55);box-shadow:0 24px 50px -22px rgba(16,24,34,.35)}
-.rev-card::after{content:'';position:absolute;inset:0;z-index:-1;opacity:0;transition:opacity .35s var(--ease);
-  background:radial-gradient(220px circle at var(--mx,50%) var(--my,50%),rgba(245,166,35,.16),transparent 70%)}
-.rev-card:hover::after{opacity:1}
-.rev-q{position:absolute;top:-14px;right:10px;font-family:'Instrument Serif',serif;font-size:7rem;line-height:1;color:rgba(245,166,35,.14);pointer-events:none;user-select:none}
-.rev-stars{display:flex;gap:4px;color:var(--sole);font-size:.9rem;margin-bottom:12px}
-.rev-stars span{display:inline-block;transition:transform .3s cubic-bezier(.34,1.56,.64,1),text-shadow .3s var(--ease)}
-.rev-card:hover .rev-stars span{transform:translateY(-4px) rotate(-8deg);text-shadow:0 0 10px rgba(245,166,35,.75)}
-.rev-card:hover .rev-stars span:nth-child(1){transition-delay:0s}
-.rev-card:hover .rev-stars span:nth-child(2){transition-delay:.05s}
-.rev-card:hover .rev-stars span:nth-child(3){transition-delay:.1s}
-.rev-card:hover .rev-stars span:nth-child(4){transition-delay:.15s}
-.rev-card:hover .rev-stars span:nth-child(5){transition-delay:.2s}
-.rev-card p{font-size:.94rem;line-height:1.6;color:#2A323D}
-.rev-card cite{display:flex;align-items:center;gap:10px;margin-top:auto;padding-top:16px;font-style:normal;font-size:.82rem;font-weight:600;color:var(--muted-l)}
-.reviews.static .rev-river{gap:16px}
-.reviews.static .rev-flow,.reviews.static .rev-set{flex-wrap:wrap;width:auto}
-.reviews.static .rev-card{width:min(400px,100%)}
-.reviews.static .rev-row{mask-image:none;-webkit-mask-image:none}
-.av{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--notte);color:var(--sole);font-size:.66rem;font-weight:700;letter-spacing:.05em;flex:0 0 auto}
-.av::after{content:attr(data-mono)}
+/* ── H 19:00 — LE DOMANDE SCOMODE (V79) ──
+   Sostituisce il "fiume delle recensioni": 26 card con nomi, citta e cinque
+   stelle inventati ma presentati come genuini, cioe una pratica commerciale
+   ingannevole (Cod. Consumo artt. 21-22; dir. Omnibus 2019/2161 sulle
+   recensioni dei consumatori). Qui non c'e nessun claim di terzi: solo
+   domande reali con risposte che riguardano il nostro operato o fatti
+   verificabili. La domanda 01 mette l'assenza di recensioni in prima fila
+   invece di nasconderla.
+   Metafora visiva: ogni domanda e un modulo fotovoltaico scuro appoggiato sul
+   crema del giorno. Aprendola il modulo "si accende": le celle passano dal
+   blu all'oro e una lama di luce attraversa il pannello una volta sola. */
+.qs{position:relative;padding:48px 0 56px;background:var(--giorno);overflow:hidden}
+.qs-head h2{font-size:clamp(2.4rem,5vw,4.2rem);margin:18px 0 12px}
+.qs-head h2 em{color:var(--fiamma)}
+.qs-sub{color:var(--muted-l);font-size:1rem;max-width:60ch}
+.qs-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:46px;align-items:start}
+.qs-cell{position:relative;isolation:isolate;border-radius:16px;overflow:hidden;
+  background:linear-gradient(158deg,#17243B 0%,#101C31 52%,#0B1526 100%);
+  border:1px solid rgba(127,176,255,.16);
+  transition:border-color .4s var(--ease),box-shadow .4s var(--ease),background .55s var(--ease)}
+/* la griglia di celle del modulo: busbar verticali + strisce orizzontali */
+.qs-cell::before{content:'';position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.5;
+  transition:opacity .5s var(--ease),background .55s var(--ease);
+  background:repeating-linear-gradient(90deg,transparent 0 calc(20% - 1px),rgba(127,176,255,.23) calc(20% - 1px) 20%),
+    repeating-linear-gradient(180deg,transparent 0 44px,rgba(127,176,255,.14) 44px 45px)}
+/* la lama di luce: one-shot, rigiocata dalla rimozione/riaggiunta di .on */
+.qs-cell::after{content:'';position:absolute;top:0;bottom:0;left:-60%;width:42%;z-index:1;pointer-events:none;opacity:0;
+  background:linear-gradient(105deg,transparent,rgba(255,236,190,.14) 44%,rgba(255,236,190,.24) 56%,transparent);
+  transform:skewX(-14deg)}
+.qs-cell.on::after{animation:qsSweep .95s var(--ease) forwards}
+@keyframes qsSweep{0%{left:-60%;opacity:0}14%{opacity:1}100%{left:118%;opacity:0}}
+/* modulo acceso: dal blu all'oro */
+.qs-cell.on{border-color:rgba(245,166,35,.52);box-shadow:0 26px 54px -26px rgba(16,24,34,.42);
+  /* il modulo acceso prende luce dall'angolo alto, come un pannello colpito dal sole */
+  background:radial-gradient(440px circle at 10% -8%,rgba(255,201,110,.14),transparent 66%),
+    linear-gradient(158deg,#1A2740 0%,#121F35 52%,#0C1728 100%)}
+.qs-cell.on::before{opacity:.92;
+  background:repeating-linear-gradient(90deg,transparent 0 calc(20% - 1px),rgba(245,166,35,.34) calc(20% - 1px) 20%),
+    repeating-linear-gradient(180deg,transparent 0 44px,rgba(245,166,35,.19) 44px 45px)}
+.qs-q{position:relative;z-index:2;width:100%;display:flex;align-items:flex-start;gap:15px;
+  background:none;border:0;text-align:left;cursor:pointer;padding:24px 24px 22px;color:#F6F1E6;
+  font-family:'Bricolage Grotesque',sans-serif;font-weight:700;letter-spacing:-.02em;
+  font-size:clamp(1.05rem,1.5vw,1.26rem);line-height:1.26}
+.qs-q:focus-visible{outline:2px solid var(--sole);outline-offset:-4px;border-radius:14px}
+.qs-n{flex:0 0 auto;padding-top:.42em;opacity:.75;color:var(--sole);
+  font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:.64rem;font-weight:500;letter-spacing:.14em;transition:opacity .4s var(--ease)}
+.qs-cell.on .qs-n{opacity:1}
+.qs-qt{flex:1 1 auto}
+.qs-ico{flex:0 0 auto;position:relative;width:18px;height:18px;margin-top:.3em;transition:transform .45s var(--ease)}
+.qs-ico::before,.qs-ico::after{content:'';position:absolute;left:50%;top:50%;border-radius:2px;background:var(--sole);
+  transform:translate(-50%,-50%)}
+.qs-ico::before{width:14px;height:1.8px}
+.qs-ico::after{width:1.8px;height:14px;transition:transform .45s var(--ease),opacity .3s var(--ease)}
+.qs-cell.on .qs-ico{transform:rotate(180deg)}
+.qs-cell.on .qs-ico::after{transform:translate(-50%,-50%) scaleY(0);opacity:0}
+/* apertura senza misurare altezze in JS: 0fr -> 1fr, sempre esatta */
+.qs-a{position:relative;z-index:2;display:grid;grid-template-rows:0fr;transition:grid-template-rows .5s var(--ease)}
+.qs-cell.on .qs-a{grid-template-rows:1fr}
+/* visibility differita: a modulo chiuso la risposta esce anche dall'albero
+   di accessibilita, senza rompere la transizione di altezza */
+.qs-a-in{overflow:hidden;visibility:hidden;transition:visibility 0s linear .5s}
+.qs-cell.on .qs-a-in{visibility:visible;transition-delay:0s}
+.qs-a p{margin:0 24px 26px;padding-top:15px;border-top:1px solid rgba(127,176,255,.14);
+  font-size:.95rem;line-height:1.62;color:#AEBACB;opacity:0;transition:opacity .35s var(--ease)}
+.qs-cell.on .qs-a p{opacity:1;transition-delay:.16s}
+.qs-foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:18px 28px;
+  margin-top:34px;padding-top:24px;border-top:1px solid var(--line-l)}
+.qs-foot p{font-size:1rem;color:var(--muted-l);max-width:54ch}
+.qs-foot p b{color:var(--ink);font-weight:600}
+@media (hover:hover) and (pointer:fine){
+  .qs-cell:hover{border-color:rgba(127,176,255,.34)}
+  .qs-cell:hover::before{opacity:.72}
+  .qs-cell.on:hover{border-color:rgba(245,166,35,.62)}
+  .qs-cell.on:hover::before{opacity:.95}
+}
+@media (prefers-reduced-motion:reduce){
+  .qs-cell,.qs-cell::before,.qs-a,.qs-a-in,.qs-a p,.qs-ico,.qs-ico::after{transition:none}
+  .qs-cell.on::after{animation:none}
+}
 .contact{position:relative;overflow:hidden;padding:48px 0 72px;background:
   linear-gradient(180deg,var(--giorno) 0%,#F7D89A 18%,var(--sole) 46%,#D96A2B 74%,#25203B 100%);color:var(--notte)}
 .tram-sun{position:absolute;left:16%;top:-4vh;width:36vmin;height:36vmin;border-radius:50%;z-index:0;pointer-events:none;
@@ -619,9 +665,8 @@ footer .wrap{position:relative;z-index:2;display:flex;flex-direction:column;gap:
   .imp-num{font-size:clamp(3rem,16vw,4.6rem)}
   .imp-scrim{background:linear-gradient(0deg,rgba(7,12,22,.82),rgba(7,12,22,.3) 42%,rgba(7,12,22,.18) 70%),linear-gradient(180deg,rgba(7,12,22,.62),rgba(7,12,22,.22) 38%,transparent 62%)}
   .imp-ui{text-shadow:0 1px 2px rgba(7,12,22,.5),0 6px 24px rgba(7,12,22,.4)}
-  .rev-river{margin-top:36px;gap:16px}
-  .rev-card{width:320px}
-  .rev-set{gap:16px;padding-right:16px}
+  .qs-grid{grid-template-columns:1fr;gap:14px;margin-top:34px}
+  .qs-foot{margin-top:28px}
   .contact .wrap{grid-template-columns:1fr;gap:44px}
   .tram-sun{left:auto;right:-6vmin;top:20vh;width:44vmin;height:44vmin}
   .contact h2 em{text-shadow:0 1px 2px rgba(7,12,22,.28),0 4px 26px rgba(7,12,22,.45)}
@@ -632,7 +677,7 @@ footer .wrap{position:relative;z-index:2;display:flex;flex-direction:column;gap:
   .nav-burger{display:flex}
   .alba-copy h2 em{font-size:.78em}
   .marquee.m-notte{padding:40px 0 14px}
-  .stats,.turnkey,.calc,.reviews{padding-top:40px;padding-bottom:40px}
+  .stats,.turnkey,.calc,.qs{padding-top:40px;padding-bottom:40px}
   .contact{padding:40px 0 56px}
   .form-card{padding:28px 22px}
 }
@@ -669,7 +714,8 @@ footer .wrap{position:relative;z-index:2;display:flex;flex-direction:column;gap:
   .cmp{min-width:0;flex:1 1 40%}
   .cmp-vs{order:0;flex:0 0 auto}
   .stg-note{font-size:.66rem}
-  .rev-card{padding:22px 20px}
+  .qs-q{padding:20px 18px 18px;gap:12px}
+  .qs-a p{margin:0 18px 22px}
 }
 @media (max-width:480px){
   .wrap{padding:0 15px}
@@ -772,7 +818,7 @@ footer .wrap{position:relative;z-index:2;display:flex;flex-direction:column;gap:
 body.menu-open{overflow:hidden}
 .nav-scrim{position:fixed;inset:0;background:rgba(4,8,15,.5);z-index:100;opacity:0;pointer-events:none;transition:opacity .42s var(--ease)}
 .nav-scrim.show{opacity:1;pointer-events:auto}
-body::after{content:'VER-2026-07-24-V78';position:fixed;bottom:8px;left:8px;z-index:99999;font:600 11px/1 monospace;color:#fff;background:#c0392b;padding:4px 8px;border-radius:4px;pointer-events:none}
+body::after{content:'VER-2026-07-25-V79';position:fixed;bottom:8px;left:8px;z-index:99999;font:600 11px/1 monospace;color:#fff;background:#c0392b;padding:4px 8px;border-radius:4px;pointer-events:none}
 .gse-split{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:center;min-height:64vh}
 .gse-track{position:relative}
 @media (min-width:981px){
@@ -2396,84 +2442,110 @@ html:not([data-preintro="1"]) #preintro{display:none}
     <span class="imp-sc-hint">Scorri</span>
   </div>
 </section>
-<section class="reviews day" id="recensioni" data-theme="giorno">
-  <div class="reviews-head wrap">
-    <span class="kicker fx"><span class="ora">H 19:00</span><span class="sep">·</span>Recensioni</span>
-    <h2 class="tr">Parola di chi <em>l'ha già fatto.</em></h2>
-    <p class="reviews-sub fx">Storie reali di chi ha scelto l'indipendenza energetica e trasformato la propria casa con RealHome.</p>
+<!-- ============================================================
+     H 19:00 — LE DOMANDE SCOMODE  (V79)
+     Sostituisce integralmente il "fiume delle recensioni" (26 card rimosse).
+     Quelle recensioni avevano nomi, citta e cinque stelle inventati ma erano
+     presentate come genuine: pratica commerciale ingannevole (Cod. Consumo
+     artt. 21-22, dir. Omnibus 2019/2161). Qui non si attribuisce nulla a
+     nessun terzo: sono domande reali con risposte che impegnano noi o che
+     riportano fatti verificabili. La 01 affronta di petto l'assenza di
+     recensioni e la usa come primo argomento di fiducia.
+     I moduli si aprono con uno script autonomo (fuori dal ramo GSAP): se il
+     CDN delle animazioni cade, le risposte restano comunque apribili.
+     ============================================================ -->
+<section class="qs day" id="domande" data-theme="giorno">
+  <div class="qs-head wrap">
+    <span class="kicker fx"><span class="ora">H 19:00</span><span class="sep">&#183;</span>Carte in tavola</span>
+    <h2 class="tr">Le domande <em>scomode.</em></h2>
+    <p class="qs-sub fx">Otto cose che un venditore preferisce non sentirsi chiedere. Le mettiamo noi in prima pagina, con la risposta accanto &mdash; anche quando la risposta non ci fa comodo.</p>
   </div>
-  <div class="rev-river" id="revRiver">
-    <div class="rev-row" data-dir="1" data-base=".45">
-      <div class="rev-flow">
-        <div class="rev-set">
-          <article class="rev-card">
-            <span class="rev-q" aria-hidden="true">"</span>
-            <div class="rev-stars" aria-label="5 stelle"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
-            <p>"Bolletta crollata dal primo mese. La pratica GSE l'hanno seguita loro dall'inizio alla fine: io non ho firmato nulla di complicato."</p>
-            <cite><span class="av" data-mono="LM"></span>Luca M. — Modena</cite>
-          </article>
-          <article class="rev-card">
-            <span class="rev-q" aria-hidden="true">"</span>
-            <div class="rev-stars" aria-label="5 stelle"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
-            <p>"Un solo interlocutore per tutto: sopralluogo, installazione, detrazione. In quattro anni l'impianto si sarà ripagato da solo."</p>
-            <cite><span class="av" data-mono="AR"></span>Anna R. — Carpi</cite>
-          </article>
-          <article class="rev-card">
-            <span class="rev-q" aria-hidden="true">"</span>
-            <div class="rev-stars" aria-label="5 stelle"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
-            <p>"Squadra puntuale e pulita. Ci hanno consegnato le credenziali del portale GSE: vedo i bonifici arrivare da solo."</p>
-            <cite><span class="av" data-mono="GT"></span>Giorgio T. — Sassuolo</cite>
-          </article>
-          <article class="rev-card">
-            <span class="rev-q" aria-hidden="true">"</span>
-            <div class="rev-stars" aria-label="5 stelle"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
-            <p>"Autonomia oltre l'80%: di sera consumiamo quello che l'accumulo ha caricato di giorno. Consigliatissimi."</p>
-            <cite><span class="av" data-mono="SP"></span>Sara P. — Modena</cite>
-          </article>
-          <article class="rev-card">
-            <span class="rev-q" aria-hidden="true">"</span>
-            <div class="rev-stars" aria-label="5 stelle"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
-            <p>"Dal sopralluogo all'allaccio in rete non abbiamo mai dovuto rincorrere nessuno. Tutto tracciato, tutto puntuale."</p>
-            <cite><span class="av" data-mono="MV"></span>Marco V. — Formigine</cite>
-          </article>
-        </div>
-      </div>
+  <div class="wrap">
+    <div class="qs-grid">
+      <article class="qs-cell">
+        <button class="qs-q" id="qsq1" type="button" aria-expanded="false" aria-controls="qsa1">
+          <span class="qs-n">01</span>
+          <span class="qs-qt">Perch&eacute; non trovo nemmeno una recensione su di voi?</span>
+          <span class="qs-ico" aria-hidden="true"></span>
+        </button>
+        <div class="qs-a" id="qsa1" role="region" aria-labelledby="qsq1"><div class="qs-a-in">
+          <p>Perch&eacute; RealHome &egrave; nata nel 2026 e le recensioni si guadagnano, non si scrivono. Quando i primi impianti avranno un anno di dati alle spalle li pubblicheremo con nome, comune e produzione reale, e solo con il consenso di chi ci ha scelto. Fino a quel giorno preferiamo essere giudicati su come lavoriamo: nomi di fantasia e cinque stelle ce li potremmo inventare in dieci minuti, ed &egrave; esattamente per questo che non valgono niente.</p>
+        </div></div>
+      </article>
+      <article class="qs-cell">
+        <button class="qs-q" id="qsq2" type="button" aria-expanded="false" aria-controls="qsa2">
+          <span class="qs-n">02</span>
+          <span class="qs-qt">E quando il sole non c'&egrave;?</span>
+          <span class="qs-ico" aria-hidden="true"></span>
+        </button>
+        <div class="qs-a" id="qsa2" role="region" aria-labelledby="qsq2"><div class="qs-a-in">
+          <p>Tra novembre e febbraio un impianto in Emilia produce circa un terzo di quello che fa nel resto dell'anno. Meno, non zero. Per questo si dimensiona sui tuoi consumi veri e non sul preventivo pi&ugrave; bello da guardare: con l'accumulo copri la sera, a dicembre solo in parte. Nel preventivo trovi la stima mese per mese, dicembre compreso.</p>
+        </div></div>
+      </article>
+      <article class="qs-cell">
+        <button class="qs-q" id="qsq3" type="button" aria-expanded="false" aria-controls="qsa3">
+          <span class="qs-n">03</span>
+          <span class="qs-qt">Quanto dura davvero un impianto?</span>
+          <span class="qs-ico" aria-hidden="true"></span>
+        </button>
+        <div class="qs-a" id="qsa3" role="region" aria-labelledby="qsq3"><div class="qs-a-in">
+          <p>I pannelli hanno due garanzie distinte: quella sul prodotto e quella sulla resa, che arriva a 25-30 anni con una produzione dichiarata intorno all'85% al venticinquesimo. L'inverter &egrave; il pezzo che si sostituisce prima, di solito tra i 10 e i 15 anni. L'accumulo non si misura in anni ma in cicli di carica. Marca per marca quei numeri sono scritti nel preventivo: se in un preventivo non ci sono, chiedili.</p>
+        </div></div>
+      </article>
+      <article class="qs-cell">
+        <button class="qs-q" id="qsq4" type="button" aria-expanded="false" aria-controls="qsa4">
+          <span class="qs-n">04</span>
+          <span class="qs-qt">E se voi chiudete?</span>
+          <span class="qs-ico" aria-hidden="true"></span>
+        </button>
+        <div class="qs-a" id="qsa4" role="region" aria-labelledby="qsq4"><div class="qs-a-in">
+          <p>Le garanzie sui componenti sono del produttore, non nostre: restano valide comunque. Quella sull'installazione &egrave; la nostra, e vale quanto vale l'azienda. &Egrave; una domanda giusta da fare a chiunque, noi compresi: chiedi sempre chi copre cosa e fattelo mettere per iscritto.</p>
+        </div></div>
+      </article>
+      <article class="qs-cell">
+        <button class="qs-q" id="qsq5" type="button" aria-expanded="false" aria-controls="qsa5">
+          <span class="qs-n">05</span>
+          <span class="qs-qt">Mi rovinate il tetto?</span>
+          <span class="qs-ico" aria-hidden="true"></span>
+        </button>
+        <div class="qs-a" id="qsa5" role="region" aria-labelledby="qsq5"><div class="qs-a-in">
+          <p>Le staffe si ancorano alla struttura portante, non alla tegola. Il punto vero per&ograve; &egrave; un altro: se al tetto restano meno di dieci anni di vita, il fotovoltaico si fa dopo il rifacimento e non prima, perch&eacute; smontare e rimontare costa pi&ugrave; che aspettare. Se al sopralluogo troviamo un tetto stanco te lo diciamo, anche quando significa rimandare il lavoro.</p>
+        </div></div>
+      </article>
+      <article class="qs-cell">
+        <button class="qs-q" id="qsq6" type="button" aria-expanded="false" aria-controls="qsa6">
+          <span class="qs-n">06</span>
+          <span class="qs-qt">Conviene ancora, senza Superbonus?</span>
+          <span class="qs-ico" aria-hidden="true"></span>
+        </button>
+        <div class="qs-a" id="qsa6" role="region" aria-labelledby="qsq6"><div class="qs-a-in">
+          <p>Il conto non lo fa la detrazione: lo fa quanto autoconsumi. Chi &egrave; in casa di giorno rientra prima; chi ci vive solo la sera ha bisogno dell'accumulo perch&eacute; i numeri tornino. L'aliquota in vigore la verifichiamo insieme al sopralluogo, perch&eacute; cambia di anno in anno e non vogliamo raccontarti una percentuale scaduta. E se dai tuoi numeri non torna, te lo diciamo prima di farti un preventivo.</p>
+        </div></div>
+      </article>
+      <article class="qs-cell">
+        <button class="qs-q" id="qsq7" type="button" aria-expanded="false" aria-controls="qsa7">
+          <span class="qs-n">07</span>
+          <span class="qs-qt">Quanto ci mettete davvero?</span>
+          <span class="qs-ico" aria-hidden="true"></span>
+        </button>
+        <div class="qs-a" id="qsa7" role="region" aria-labelledby="qsq7"><div class="qs-a-in">
+          <p>L'installazione &egrave; questione di giorni. L'allaccio no: dipende dal distributore di rete e dal GSE, e quei tempi non li decidiamo noi. Ti diamo una stima onesta e ti aggiorniamo a che punto &egrave; la pratica, anche quando l'aggiornamento &egrave; &laquo;stiamo ancora aspettando&raquo;.</p>
+        </div></div>
+      </article>
+      <article class="qs-cell">
+        <button class="qs-q" id="qsq8" type="button" aria-expanded="false" aria-controls="qsa8">
+          <span class="qs-n">08</span>
+          <span class="qs-qt">Posso confrontarvi con altri?</span>
+          <span class="qs-ico" aria-hidden="true"></span>
+        </button>
+        <div class="qs-a" id="qsa8" role="region" aria-labelledby="qsq8"><div class="qs-a-in">
+          <p>Ti conviene. Chiedi tre preventivi e mettili accanto guardando le stesse tre righe: potenza reale in kWp, marca e garanzia dei componenti, cosa &egrave; incluso nella pratica GSE. Se uno costa molto meno degli altri di solito manca qualcosa: trovala. E se dopo il confronto scegli un'altra azienda, hai fatto comunque la cosa giusta.</p>
+        </div></div>
+      </article>
     </div>
-    <div class="rev-row" data-dir="-1" data-base=".38">
-      <div class="rev-flow">
-        <div class="rev-set">
-          <article class="rev-card">
-            <span class="rev-q" aria-hidden="true">"</span>
-            <div class="rev-stars" aria-label="5 stelle"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
-            <p>"Autonomia oltre l'80%: di sera consumiamo quello che l'accumulo ha caricato di giorno. Consigliatissimi."</p>
-            <cite><span class="av" data-mono="SP"></span>Sara P. — Modena</cite>
-          </article>
-          <article class="rev-card">
-            <span class="rev-q" aria-hidden="true">"</span>
-            <div class="rev-stars" aria-label="5 stelle"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
-            <p>"Dal sopralluogo all'allaccio in rete non abbiamo mai dovuto rincorrere nessuno. Tutto tracciato, tutto puntuale."</p>
-            <cite><span class="av" data-mono="MV"></span>Marco V. — Formigine</cite>
-          </article>
-          <article class="rev-card">
-            <span class="rev-q" aria-hidden="true">"</span>
-            <div class="rev-stars" aria-label="5 stelle"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
-            <p>"Bolletta crollata dal primo mese. La pratica GSE l'hanno seguita loro dall'inizio alla fine: io non ho firmato nulla di complicato."</p>
-            <cite><span class="av" data-mono="LM"></span>Luca M. — Modena</cite>
-          </article>
-          <article class="rev-card">
-            <span class="rev-q" aria-hidden="true">"</span>
-            <div class="rev-stars" aria-label="5 stelle"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
-            <p>"Un solo interlocutore per tutto: sopralluogo, installazione, detrazione. In quattro anni l'impianto si sarà ripagato da solo."</p>
-            <cite><span class="av" data-mono="AR"></span>Anna R. — Carpi</cite>
-          </article>
-          <article class="rev-card">
-            <span class="rev-q" aria-hidden="true">"</span>
-            <div class="rev-stars" aria-label="5 stelle"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
-            <p>"Squadra puntuale e pulita. Ci hanno consegnato le credenziali del portale GSE: vedo i bonifici arrivare da solo."</p>
-            <cite><span class="av" data-mono="GT"></span>Giorgio T. — Sassuolo</cite>
-          </article>
-        </div>
-      </div>
+    <div class="qs-foot fx">
+      <p><b>Non abbiamo recensioni da mostrarti.</b> Abbiamo un sopralluogo gratuito, un numero a cui risponde una persona e la disponibilit&agrave; a dirti che non conviene, se non conviene.</p>
+      <a class="btn btn-ink" href="#preventivo" data-nav>Prenota il sopralluogo</a>
     </div>
   </div>
 </section>
@@ -2667,7 +2739,7 @@ html:not([data-preintro="1"]) #preintro{display:none}
 if(typeof gsap==='undefined' || typeof ScrollTrigger==='undefined'){
   console.warn('RealHome: libreria di animazione non caricata dal CDN — modalità statica.');
   document.documentElement.classList.add('no-anim');
-  document.querySelectorAll('.reviews,.gse-split,.hz,.how,.diagram')
+  document.querySelectorAll('.gse-split,.hz,.how,.diagram')
     .forEach(el=>el.classList.add('static'));
 }else{
 gsap.registerPlugin(ScrollTrigger);
@@ -2733,7 +2805,8 @@ if (FX && window.Lenis){
   gsap.ticker.add(time => lenis.raf(time * 1000));
   gsap.ticker.lagSmoothing(0);
 }
-/* PERF V39: scrollVel è condivisa da 4 ticker (marquee, reviews, diagram, skewTick),
+/* PERF V39: scrollVel è condivisa da 3 ticker (marquee, diagram, skewTick; il
+   quarto consumer era il fiume delle recensioni, rimosso in V79),
    ma finora il suo decadimento (*=.92) viveva SOLO dentro il ticker del marquee —
    una dipendenza fragile: bastava mettere in pausa quel ticker (es. per gating di
    visibilità, vedi sotto) per bloccare il decadimento anche per gli altri 3 consumer.
@@ -2742,7 +2815,7 @@ gsap.ticker.add(()=>{ scrollVel*=.92; });
 
 /* PERF V39: helper di visibilità riutilizzabile — stessa logica IntersectionObserver
    già usata nel parallasse mousemove (mina 49), estesa ai ticker scroll-reattivi che
-   ne erano rimasti fuori (marquee, fiume recensioni, stream del diagramma): senza
+   ne erano rimasti fuori (marquee, stream del diagramma): senza
    questo, quei ticker riscrivono transform/animationDuration ad ogni frame per
    l'intera sessione, anche a sezione lontanissima e mai vista. */
 function visGate(el,margin){
@@ -3125,70 +3198,21 @@ if (FX){
   });
 })();
 
-/* ---------- 5e. v16 — IL FIUME DELLE RECENSIONI ----------
-   Due file in controcorrente con la fisica dei marquee (scrollVel condivisa),
-   che rallentano con dolcezza sotto il mouse. Tilt 3D + spotlight sulle card
-   (solo fine pointer). Solo transform: niente pin, niente misure fragili. */
-(function reviewsRiver(){
-  const sec=document.querySelector('.reviews');
-  if(!sec) return;
-  const rows=[...sec.querySelectorAll('.rev-row')];
-  if(!rows.length) return;
-  if(!FX){sec.classList.add('static');return;}
-  const secVis=visGate(sec);
-
-  /* clone del set per il loop senza cuciture (aria-hidden: è decorativo) */
-  const flows=rows.map(r=>{
-    const flow=r.querySelector('.rev-flow'), set=flow.querySelector('.rev-set');
-    const clone=set.cloneNode(true);
-    clone.setAttribute('aria-hidden','true');
-    flow.appendChild(clone);
-    return {flow,set,dir:+r.dataset.dir||1,base:+r.dataset.base||.45,x:0,w:0,hover:0,hoverT:0};
-  });
-  const measure=()=>flows.forEach(f=>{f.w=f.set.getBoundingClientRect().width});
-  measure();
-  window.addEventListener('resize',measure);
-  window.addEventListener('load',measure);
-
-  /* la fila rallenta sotto il mouse, riparte quando esci (lerp, mai a scatto) */
-  rows.forEach((r,i)=>{
-    r.addEventListener('pointerenter',()=>{flows[i].hoverT=1});
-    r.addEventListener('pointerleave',()=>{flows[i].hoverT=0});
-  });
-
-  gsap.ticker.add(()=>{
-    if(!secVis.active)return;   /* PERF V39: niente transform fuori viewport */
-    const v=Math.min(Math.abs(scrollVel),60);
-    flows.forEach(f=>{
-      f.hover+=(f.hoverT-f.hover)*.08;
-      const speed=(f.base+v*.05)*(1-.88*f.hover);   /* hover: quasi fermo, mai morto */
-      f.x-=speed*f.dir;
-      if(f.w>0){ if(f.x<=-f.w)f.x+=f.w; if(f.x>0)f.x-=f.w; }
-      f.flow.style.transform=`translate3d(${f.x}px,0,0)`;
-    });
-  });
-
-  /* entrata: le due file scivolano l'una verso l'altra */
-  gsap.from(rows[0],{x:80,opacity:0,duration:1,ease:'power3.out',
-    scrollTrigger:{trigger:sec,start:'top 75%',once:true}});
-  if(rows[1])gsap.from(rows[1],{x:-80,opacity:0,duration:1,ease:'power3.out',
-    scrollTrigger:{trigger:sec,start:'top 75%',once:true},delay:.12});
-
-  /* tilt 3D + spotlight (solo mouse vero; il touch ha già il fiume) */
-  if(finePointer){
-    sec.querySelectorAll('.rev-card').forEach(card=>{
-      const rx=gsap.quickTo(card,'rotationX',{duration:.5,ease:'power2.out'});
-      const ry=gsap.quickTo(card,'rotationY',{duration:.5,ease:'power2.out'});
-      card.addEventListener('pointermove',e=>{
-        const r=card.getBoundingClientRect();
-        const px=(e.clientX-r.left)/r.width, py=(e.clientY-r.top)/r.height;
-        card.style.setProperty('--mx',(px*100)+'%');
-        card.style.setProperty('--my',(py*100)+'%');
-        rx((.5-py)*7); ry((px-.5)*9);
-      });
-      card.addEventListener('pointerleave',()=>{rx(0);ry(0);});
-    });
-  }
+/* ---------- 5e. V79 — LE DOMANDE SCOMODE: entrata a cascata ----------
+   Sostituisce reviewsRiver() (il fiume delle 26 recensioni segnaposto,
+   rimosse in V79 perche' inventate e spacciate per genuine).
+   Qui vive SOLO l'animazione d'entrata. L'apertura e la chiusura dei moduli
+   stanno in uno script autonomo fuori da questo ramo GSAP: se il CDN delle
+   animazioni non risponde il sito va in modalita statica, e le risposte
+   devono restare apribili comunque.
+   clearProps:'transform' e' necessario: senza, GSAP lascia un transform
+   inline sulle card che si sovrappone a quello dell'hover. */
+(function domandeScomode(){
+  const cells=[...document.querySelectorAll('.qs-cell')];
+  if(!cells.length||!FX) return;
+  gsap.from(cells,{y:30,opacity:0,duration:.8,ease:'power3.out',stagger:.07,
+    clearProps:'transform',
+    scrollTrigger:{trigger:'.qs-grid',start:'top 82%',once:true}});
 })();
 
 /* ---------- 6. nav: shrink + camaleonte giorno/notte ---------- */
@@ -4421,6 +4445,28 @@ window.addEventListener('resize',()=>{
 
   var cur=read();
   if(cur)apply(cur); else show();
+})();
+</script>
+<script>
+/* V79 — APERTURA DEI MODULI "DOMANDE SCOMODE"
+   Deliberatamente FUORI dal ramo GSAP: se il CDN delle animazioni cade il
+   sito passa in modalita statica, e le risposte devono restare apribili.
+   Nessuna dipendenza e nessuna misura di altezza in JS: l'altezza la fa la
+   CSS (.qs-a passa da grid-template-rows:0fr a 1fr).
+   A fisarmonica libera: si possono tenere aperte piu domande insieme.
+   La lama di luce e un'animazione one-shot su .qs-cell.on::after: togliere e
+   rimettere la classe la rigioca da sola, senza reflow forzati. */
+(function domandeToggle(){
+  var btns=document.querySelectorAll('.qs .qs-q');
+  if(!btns.length) return;
+  Array.prototype.forEach.call(btns,function(btn){
+    btn.addEventListener('click',function(){
+      var cell=btn.closest ? btn.closest('.qs-cell') : btn.parentNode;
+      if(!cell) return;
+      var open=cell.classList.toggle('on');
+      btn.setAttribute('aria-expanded',open?'true':'false');
+    });
+  });
 })();
 </script>
 <script>
