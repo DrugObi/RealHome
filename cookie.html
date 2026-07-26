@@ -5,23 +5,42 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cookie Policy — RealHome</title>
 <meta name="robots" content="noindex, follow">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="preload" href="bricolage-grotesque-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="instrument-sans-var.woff2" as="font" type="font/woff2" crossorigin>
 
 <!--
   NOTA PER CHI PUBBLICA QUESTO SITO — non rimuovere prima della revisione:
-  Verificato sul codice sorgente in data 23 luglio 2026: nessun
-  document.cookie, localStorage o sessionStorage è scritto dagli script
-  del sito (grep esaustivo, nessun risultato). Il contenuto sotto riflette
-  questo stato di fatto. SE in futuro vengono aggiunti Google Analytics,
-  Meta Pixel o qualunque cookie non tecnico, questa pagina E il relativo
-  banner di consenso (attualmente assente) vanno predisposti PRIMA
-  dell'attivazione, non dopo: è un obbligo di legge, non un dettaglio
-  stilistico.
+  Contenuto riverificato sul codice sorgente il 26 luglio 2026 (build V89).
+  Stato di fatto oggi:
+    - il sito scrive UNA chiave di memoria locale, 'rh_consent_v1' (riga 4646
+      di index.html), che memorizza la scelta espressa nel banner: tecnica,
+      necessaria, nessun consenso richiesto;
+    - nessun cookie di profilazione, nessun Google Analytics, nessun Meta Pixel;
+    - i caratteri tipografici NON passano più da Google Fonts (V87/V89).
+  SE in futuro vengono attivati analytics o pixel pubblicitari, questa pagina
+  va aggiornata PRIMA dell'attivazione, non dopo: è un obbligo di legge.
+  DA CONFERMARE PRIMA DELLA PUBBLICAZIONE DEFINITIVA:
+    1) l'indirizzo email di contatto (allineato a quello dichiarato in
+       index.html, realhomesrl2026@gmail.com) e il numero di telefono;
+    2) P.IVA: 01234567890 è ancora un segnaposto, come nel footer del sito;
+    3) l'hosting citato al punto 3 è GitHub Pages: se il sito viene spostato
+       su IONOS, va cambiato qui e nell'informativa privacy.
 -->
 
 <style>
+/* ═══ FONT AUTO-OSPITATI (V89, 26 luglio 2026) ══════════════════════
+   Prima questa pagina caricava i caratteri da fonts.googleapis.com, cioè
+   mandava l'IP del visitatore a Google — e lo faceva proprio sulla pagina
+   linkata dalla casella del consenso. Ora i .woff2 stanno in radice accanto
+   a index.html; questa pagina è nella stessa cartella, quindi i percorsi
+   relativi funzionano identici. NON spostare in una sottocartella.
+   Licenze SIL OFL nei file LICENSE-*.txt. */
+@font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:swap;
+  src:url(bricolage-grotesque-var.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Instrument Sans';font-style:normal;font-weight:400 700;font-display:swap;
+  src:url(instrument-sans-var.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Instrument Sans';font-style:italic;font-weight:400 700;font-display:swap;
+  src:url(instrument-sans-var-italic.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
 :root{
   --giorno:#F6F1E6;
   --giorno-2:#FFFDF7;
@@ -64,6 +83,7 @@ a.inline{color:var(--fiamma);text-decoration:underline;text-underline-offset:2px
 table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.9rem}
 th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line-l)}
 th{color:var(--muted-l);font-weight:600;font-size:.78rem;letter-spacing:.05em;text-transform:uppercase}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.86em;background:rgba(16,24,34,.06);padding:1px 5px;border-radius:5px}
 
 footer{border-top:1px solid var(--line-l);padding:34px 0 50px}
 footer .wrap{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;font-size:.82rem;color:var(--muted-l)}
@@ -98,7 +118,7 @@ footer .sep{opacity:.5}
   <div class="wrap">
     <p class="eyebrow">Cookie e tecnologie simili</p>
     <h1>Cookie Policy</h1>
-    <p class="updated">Ai sensi degli artt. 13 e 122 del Codice Privacy (D.Lgs. 196/2003) e delle Linee guida cookie e altri strumenti di tracciamento del Garante Privacy (9 luglio 2021) · Ultimo aggiornamento: 23 luglio 2026</p>
+    <p class="updated">Ai sensi degli artt. 13 e 122 del Codice Privacy (D.Lgs. 196/2003) e delle Linee guida cookie e altri strumenti di tracciamento del Garante Privacy (9 luglio 2021) · Ultimo aggiornamento: 26 luglio 2026</p>
 
     <section>
       <h2><span class="n">1.</span>Cosa sono i cookie</h2>
@@ -107,11 +127,12 @@ footer .sep{opacity:.5}
 
     <section>
       <h2><span class="n">2.</span>Cosa usa (e cosa non usa) questo sito</h2>
-      <div class="note">Alla data di questo aggiornamento, il sito <strong>non installa cookie di profilazione né cookie di terze parti a fini di marketing</strong>. Non sono attivi strumenti di analisi statistica (es. Google Analytics) né pixel di tracciamento pubblicitario (es. Meta Pixel). Non è quindi necessario, allo stato attuale, un banner di raccolta del consenso ai cookie non tecnici.</div>
-      <p>Se in futuro RealHome S.r.l. dovesse attivare strumenti di questo tipo, questa pagina sarà aggiornata in anticipo e verrà mostrato un apposito banner per raccogliere il consenso, con la possibilità di accettare o rifiutare in modo granulare.</p>
+      <div class="note">Alla data di questo aggiornamento, il sito <strong>non installa cookie di profilazione né cookie di terze parti a fini di marketing</strong>. Non sono attivi strumenti di analisi statistica (es. Google Analytics) né pixel di tracciamento pubblicitario (es. Meta Pixel).</div>
+      <p>Il sito utilizza <strong>un solo strumento di memorizzazione locale</strong>, di natura tecnica. Quando esprimi una scelta nel banner dei cookie, quella scelta viene salvata nel tuo browser (memoria locale, chiave <code>rh_consent_v1</code>) perché non ti venga richiesta di nuovo a ogni pagina. È un dato che <strong>resta sul tuo dispositivo</strong>: non viene trasmesso a noi né a terzi. Non richiede consenso, perché senza di esso il banner non potrebbe ricordare la tua decisione. Puoi cancellarlo in qualsiasi momento svuotando i dati di navigazione del browser: alla visita successiva il banner ricomparirà.</p>
+      <p>Le categorie <em>analitici</em> e <em>marketing</em> che compaiono nel banner sono predisposte per il futuro: <strong>oggi nessuna delle due è attiva</strong>, qualunque scelta tu esprima. Se RealHome S.r.l. dovesse attivarle, questa pagina sarà aggiornata prima dell'attivazione e i relativi strumenti resteranno disattivi finché non li autorizzi.</p>
       <table>
         <tr><th>Tipologia</th><th>Utilizzata</th><th>Note</th></tr>
-        <tr><td>Cookie tecnici/necessari</td><td>Nessuno al momento</td><td>Il sito funziona senza salvare cookie propri</td></tr>
+        <tr><td>Cookie tecnici/necessari</td><td>Sì, uno</td><td>Memoria locale <code>rh_consent_v1</code>: ricorda la scelta espressa nel banner. Non richiede consenso.</td></tr>
         <tr><td>Cookie di analisi/statistica</td><td>No</td><td>Nessun Google Analytics o simili</td></tr>
         <tr><td>Cookie di profilazione/marketing</td><td>No</td><td>Nessun pixel pubblicitario</td></tr>
       </table>
@@ -121,11 +142,12 @@ footer .sep{opacity:.5}
       <h2><span class="n">3.</span>Risorse tecniche di terze parti</h2>
       <p>Il sito richiama alcune risorse ospitate su server esterni, necessarie al suo funzionamento grafico e tecnico:</p>
       <ul>
-        <li><strong>Google Fonts</strong> — caratteri tipografici;</li>
-        <li><strong>cdnjs / jsDelivr</strong> — librerie script (animazioni e scorrimento fluido della pagina);</li>
-        <li>un servizio cloud esterno per una singola immagine di sfondo.</li>
+        <li><strong>jsDelivr</strong> (<code>cdn.jsdelivr.net</code>) — librerie per le animazioni e lo scorrimento fluido della pagina;</li>
+        <li><strong>Amazon CloudFront</strong> — una singola immagine di sfondo;</li>
+        <li><strong>GitHub Pages</strong> — il servizio su cui il sito è attualmente pubblicato.</li>
       </ul>
       <p>Queste richieste avvengono secondo il normale funzionamento del protocollo web: comportano che il tuo indirizzo IP e il tipo di browser siano visibili ai rispettivi fornitori nel momento in cui la risorsa viene caricata, indipendentemente dall'uso di cookie. Non ci risulta che questi fornitori installino, tramite queste risorse, cookie propri di profilazione sul dominio di RealHome.</p>
+      <div class="note">I <strong>caratteri tipografici non sono più richiamati da Google Fonts</strong>: sono ospitati direttamente su questo dominio. Il tuo indirizzo IP non viene quindi comunicato a Google per visualizzare questa pagina.</div>
     </section>
 
     <section>
@@ -138,7 +160,7 @@ footer .sep{opacity:.5}
       <div class="box">
         <strong>RealHome S.r.l.</strong><br>
         Via dell'Innovazione, 10 · 41121 Modena (MO)<br>
-        Email: <a class="inline" href="mailto:info@realhome.it">info@realhome.it</a>
+        Email: <a class="inline" href="mailto:realhomesrl2026@gmail.com">realhomesrl2026@gmail.com</a>
       </div>
       <p>Per maggiori informazioni sul trattamento dei dati personali, consulta la <a class="inline" href="privacy.html">Informativa Privacy</a>.</p>
     </section>

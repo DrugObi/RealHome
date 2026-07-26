@@ -5,31 +5,49 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Informativa Privacy — RealHome</title>
 <meta name="robots" content="noindex, follow">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="preload" href="bricolage-grotesque-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="instrument-sans-var.woff2" as="font" type="font/woff2" crossorigin>
 
 <!--
   NOTA PER CHI PUBBLICA QUESTO SITO — non rimuovere prima della revisione:
-  Questo testo è un modello redatto sulla struttura richiesta dall'art. 13
-  GDPR, compilato con le informazioni realmente presenti nel codice del
-  sito (dati raccolti, terze parti effettivamente richiamate). NON sostituisce
-  la consulenza di un legale o di un DPO. In particolare, PRIMA della
-  pubblicazione online:
+  Testo redatto sulla struttura dell'art. 13 GDPR e compilato con le
+  informazioni realmente presenti nel codice del sito. Riverificato il
+  26 luglio 2026 sulla build V89. NON sostituisce la consulenza di un
+  legale o di un DPO.
+  Allineamenti fatti il 26 luglio 2026:
+    - Google Fonts eliminato dai fornitori: i caratteri sono auto-ospitati;
+    - aggiunti i fornitori realmente richiamati: jsDelivr, Amazon CloudFront,
+      GitHub Pages (hosting attuale), WhatsApp/Meta come canale di contatto;
+    - corretto il punto 2: il simulatore non trasmette nulla, e il modulo
+      non ha un campo email (da computer l'indirizzo arriva perché il
+      messaggio parte dal programma di posta della persona).
+  PRIMA DELLA PUBBLICAZIONE DEFINITIVA:
     1) far validare il testo da un professionista;
-    2) inserire i dati anagrafici della società ancora segnaposto
-       (REA, capitale sociale — vedi footer del sito, marcati "da inserire");
-    3) se in futuro il modulo "Richiedi preventivo" verrà collegato a un
-       servizio esterno (Formspree, EmailJS, CRM, ecc. — vedi TO-DO
-       "submitLead() non invia i dati da nessuna parte" nell'handoff di
-       progetto), aggiungere quel fornitore all'elenco dei responsabili
-       del trattamento al punto 5, con relativa informativa/DPA;
-    4) se in futuro verranno attivati strumenti di analisi (Google Analytics,
-       Meta Pixel, ecc.), questa informativa e la cookie policy vanno
-       aggiornate PRIMA dell'attivazione, non dopo.
+    2) dati societari ancora segnaposto: P.IVA 01234567890, PEC, REA,
+       capitale sociale (vedi anche il footer di index.html);
+    3) email e telefono qui indicati sono quelli dichiarati in index.html
+       (realhomesrl2026@gmail.com, +39 350 894 34 28): confermare che siano
+       le caselle realmente presidiate, perché è l'indirizzo al quale si
+       esercitano i diritti degli artt. 15-22;
+    4) se il modulo verrà collegato a un endpoint di invio (IONOS o altro),
+       aggiungere quel fornitore ai responsabili al punto 5;
+    5) se il sito verrà spostato da GitHub Pages, aggiornare punti 5 e 6.
 -->
 
 <style>
+/* ═══ FONT AUTO-OSPITATI (V89, 26 luglio 2026) ══════════════════════
+   Prima questa pagina caricava i caratteri da fonts.googleapis.com, cioè
+   mandava l'IP del visitatore a Google — e lo faceva proprio sulla pagina
+   linkata dalla casella del consenso. Ora i .woff2 stanno in radice accanto
+   a index.html; questa pagina è nella stessa cartella, quindi i percorsi
+   relativi funzionano identici. NON spostare in una sottocartella.
+   Licenze SIL OFL nei file LICENSE-*.txt. */
+@font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:swap;
+  src:url(bricolage-grotesque-var.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Instrument Sans';font-style:normal;font-weight:400 700;font-display:swap;
+  src:url(instrument-sans-var.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Instrument Sans';font-style:italic;font-weight:400 700;font-display:swap;
+  src:url(instrument-sans-var-italic.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
 :root{
   --notte:#070C16;
   --giorno:#F6F1E6;
@@ -107,17 +125,17 @@ footer .sep{opacity:.5}
   <div class="wrap">
     <p class="eyebrow">Trattamento dei dati personali</p>
     <h1>Informativa Privacy</h1>
-    <p class="updated">Ai sensi dell'art. 13 del Regolamento (UE) 2016/679 ("GDPR") e del D.Lgs. 196/2003, come modificato dal D.Lgs. 101/2018 · Ultimo aggiornamento: 23 luglio 2026</p>
+    <p class="updated">Ai sensi dell'art. 13 del Regolamento (UE) 2016/679 ("GDPR") e del D.Lgs. 196/2003, come modificato dal D.Lgs. 101/2018 · Ultimo aggiornamento: 26 luglio 2026</p>
 
     <section>
       <h2><span class="n">1.</span>Titolare del trattamento</h2>
-      <p>Il Titolare del trattamento dei dati personali raccolti tramite il sito <strong>realhome.it</strong> (di seguito, il "Sito") è:</p>
+      <p>Il Titolare del trattamento dei dati personali raccolti tramite questo sito (di seguito, il "Sito") è:</p>
       <div class="box">
         <strong>RealHome S.r.l.</strong><br>
         Via dell'Innovazione, 10 · 41121 Modena (MO)<br>
         P.IVA/C.F. 01234567890<br>
         PEC: <em class="ph">da inserire</em><br>
-        Email: <a class="inline" href="mailto:info@realhome.it">info@realhome.it</a> · Tel: +39 059 000000
+        Email: <a class="inline" href="mailto:realhomesrl2026@gmail.com">realhomesrl2026@gmail.com</a> · Tel: <a class="inline" href="tel:+393508943428">+39 350 894 34 28</a>
       </div>
     </section>
 
@@ -125,7 +143,7 @@ footer .sep{opacity:.5}
       <h2><span class="n">2.</span>Quali dati raccogliamo</h2>
       <p>A seconda di come interagisci con il Sito, possiamo trattare le seguenti categorie di dati:</p>
       <ul>
-        <li><strong>Dati forniti volontariamente</strong>: nome, recapito telefonico, indirizzo email e indirizzo dell'immobile, quando compili il modulo "Richiedi il preventivo gratuito" o usi il simulatore di risparmio, oppure quando ci contatti via telefono o email.</li>
+        <li><strong>Dati forniti volontariamente</strong>: nome e cognome, recapito telefonico, comune dell'immobile e tipo di intervento di tuo interesse, quando compili il modulo "Richiedi il preventivo gratuito"; oppure i dati che ci comunichi spontaneamente quando ci contatti per telefono, email o WhatsApp. Il modulo <strong>non contiene un campo per l'indirizzo email</strong>: se ci scrivi da computer, il messaggio parte dal tuo programma di posta e riceviamo quindi anche l'indirizzo dal quale ci scrivi. <strong>Il simulatore di risparmio non raccoglie nulla</strong>: i calcoli avvengono interamente nel tuo browser e i valori che imposti non ci vengono trasmessi.</li>
         <li><strong>Dati tecnici e di navigazione</strong>: indirizzo IP, tipo di browser e dispositivo, pagine visitate, raccolti in modo automatico dal servizio di hosting nell'ambito del normale funzionamento dei protocolli di comunicazione internet.</li>
       </ul>
       <p>Il conferimento dei dati di contatto è facoltativo, ma necessario per poter rispondere alla tua richiesta di preventivo o informazioni: senza di essi non potremo ricontattarti.</p>
@@ -152,15 +170,15 @@ footer .sep{opacity:.5}
       <p>I tuoi dati non sono oggetto di diffusione. Possono essere conosciuti, nei limiti delle rispettive competenze e in qualità di responsabili del trattamento, da:</p>
       <ul>
         <li>collaboratori e dipendenti di RealHome S.r.l. incaricati del trattamento;</li>
-        <li>il fornitore del servizio di hosting su cui il Sito è pubblicato;</li>
-        <li>l'eventuale fornitore terzo tramite cui, in futuro, verrà gestito l'invio dei moduli di contatto (servizio non ancora attivato alla data di questo aggiornamento).</li>
+        <li><strong>GitHub, Inc.</strong> (gruppo Microsoft), fornitore del servizio di hosting GitHub Pages su cui il Sito è attualmente pubblicato;</li>
+        <li>l'eventuale fornitore terzo tramite cui, in futuro, verrà gestito l'invio automatico dei moduli di contatto: <strong>alla data di questo aggiornamento non è attivo</strong>. Il modulo non trasmette i dati a nessun server: prepara un messaggio già scritto e lo consegna al programma di posta o a WhatsApp del tuo dispositivo, dal quale sei tu a inviarlo.</li>
       </ul>
-      <p>Il Sito richiama inoltre alcune risorse ospitate su server di terze parti — Google Fonts (caratteri tipografici), librerie script distribuite via CDN e immagini da un servizio cloud di terzi. Il caricamento di queste risorse comporta, per il solo funzionamento tecnico del web, che il tuo indirizzo IP sia visibile ai rispettivi fornitori, indipendentemente dall'uso di cookie: per i dettagli vedi la <a class="inline" href="cookie.html">Cookie Policy</a>. Alla data di questo aggiornamento, il Sito non utilizza strumenti di analisi statistica o pubblicitaria di terze parti.</p>
+      <p>Il Sito richiama inoltre alcune risorse ospitate su server di terze parti: <strong>jsDelivr</strong> (librerie script per le animazioni), <strong>Amazon CloudFront</strong> (una immagine di sfondo) e i servizi di mappa di Google, questi ultimi solo se scegli di aprire la mappa della nostra sede. Il caricamento di queste risorse comporta, per il solo funzionamento tecnico del web, che il tuo indirizzo IP sia visibile ai rispettivi fornitori, indipendentemente dall'uso di cookie: per i dettagli vedi la <a class="inline" href="cookie.html">Cookie Policy</a>. <strong>I caratteri tipografici sono ospitati direttamente su questo dominio</strong> e non comportano alcuna comunicazione a Google. Se scegli di contattarci tramite il pulsante WhatsApp, la conversazione avviene sulla piattaforma di <strong>WhatsApp Ireland Ltd. (gruppo Meta)</strong>, secondo le condizioni e l'informativa di quel servizio. Alla data di questo aggiornamento, il Sito non utilizza strumenti di analisi statistica o pubblicitaria di terze parti.</p>
     </section>
 
     <section>
       <h2><span class="n">6.</span>Trasferimento dei dati extra-UE</h2>
-      <p>Alcuni dei fornitori tecnici indicati al punto precedente (es. Google, per i caratteri tipografici) possono trattare dati anche al di fuori dello Spazio Economico Europeo. In tal caso, il trasferimento avviene sulla base delle garanzie previste dagli articoli 44 e seguenti del GDPR, incluse le Clausole Contrattuali Standard adottate dalla Commissione Europea.</p>
+      <p>Alcuni dei fornitori tecnici indicati al punto precedente (in particolare GitHub per l'hosting, Amazon CloudFront per la distribuzione di una immagine e Meta per WhatsApp) possono trattare dati anche al di fuori dello Spazio Economico Europeo. In tal caso, il trasferimento avviene sulla base delle garanzie previste dagli articoli 44 e seguenti del GDPR, incluse le Clausole Contrattuali Standard adottate dalla Commissione Europea.</p>
     </section>
 
     <section>
@@ -175,7 +193,7 @@ footer .sep{opacity:.5}
         <li>l'opposizione al trattamento basato sul legittimo interesse;</li>
         <li>la revoca del consenso in ogni momento, ove il trattamento si basi su di esso.</li>
       </ul>
-      <p>Puoi esercitare questi diritti scrivendo a <a class="inline" href="mailto:info@realhome.it">info@realhome.it</a>. Hai inoltre diritto di proporre reclamo al <strong>Garante per la protezione dei dati personali</strong> (www.garanteprivacy.it), qualora ritenga che il trattamento violi la normativa vigente.</p>
+      <p>Puoi esercitare questi diritti scrivendo a <a class="inline" href="mailto:realhomesrl2026@gmail.com">realhomesrl2026@gmail.com</a>. Hai inoltre diritto di proporre reclamo al <strong>Garante per la protezione dei dati personali</strong> (www.garanteprivacy.it), qualora ritenga che il trattamento violi la normativa vigente.</p>
     </section>
 
     <section>
