@@ -59,13 +59,32 @@ window.addEventListener('pageshow',function(e){
 
 <title>REALHOME — Il sole non manda bollette</title>
 <meta name="description" content="Fotovoltaico chiavi in mano con pratica GSE inclusa. Detrazione IRPEF 50% sulla prima casa, 36% sugli altri immobili. Calcola il risparmio: preventivo gratuito.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" href="bricolage-grotesque-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="instrument-sans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="archivo-black.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="instrument-serif-italic.woff2" as="font" type="font/woff2" crossorigin>
 
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
-<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Instrument+Serif:ital@0;1&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
+/* ═══ FONT AUTO-OSPITATI (V87) ═══════════════════════════════════════
+   Nessuna richiesta a fonts.googleapis.com / fonts.gstatic.com: l'IP del
+   visitatore non arriva piu' a Google prima del consenso (GDPR).
+   Sottoinsieme 'latin' e assi variabili identici a quelli che Google
+   serviva: Bricolage = opsz 12..96 + wght 200..800, Instrument Sans =
+   wght 400..700. Licenze SIL OFL nei file LICENSE-*.txt accanto a index.html. */
+@font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:swap;
+  src:url(bricolage-grotesque-var.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Instrument Sans';font-style:normal;font-weight:400 700;font-display:swap;
+  src:url(instrument-sans-var.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Instrument Sans';font-style:italic;font-weight:400 700;font-display:swap;
+  src:url(instrument-sans-var-italic.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Instrument Serif';font-style:normal;font-weight:400;font-display:swap;
+  src:url(instrument-serif.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Instrument Serif';font-style:italic;font-weight:400;font-display:swap;
+  src:url(instrument-serif-italic.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Archivo Black';font-style:normal;font-weight:400;font-display:swap;
+  src:url(archivo-black.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
 :root{
   --notte:#070C16;
   --notte-2:#0C1626;
@@ -157,7 +176,6 @@ footer{content-visibility:auto;contain-intrinsic-size:auto 520px}
 /* V78h — lo still (ultimo frame) sta SOPRA il video e appare ISTANTANEO
    al freeze (niente transition: la vecchia .12s lasciava vedere il fondo
    blu sotto per ~120ms -> il 'flash blu' tra video e schermata). */
-.hero-cue{z-index:4}
 /* V78b — HERO FADE: sfumatura in fondo all'hero verso --notte (#070C16),
    per fondere il nero del video con il blu del marquee sottostante senza
    stacco netto. Rampa multi-stop con easing (piu fitta in basso) = niente
@@ -570,6 +588,16 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
 .form-wa:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(37,211,102,.34)}
 .form-wa:active{transform:scale(.99)}
 .form-wa svg{width:21px;height:21px;fill:#fff;flex:0 0 auto}
+/* V88 — su desktop WhatsApp non e' un canale: l'app sta sul telefono. Stesso
+   bottone, altra veste. La soglia e' la stessa con cui il sito mostra .wa-btn
+   (980px), cosi il canale del form e quello del bottone accanto non si
+   contraddicono mai. La classe .mail la mette il JS, non un media query:
+   deve poter cambiare anche l'href e l'etichetta, non solo il colore. */
+.form-wa.mail{background:var(--ink)}
+.form-wa.mail:hover{box-shadow:0 12px 26px rgba(16,24,34,.26)}
+.form-wa .fa-mail{display:none}
+.form-wa.mail .fa-wa{display:none}
+.form-wa.mail .fa-mail{display:block;fill:none;stroke:#fff;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 .form-alt-b{margin-top:11px;font-size:.79rem;line-height:1.5;color:var(--muted-l);text-align:center}
 .form-alt-b a{color:#F4740B;font-weight:600;text-decoration:none}
 .form-alt-b a:hover{text-decoration:underline}
@@ -679,26 +707,8 @@ footer .wrap{position:relative;z-index:2;display:flex;flex-direction:column;gap:
   transition:opacity .6s var(--ease)}
 #dawn.d2 .dawn-flare{opacity:1}
 #dawn.d3 .dawn-flare{opacity:0;transition:opacity .85s var(--ease)}
-#dawn .dawn-clock{position:absolute;left:50%;bottom:15vh;
-  transform:translateX(-50%);display:flex;align-items:center;gap:.9em;
-  font-family:'Instrument Sans',sans-serif;font-weight:600;font-size:.78rem;
-  letter-spacing:.2em;text-transform:uppercase;white-space:nowrap;
-  color:rgba(26,11,2,.8);opacity:0;transition:opacity .55s var(--ease)}
-#dawn .dawn-clock i{display:block;width:26px;height:1px;background:currentColor;opacity:.45}
-#dawn .dawn-clock .dc-stack{display:grid}
-#dawn .dawn-clock b{grid-area:1/1;font-weight:600;font-variant-numeric:tabular-nums;
-  transition:opacity .5s var(--ease)}
-#dawn .dawn-clock .dc-b{opacity:0}
-#dawn.d1 .dawn-clock{opacity:1}
-#dawn.d2 .dc-a{opacity:0}
-#dawn.d2 .dc-b{opacity:1}
-#dawn.d3 .dawn-clock{opacity:0;transition:opacity .4s var(--ease)}
 #dawn.d3{transform:translateY(-101%);
   transition:transform .95s cubic-bezier(.62,0,.16,1)}
-@media (max-width:980px){
-  #dawn .dawn-clock{bottom:12vh;font-size:.68rem;letter-spacing:.16em}
-  #dawn .dawn-clock i{width:18px}
-}
 @media (prefers-reduced-motion: reduce){
   #dawn,#dawn *{transition-duration:.01ms!important;animation:none!important}
 }
@@ -907,7 +917,7 @@ footer .wrap{position:relative;z-index:2;display:flex;flex-direction:column;gap:
 .diagram .ring-b{transform-box:fill-box;transform-origin:center}
 .hero-copy{position:relative;z-index:2}
 .hero .lead{max-width:46ch}
-.hero-cue{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:10px;font-size:.66rem;letter-spacing:.26em;text-transform:uppercase;color:rgba(237,234,224,.55);pointer-events:none}
+.hero-cue{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);z-index:4;display:flex;flex-direction:column;align-items:center;gap:10px;font-size:.66rem;letter-spacing:.26em;text-transform:uppercase;color:rgba(237,234,224,.78);pointer-events:none}
 .hero-cue i{display:block;width:1px;height:34px;background:linear-gradient(180deg,rgba(245,166,35,.9),rgba(245,166,35,0));animation:cueDrop 2.2s var(--ease) infinite}
 @keyframes cueDrop{0%{transform:scaleY(0);transform-origin:top}45%{transform:scaleY(1);transform-origin:top}55%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
 @keyframes impCueNudge{0%,100%{transform:translateX(0);opacity:.85}50%{transform:translateX(9px);opacity:.25}}
@@ -928,7 +938,7 @@ footer .wrap{position:relative;z-index:2;display:flex;flex-direction:column;gap:
 body.menu-open{overflow:hidden}
 .nav-scrim{position:fixed;inset:0;background:rgba(4,8,15,.5);z-index:100;opacity:0;pointer-events:none;transition:opacity .42s var(--ease)}
 .nav-scrim.show{opacity:1;pointer-events:auto}
-body::after{content:'VER-2026-07-26-V86';position:fixed;bottom:8px;left:8px;z-index:99999;font:600 11px/1 monospace;color:#fff;background:#c0392b;padding:4px 8px;border-radius:4px;pointer-events:none}
+body::after{content:'VER-2026-07-26-V89';position:fixed;bottom:8px;left:8px;z-index:99999;font:600 11px/1 monospace;color:#fff;background:#c0392b;padding:4px 8px;border-radius:4px;pointer-events:none}
 .gse-split{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:center;min-height:64vh}
 .gse-track{position:relative}
 @media (min-width:981px){
@@ -1760,7 +1770,6 @@ html:not([data-preintro="1"]) #preintro{display:none}
     <div class="dawn-disc"></div>
   </div>
   <div class="dawn-flare"></div>
-  <div class="dawn-clock"><i></i><span class="dc-stack"><b class="dc-a">H 23:59</b><b class="dc-b">H 03:47</b></span><i></i></div>
 </div>
 
 <nav id="nav">
@@ -2136,7 +2145,7 @@ html:not([data-preintro="1"]) #preintro{display:none}
           <span class="kicker">Servizio 01</span>
           <h3>Pannelli <span class="grad">fotovoltaici</span></h3>
           <p>Impianti su misura con accumulo e monitoraggio. Abbatti fino all'80% della bolletta e rientri dell'investimento in 4–6 anni.</p>
-          <div class="p-tags"><span class="hot"><svg class="tag-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h4M16 12h4M8 12l3 3 5-6"/></svg>Pratica GSE inclusa</span><span>Detrazione 50%</span><span>Accumulo</span></div>
+          <div class="p-tags"><span class="hot"><svg class="tag-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h4M16 12h4M8 12l3 3 5-6"/></svg>Pratica GSE inclusa</span><span>Detrazione 50% prima casa</span><span>Accumulo</span></div>
         </div>
         <div class="p-media">
           <div class="p-curtain" aria-hidden="true"></div>
@@ -2151,7 +2160,7 @@ html:not([data-preintro="1"]) #preintro{display:none}
           <span class="kicker">Servizio 02</span>
           <h3>Pompe di <span class="grad">calore</span></h3>
           <p>Riscaldamento e raffrescamento ad alta efficienza. Abbinata al fotovoltaico, azzera quasi del tutto la spesa per il gas.</p>
-          <div class="p-tags"><span class="hot"><svg class="tag-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h4M16 12h4M8 12l3 3 5-6"/></svg>Detrazione 50%</span><span>Caldo + freddo</span><span>Addio gas</span></div>
+          <div class="p-tags"><span class="hot"><svg class="tag-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h4M16 12h4M8 12l3 3 5-6"/></svg>Detrazione 50% prima casa</span><span>Caldo + freddo</span><span>Addio gas</span></div>
         </div>
         <div class="p-media">
           <div class="p-curtain" aria-hidden="true"></div>
@@ -2166,7 +2175,7 @@ html:not([data-preintro="1"]) #preintro{display:none}
           <span class="kicker">Servizio 03</span>
           <h3>Ristrutturazioni e <span class="grad">infissi</span></h3>
           <p>Rinnoviamo la tua casa chiavi in mano: isolamento, serramenti di nuova generazione, riqualificazione completa.</p>
-          <div class="p-tags"><span class="hot"><svg class="tag-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h4M16 12h4M8 12l3 3 5-6"/></svg>Detrazione 50% infissi</span><span>Isolamento</span><span>Chiavi in mano</span></div>
+          <div class="p-tags"><span class="hot"><svg class="tag-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h4M16 12h4M8 12l3 3 5-6"/></svg>Detrazione 50% prima casa</span><span>Isolamento</span><span>Chiavi in mano</span></div>
         </div>
         <div class="p-media">
           <div class="p-curtain" aria-hidden="true"></div>
@@ -2282,7 +2291,7 @@ html:not([data-preintro="1"]) #preintro{display:none}
         </li>
         <li class="gse-step" data-i="2"><span class="mk" aria-hidden="true"></span>
           <div class="tk-ico" aria-hidden="true"><svg viewBox="0 0 60 60"><rect x="12" y="18" width="36" height="24" rx="2" class="l"/><path class="l" d="M12 26h36"/><circle cx="19" cy="22" r="1.6" class="d"/><path class="l" d="M18 34h12"/></svg></div>
-          <div><span class="tk-n">PRATICA 03</span><h3>Attivazione SSP / RID</h3><p>Configuriamo la pratica per la remunerazione: bonifico bancario diretto sul tuo conto.</p></div>
+          <div><span class="tk-n">PRATICA 03</span><h3>Attivazione Ritiro Dedicato</h3><p>Apriamo la convenzione GSE per l'energia che immetti in rete: bonifico diretto sul tuo conto.</p></div>
         </li>
         <li class="gse-step" data-i="3"><span class="mk" aria-hidden="true"></span>
           <div class="tk-ico" aria-hidden="true"><svg viewBox="0 0 60 60"><circle cx="24" cy="26" r="9" class="l"/><path class="l" d="M31 33l8 8-4 4-8-8"/><path class="l" d="M20 26h8M24 22v8"/></svg></div>
@@ -2625,7 +2634,7 @@ html:not([data-preintro="1"]) #preintro{display:none}
   <div class="qs-head wrap">
     <span class="kicker fx"><span class="ora">H 19:00</span><span class="sep">&#183;</span>Carte in tavola</span>
     <h2 class="tr">Le domande <em>scomode.</em></h2>
-    <p class="qs-sub fx">Otto cose che un venditore preferisce non sentirsi chiedere. Le mettiamo noi in prima pagina, con la risposta accanto &mdash; anche quando la risposta non ci fa comodo.</p>
+    <p class="qs-sub fx">Le otto domande che ci sentiamo fare pi&ugrave; spesso. Le mettiamo noi in prima pagina, con la risposta accanto &mdash; anche quando la risposta &egrave; meno comoda.</p>
   </div>
   <div class="wrap">
     <div class="qs-grid">
@@ -2786,8 +2795,9 @@ html:not([data-preintro="1"]) #preintro{display:none}
       <div class="form-alt" id="formAlt" hidden>
         <p class="form-alt-t" id="formAltT"></p>
         <a class="form-wa" id="formWa" href="#" target="_blank" rel="noopener">
-          <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C9.4 3 4 8.4 4 15c0 2.1.6 4.2 1.6 6L4 29l8.2-1.6c1.7.9 3.7 1.4 5.8 1.4h0c6.6 0 12-5.4 12-12S22.6 3 16 3zm0 21.8c-1.8 0-3.6-.5-5.1-1.4l-.4-.2-4.9 1 1-4.8-.2-.4C5.5 18.3 5 16.7 5 15c0-6.1 5-11 11-11s11 4.9 11 11-4.9 10.8-11 10.8zm6-8.1c-.3-.2-1.9-1-2.2-1.1-.3-.1-.5-.2-.8.2-.2.3-.8 1.1-1 1.3-.2.2-.4.2-.7.1-.3-.2-1.4-.5-2.6-1.6-1-.9-1.6-1.9-1.8-2.3-.2-.3 0-.5.1-.7.1-.1.3-.4.5-.6.1-.2.2-.3.3-.5.1-.2 0-.4 0-.6-.1-.2-.8-1.9-1.1-2.6-.3-.7-.6-.6-.8-.6h-.7c-.2 0-.6.1-.9.4-.3.3-1.2 1.2-1.2 2.9s1.2 3.4 1.4 3.6c.2.2 2.4 3.7 5.9 5.2.8.4 1.5.6 2 .7.8.3 1.6.2 2.2.1.7-.1 2.1-.9 2.4-1.7.3-.8.3-1.5.2-1.7-.1-.1-.3-.2-.6-.3z"/></svg>
-          <span>Invia su WhatsApp</span>
+          <svg class="fa-ico fa-wa" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C9.4 3 4 8.4 4 15c0 2.1.6 4.2 1.6 6L4 29l8.2-1.6c1.7.9 3.7 1.4 5.8 1.4h0c6.6 0 12-5.4 12-12S22.6 3 16 3zm0 21.8c-1.8 0-3.6-.5-5.1-1.4l-.4-.2-4.9 1 1-4.8-.2-.4C5.5 18.3 5 16.7 5 15c0-6.1 5-11 11-11s11 4.9 11 11-4.9 10.8-11 10.8zm6-8.1c-.3-.2-1.9-1-2.2-1.1-.3-.1-.5-.2-.8.2-.2.3-.8 1.1-1 1.3-.2.2-.4.2-.7.1-.3-.2-1.4-.5-2.6-1.6-1-.9-1.6-1.9-1.8-2.3-.2-.3 0-.5.1-.7.1-.1.3-.4.5-.6.1-.2.2-.3.3-.5.1-.2 0-.4 0-.6-.1-.2-.8-1.9-1.1-2.6-.3-.7-.6-.6-.8-.6h-.7c-.2 0-.6.1-.9.4-.3.3-1.2 1.2-1.2 2.9s1.2 3.4 1.4 3.6c.2.2 2.4 3.7 5.9 5.2.8.4 1.5.6 2 .7.8.3 1.6.2 2.2.1.7-.1 2.1-.9 2.4-1.7.3-.8.3-1.5.2-1.7-.1-.1-.3-.2-.6-.3z"/></svg>
+          <svg class="fa-ico fa-mail" viewBox="0 0 24 24" aria-hidden="true"><rect x="2.6" y="5" width="18.8" height="14" rx="2"/><path d="M3.2 7l8.8 6.1L20.8 7"/></svg>
+          <span id="formAltAz">Invia su WhatsApp</span>
         </a>
         <p class="form-alt-b">Oppure chiama <a href="tel:+393508943428">+39 350 894 34 28</a> &middot; <a href="mailto:realhomesrl2026@gmail.com">realhomesrl2026@gmail.com</a></p>
       </div>
@@ -4281,7 +4291,7 @@ window.addEventListener('resize',()=>{
       void dawn.offsetWidth;                 /* reflow: le transizioni partono da questo stato */
 
       at(160,()=>dawn.classList.add('d1'));   /* il sole sorge */
-      at(1150,()=>dawn.classList.add('d2'));  /* la luce riempie lo schermo, l'ora gira */
+      at(1150,()=>dawn.classList.add('d2'));  /* la luce riempie lo schermo */
       at(1350,toTop);                         /* il salto — invisibile, siamo dentro la luce */
       at(1850,()=>dawn.classList.add('d3'));  /* il pannello si solleva */
       at(2050,()=>{                           /* il logo riparte mentre la hero si scopre */
@@ -4752,6 +4762,20 @@ window.addEventListener('resize',()=>{
 (function lead(){
   var ENDPOINT = '';                       /* <— l'unica riga da cambiare */
   var WA   = '393508943428';
+  var MAIL = 'realhomesrl2026@gmail.com';
+
+  /* V88 — DUE CANALI DIRETTI, UNO PER DISPOSITIVO.
+     Su telefono il canale e' WhatsApp. Su desktop no: l'app sta sul telefono,
+     e un bottone "Continua su WhatsApp" davanti a un mouse e' una promessa che
+     il computer non puo' mantenere. Li' il form apre un'email GIA' SCRITTA
+     verso la casella dell'azienda. La soglia e' 980px, la stessa con cui il
+     CSS mostra .wa-btn: i due canali non si contraddicono mai.
+     Resta vero il principio della V80: il sito non trasmette niente e non
+     dice mai "inviata". Sia WhatsApp sia mailto consegnano il messaggio al
+     programma della persona, che lo spedisce dal suo indirizzo. */
+  var mqTel = window.matchMedia ? window.matchMedia('(max-width:980px)')
+                                : {matches:true, addEventListener:null};
+  function viaWa(){ return !!mqTel.matches; }
 
   var card = document.querySelector('.form-card');
   if(!card) return;
@@ -4768,11 +4792,24 @@ window.addEventListener('resize',()=>{
   /* istante di apertura: serve alla trappola temporale lato server */
   if(f.ts) f.ts.value = String(Date.now());
 
+  var NOTA = card.querySelector('.form-note');
+
+  /* etichetta e nota seguono il canale: se la finestra viene ridimensionata
+     oltre la soglia, cambiano insieme al canale invece di mentire */
+  function vesti(){
+    if(live) return;
+    var w = viaWa();
+    if(btnTxt) btnTxt.textContent = w ? 'Continua su WhatsApp' : 'Continua via email';
+    if(NOTA) NOTA.textContent = w
+      ? 'Il modulo online sarà attivo al lancio del sito. Intanto ti mettiamo in contatto diretto: quello che scrivi qui finisce nel messaggio WhatsApp, non lo perdi.'
+      : 'Il modulo online sarà attivo al lancio del sito. Intanto ti mettiamo in contatto diretto: quello che scrivi qui finisce in un\u2019email già pronta, non lo perdi.';
+  }
+
   if(!live){
     card.classList.add('no-endpoint');
-    if(btnTxt) btnTxt.textContent = 'Continua su WhatsApp';
-    var note = card.querySelector('.form-note');
-    if(note) note.textContent = 'Il modulo online sarà attivo al lancio del sito. Intanto ti mettiamo in contatto diretto: quello che scrivi qui finisce nel messaggio, non lo perdi.';
+    vesti();
+    if(mqTel.addEventListener) mqTel.addEventListener('change', vesti);
+    else if(mqTel.addListener) mqTel.addListener(vesti);   /* Safari < 14 */
   }
 
   /* il messaggio WhatsApp precompilato con quello che la persona ha scritto */
@@ -4786,11 +4823,29 @@ window.addEventListener('resize',()=>{
     return L.join('\n');
   }
   function linkWa(){ return 'https://wa.me/' + WA + '?text=' + encodeURIComponent(messaggio()); }
+  function oggetto(){
+    var n = f.name && f.name.value.trim();
+    return 'Richiesta di preventivo dal sito' + (n ? ' \u2014 ' + n : '');
+  }
+  function linkMail(){
+    return 'mailto:' + MAIL + '?subject=' + encodeURIComponent(oggetto())
+                     + '&body='    + encodeURIComponent(messaggio());
+  }
+  function linkDiretto(){ return viaWa() ? linkWa() : linkMail(); }
 
   /* apriAlt usa textContent, non innerHTML: nessun dato scritto dall'utente
      viene mai interpretato come HTML */
   function apriAlt(testo, errore){
-    if(wa)   wa.href = linkWa();
+    var w = viaWa();
+    if(wa){
+      wa.href = linkDiretto();
+      wa.classList.toggle('mail', !w);
+      /* target=_blank su un mailto non serve a niente: si toglie */
+      if(w){ wa.setAttribute('target','_blank'); wa.setAttribute('rel','noopener'); }
+      else { wa.removeAttribute('target'); wa.removeAttribute('rel'); }
+      var az = wa.querySelector('span');
+      if(az) az.textContent = w ? 'Invia su WhatsApp' : 'Apri l\u2019email già scritta';
+    }
     if(altT) altT.textContent = testo;
     if(alt){ alt.classList.toggle('err', !!errore); alt.hidden = false; }
   }
@@ -4829,8 +4884,18 @@ window.addEventListener('resize',()=>{
 
     /* ── senza endpoint: contatto diretto, zero bugie ── */
     if(!live){
-      apriAlt('Il modulo online non è ancora attivo, quindi non ti diciamo che la richiesta è partita. Ti abbiamo preparato il messaggio con i tuoi dati: ti basta inviarlo.', false);
-      window.open(linkWa(), '_blank', 'noopener');
+      if(viaWa()){
+        apriAlt('Il modulo online non è ancora attivo, quindi non ti diciamo che la richiesta è partita. Ti abbiamo preparato il messaggio con i tuoi dati: ti basta inviarlo.', false);
+        window.open(linkWa(), '_blank', 'noopener');
+      }else{
+        /* Il pannello si apre PRIMA del mailto, e resta aperto: se il computer
+           non ha un programma di posta associato non si apre niente e la
+           persona non deve restare a fissare un bottone che non fa nulla.
+           Per questo il testo dice anche l'indirizzo, e il pannello sotto lo
+           ripete come link. */
+        apriAlt('Il modulo online non è ancora attivo, quindi non ti diciamo che la richiesta è partita. Ti abbiamo aperto un\u2019email già scritta con i tuoi dati: ti basta inviarla. Se non si apre nulla, scrivici a ' + MAIL + '.', false);
+        window.location.href = linkMail();
+      }
       return;
     }
 
@@ -4861,7 +4926,9 @@ window.addEventListener('resize',()=>{
       if(btnTxt) btnTxt.textContent = ETICHETTA;
       /* IL LEAD NON SI PERDE: si offre WhatsApp con i dati gia' scritti,
          invece di lasciare la persona davanti a un errore e basta. */
-      apriAlt('Non siamo riusciti a inviare la richiesta. Non perdere quello che hai scritto: mandacelo su WhatsApp con un tocco, oppure chiamaci.', true);
+      apriAlt(viaWa()
+        ? 'Non siamo riusciti a inviare la richiesta. Non perdere quello che hai scritto: mandacelo su WhatsApp con un tocco, oppure chiamaci.'
+        : 'Non siamo riusciti a inviare la richiesta. Non perdere quello che hai scritto: aprilo come email già scritta, oppure chiamaci.', true);
     }
 
     fetch(ENDPOINT, {
