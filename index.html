@@ -44,14 +44,25 @@ window.addEventListener('pageshow',function(e){
 </script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cg transform='translate%2810,10%29 scale%281.0%29'%3E%3Cg fill='%23F5A623'%3E%3Cpath d='M22 0l2.6 7.4-5.2 0z'/%3E%3Cpath d='M9.5 4.6l6 5.2-4.4 2.8z'/%3E%3Cpath d='M34.5 4.6l-1.6 8-4.4-2.8z'/%3E%3Cpath d='M2 14.5l7.6 2.4-2.6 4.6z'/%3E%3Cpath d='M42 14.5l-5 7-2.6-4.6z'/%3E%3C/g%3E%3Cpath d='M6 30 L22 16 L38 30' stroke='%23F4740B' stroke-width='4.6' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3Cpath d='M13 32.5h18M13 36.5h18' stroke='%23F5A623' stroke-width='3' stroke-linecap='round' opacity='.9'/%3E%3C/g%3E%3C/svg%3E">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="https://drugobi.github.io/RealHome/">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta name="theme-color" content="#070C16">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="RealHome">
+<meta property="og:locale" content="it_IT">
+<meta property="og:url" content="https://drugobi.github.io/RealHome/">
+<meta property="og:title" content="RealHome — Il sole non manda bollette">
+<meta property="og:description" content="Fotovoltaico chiavi in mano con pratica GSE inclusa. Detrazione IRPEF 50% sulla prima casa, 36% sugli altri immobili. Preventivo gratuito.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="RealHome — Il sole non manda bollette">
+<meta name="twitter:description" content="Fotovoltaico chiavi in mano con pratica GSE inclusa. Calcola il tuo risparmio, poi chiedi il preventivo gratuito.">
+
 <title>REALHOME — Il sole non manda bollette</title>
-<meta name="description" content="Fotovoltaico chiavi in mano con pratica GSE inclusa e detrazione fiscale 50%. Calcola il tuo risparmio: preventivo gratuito.">
+<meta name="description" content="Fotovoltaico chiavi in mano con pratica GSE inclusa. Detrazione IRPEF 50% sulla prima casa, 36% sugli altri immobili. Calcola il risparmio: preventivo gratuito.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
 <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Instrument+Serif:ital@0;1&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
@@ -69,6 +80,9 @@ window.addEventListener('pageshow',function(e){
   --muted-l:#5E6672;
   --line-d:rgba(255,255,255,.10);
   --line-l:rgba(16,24,34,.12);
+  --fiamma-carta:#B34D08;    /* fiamma leggibile su carta, testo piccolo — 4,68:1 */
+  --fiamma-carta-big:#D9600A;/* fiamma su carta, testo grande — 3,31:1 */
+  --muted-carta:#616B78;     /* attenuato su carta — 4,80:1 */
   --ease:cubic-bezier(.22,.61,.21,1);
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -90,8 +104,10 @@ h1 em,h2 em,.serif{font-family:'Instrument Serif',serif;font-style:italic;font-w
   display:inline-flex;align-items:center;gap:.7em;
 }
 .kicker::before{content:'';width:26px;height:1px;background:var(--sole);display:inline-block}
-.kicker .ora{color:inherit;font-variant-numeric:tabular-nums;opacity:.95}
+.kicker .ora{color:inherit;font-variant-numeric:tabular-nums;opacity:1}
 .kicker .sep{opacity:.4}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+  clip:rect(0,0,0,0);white-space:nowrap;border:0}
 .tr .mask{display:block;overflow:hidden;padding-bottom:.1em;margin-bottom:-.1em}
 .tr .lineIn{display:block}
 #cursor{position:fixed;top:0;left:0;width:7px;height:7px;border-radius:50%;background:var(--sole);z-index:99;pointer-events:none;transform:translate(-50%,-50%);will-change:transform;opacity:.9;display:none;box-shadow:0 0 12px rgba(245,166,35,.55)}
@@ -252,12 +268,12 @@ footer{content-visibility:auto;contain-intrinsic-size:auto 520px}
 .alba-meter b{font-family:'Bricolage Grotesque',sans-serif;font-weight:750;font-size:clamp(1.6rem,3.4vw,2.6rem);letter-spacing:-.02em}
 .alba-hint{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);z-index:4;font-size:.74rem;letter-spacing:.2em;text-transform:uppercase;color:currentColor;opacity:.55}
 .day{background:var(--giorno);color:var(--ink)}
-.day .kicker{color:var(--fiamma)}
+.day .kicker{color:var(--fiamma-carta)}
 .day .kicker::before{background:var(--fiamma)}
 .approach{padding:48px 0}
 .approach .wrap{display:grid;grid-template-columns:1.15fr .85fr;gap:70px;align-items:center}
 .approach h2{font-size:clamp(2.6rem,5.6vw,4.6rem)}
-.approach h2 em{color:var(--fiamma)}
+.approach h2 em{color:var(--fiamma-carta-big)}
 .approach p{font-size:1.08rem;color:var(--muted-l);margin-bottom:30px}
 #servizi{background:var(--giorno)}
 .services-head{padding:40px 0 70px}
@@ -319,7 +335,7 @@ footer{content-visibility:auto;contain-intrinsic-size:auto 520px}
 .band-copy{position:relative}
 .band-tag{position:absolute;top:22px;left:clamp(8px,2vw,28px);display:inline-flex;align-items:center;gap:8px;
   font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;
-  font-size:.64rem;letter-spacing:.15em;font-weight:500;color:var(--muted-l);opacity:.75;
+  font-size:.64rem;letter-spacing:.15em;font-weight:500;color:var(--muted-l);opacity:1;
   transition:color .45s var(--ease),opacity .45s var(--ease)}
 .band-num{position:relative;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;
   font-size:clamp(4.4rem,11vw,10rem);line-height:.94;letter-spacing:-.01em;font-variant-numeric:tabular-nums;
@@ -341,7 +357,7 @@ footer{content-visibility:auto;contain-intrinsic-size:auto 520px}
   .band:hover{background:var(--notte)}
   .band:hover .band-bg{opacity:1}
   .band:hover .band-glow{opacity:1}
-  .band:hover .band-tag{color:var(--sole);opacity:1}
+  .band:hover .band-tag{color:var(--fiamma-carta);opacity:1}
   .band:hover .bn-ghost{-webkit-text-stroke-color:rgba(246,241,230,.22)}
   .band:hover .bn-fill{filter:drop-shadow(0 0 26px rgba(245,166,35,.5))}
   .band:hover .band-copy h3{color:#F6F1E6}
@@ -407,7 +423,7 @@ footer{content-visibility:auto;contain-intrinsic-size:auto 520px}
 .tk-ico svg{width:52px;height:52px}
 .tk-ico .l{fill:none;stroke:var(--fiamma);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 .tk-ico .d{fill:var(--sole)}
-.tk-n{font-size:.72rem;letter-spacing:.2em;font-weight:600;color:var(--fiamma)}
+.tk-n{font-size:.72rem;letter-spacing:.2em;font-weight:600;color:var(--fiamma-carta)}
 .calc{padding:48px 0;background:var(--giorno)}
 .calc h2{font-size:clamp(2.4rem,5vw,4.2rem);margin:0 0 14px}
 .calc .intro{color:var(--muted-l);max-width:58ch;margin-bottom:32px;font-size:1.04rem}
@@ -452,7 +468,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
    blu all'oro e una lama di luce attraversa il pannello una volta sola. */
 .qs{position:relative;padding:48px 0 56px;background:var(--giorno);overflow:hidden}
 .qs-head h2{font-size:clamp(2.4rem,5vw,4.2rem);margin:18px 0 12px}
-.qs-head h2 em{color:var(--fiamma)}
+.qs-head h2 em{color:var(--fiamma-carta-big)}
 .qs-sub{color:var(--muted-l);font-size:1rem;max-width:60ch}
 .qs-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:46px;align-items:start}
 .qs-cell{position:relative;isolation:isolate;border-radius:16px;overflow:hidden;
@@ -596,10 +612,14 @@ footer .wrap{position:relative;z-index:2;display:flex;flex-direction:column;gap:
 .legal{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;font-size:.82rem;color:var(--muted-d)}
 .legal-brand{color:#F6F1E6;font-weight:600}
 .legal>*+*::before{content:'·';margin-right:12px;color:var(--line-d)}
-.legal .ph{font-style:normal;font-size:.66rem;letter-spacing:.05em;text-transform:uppercase;color:var(--fiamma);opacity:.7;margin-left:5px}
+.legal .ph{font-style:normal;font-size:.66rem;letter-spacing:.05em;text-transform:uppercase;color:var(--fiamma);opacity:1;margin-left:5px}
 .legal-links a{color:var(--muted-d);text-decoration:none;border-bottom:1px solid transparent;transition:color .25s,border-color .25s}
 .legal-links a:hover{color:var(--sole);border-bottom-color:var(--sole)}
-.disclaimer{font-size:.74rem;line-height:1.7;opacity:.6;max-width:76ch}
+.disclaimer{font-size:.74rem;line-height:1.7;opacity:.8;max-width:76ch}
+/* il link ODR era blu di sistema su fondo notte: 1,37:1, praticamente invisibile.
+   E' un'informazione obbligatoria (art. 14 Reg. UE 524/2013): deve vedersi. */
+.disclaimer a{color:var(--sole);text-decoration:underline;text-underline-offset:2px}
+.disclaimer a:hover{color:#FFD27A}
 .sunrise{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;width:100%;padding:16px 0 26px;background:none;border:0;border-top:1px solid var(--line-d);cursor:pointer;color:var(--muted-d);overflow:hidden}
 .sunrise::after{content:'';position:absolute;inset:0;background:linear-gradient(0deg,rgba(245,166,35,.22),rgba(244,116,11,.12) 40%,transparent 72%);opacity:0;transition:opacity .5s var(--ease);pointer-events:none}
 .sunrise.rising::after{opacity:1}
@@ -908,7 +928,7 @@ footer .wrap{position:relative;z-index:2;display:flex;flex-direction:column;gap:
 body.menu-open{overflow:hidden}
 .nav-scrim{position:fixed;inset:0;background:rgba(4,8,15,.5);z-index:100;opacity:0;pointer-events:none;transition:opacity .42s var(--ease)}
 .nav-scrim.show{opacity:1;pointer-events:auto}
-body::after{content:'VER-2026-07-26-V84';position:fixed;bottom:8px;left:8px;z-index:99999;font:600 11px/1 monospace;color:#fff;background:#c0392b;padding:4px 8px;border-radius:4px;pointer-events:none}
+body::after{content:'VER-2026-07-26-V86';position:fixed;bottom:8px;left:8px;z-index:99999;font:600 11px/1 monospace;color:#fff;background:#c0392b;padding:4px 8px;border-radius:4px;pointer-events:none}
 .gse-split{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:center;min-height:64vh}
 .gse-track{position:relative}
 @media (min-width:981px){
@@ -936,7 +956,7 @@ body::after{content:'VER-2026-07-26-V84';position:fixed;bottom:8px;left:8px;z-in
 .drawer .hnd{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:46px;height:8px;border-radius:8px;background:rgba(16,24,34,.18)}
 .drawer .tab{position:absolute;right:12px;top:9px;font-size:.58rem;letter-spacing:.12em;font-weight:700;text-transform:uppercase;color:var(--muted-l);opacity:.55}
 .arch-doc{position:absolute;left:0;top:0;width:132px;padding:12px 14px;background:#fff;border:1px solid var(--line-l);border-radius:10px;box-shadow:0 16px 34px rgba(16,24,34,.18);opacity:0;z-index:3}
-.arch-doc b{font-size:.6rem;letter-spacing:.14em;color:var(--fiamma);font-weight:700}
+.arch-doc b{font-size:.6rem;letter-spacing:.14em;color:var(--fiamma-carta);font-weight:700}
 .arch-doc .ln{display:block;height:5px;border-radius:3px;background:rgba(16,24,34,.12);margin-top:7px}
 .arch-doc .ln.s{width:60%}
 .dust{position:absolute;left:0;top:0;width:7px;height:7px;border-radius:50%;background:var(--sole);opacity:0;pointer-events:none;z-index:4}
@@ -947,6 +967,38 @@ body::after{content:'VER-2026-07-26-V84';position:fixed;bottom:8px;left:8px;z-in
   .gse-split{grid-template-columns:1fr;min-height:0;gap:0}
   .arch{display:none}
   .gse-step{opacity:1;padding:18px 16px 18px 24px}
+  .gse-list{position:relative}
+  .gse-list::before{content:'';position:absolute;left:6px;top:20px;bottom:24px;
+    width:2px;border-radius:2px;background:rgba(16,24,34,.13)}
+  .gse-list::after{content:'';position:absolute;left:6px;top:20px;width:2px;
+    border-radius:2px;height:calc(var(--gse-p,0) * (100% - 44px));
+    background:linear-gradient(180deg,var(--sole),var(--fiamma));
+    box-shadow:0 0 9px rgba(245,166,35,.6),0 0 20px rgba(244,116,11,.3)}
+  .gse-step .mk{display:none}
+  .gse-step::before{content:'';position:absolute;left:1px;top:32px;
+    width:12px;height:12px;border-radius:50%;background:var(--giorno);
+    border:2px solid rgba(16,24,34,.18);z-index:1;
+    transition:background .4s var(--ease),border-color .4s var(--ease),
+               transform .4s cubic-bezier(.34,1.56,.64,1),box-shadow .4s var(--ease)}
+  .gse-step.gse-done::before{background:var(--sole);border-color:var(--fiamma);
+    transform:scale(1.2);box-shadow:0 0 0 4px rgba(245,166,35,.18)}
+  .gse-step{transition:background .45s var(--ease),box-shadow .45s var(--ease)}
+  .gse-step.gse-done{background:rgba(245,166,35,.055)}
+  .gse-step.gse-now{background:rgba(245,166,35,.1);
+    box-shadow:0 12px 30px rgba(16,24,34,.07)}
+  .gse-step .tk-ico{transition:transform .45s cubic-bezier(.34,1.56,.64,1),opacity .4s var(--ease);opacity:.55}
+  .gse-step.gse-done .tk-ico{opacity:1;transform:scale(1.06)}
+  .gse-split.static .gse-list::after{height:calc(100% - 44px)}
+  .gse-split.static .gse-step::before,
+  .no-anim .gse-step::before{background:var(--sole);border-color:var(--fiamma)}
+  .gse-split.static .gse-step .tk-ico,
+  .no-anim .gse-step .tk-ico{opacity:1}
+}
+@media(max-width:980px) and (prefers-reduced-motion:reduce){
+  .gse-list::after{height:calc(100% - 44px)!important}
+  .gse-step::before{background:var(--sole);border-color:var(--fiamma)}
+  .gse-step .tk-ico{opacity:1}
+  .gse-step,.gse-step::before,.gse-step .tk-ico{transition:none!important}
 }
 .btn{transition-property:box-shadow,background,color,border-color}
 .nav-cta{transition-property:border-color,background,color!important}
@@ -964,7 +1016,7 @@ input[type=range]:active::-moz-range-thumb{transform:scale(1.22)}
   .band.lit{background:var(--notte)}
   .band.lit .band-bg{opacity:1}
   .band.lit .band-glow{opacity:1}
-  .band.lit .band-tag{color:var(--sole);opacity:1}
+  .band.lit .band-tag{color:var(--fiamma-carta);opacity:1}
   .band.lit .bn-ghost{-webkit-text-stroke-color:rgba(246,241,230,.22)}
   .band.lit .bn-fill{filter:drop-shadow(0 0 26px rgba(245,166,35,.5))}
   .band.lit .band-copy h3{color:#F6F1E6}
@@ -1727,11 +1779,11 @@ html:not([data-preintro="1"]) #preintro{display:none}
       <li><a href="#risparmio" data-nav>Simulatore</a></li>
       <li><a class="nav-cta" href="#preventivo" data-nav>Preventivo gratuito</a></li>
     </ul>
-    <button id="navToggle" class="nav-burger" aria-label="Apri il menu" aria-expanded="false" aria-controls="navMenu">
+    <button type="button" id="navToggle" class="nav-burger" aria-label="Apri il menu" aria-expanded="false" aria-controls="navMenu">
       <span></span><span></span><span></span>
     </button>
   </div>
-  <div id="navMenu" class="nav-menu" aria-hidden="true">
+  <div id="navMenu" class="nav-menu" aria-hidden="true" inert>
     <a href="#come-funziona" data-nav data-mnav>Come funziona</a>
     <a href="#servizi" data-nav data-mnav>Servizi</a>
     <a href="#risparmio" data-nav data-mnav>Simulatore</a>
@@ -1739,6 +1791,7 @@ html:not([data-preintro="1"]) #preintro{display:none}
   </div>
 </nav>
 <header class="hero" id="top" data-theme="notte">
+  <h1 class="sr-only">RealHome — case efficienti chiavi in mano: fotovoltaico, accumulo, pompe di calore e pratiche GSE</h1>
   <!-- V78 — HERO VIDEO. La scena 3D WebGL (sole shader + stelle + titolo) e il
      claim/CTA sono stati rimossi in questa build. L'hero e ora un solo video
      muto in autoplay che, all'ultimo frame, congela senza scatto: il video
@@ -1764,6 +1817,7 @@ html:not([data-preintro="1"]) #preintro{display:none}
   <div class="hero-fade" aria-hidden="true"></div>
   <div class="hero-cue" aria-hidden="true"><i></i>Scorri</div>
 </header>
+<main id="contenuto">
 <div class="marquee m-notte" data-marquee data-speed-base="0.55" aria-hidden="true">
   <div class="m-track">
     <span>Il sole non manda bollette <b>·</b> Energia tua <b>·</b> Autonomia <b>·</b> </span>
@@ -2236,7 +2290,7 @@ html:not([data-preintro="1"]) #preintro{display:none}
         </li>
       </ol>
       <div class="arch" aria-hidden="true">
-        <span class="arch-n" id="archN">01</span>
+        <span class="arch-n" id="archN" aria-hidden="true">01</span>
         <div class="arch-glow"></div>
         <div class="arch-cab" id="archCab">
           <div class="drawer" data-d="0"><span class="hnd"></span><span class="tab">Pratica 01</span></div>
@@ -2668,7 +2722,7 @@ html:not([data-preintro="1"]) #preintro{display:none}
         <source src="film-realhome.mp4" type="video/mp4">
       </video>
       <div class="film-veil">
-        <button class="film-play" id="filmPlay" aria-label="Riproduci il film"><svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></button>
+        <button type="button" class="film-play" id="filmPlay" aria-label="Riproduci il film"><svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></button>
         <span class="film-cap">Guarda il film</span>
       </div>
     </div>
@@ -2696,8 +2750,8 @@ html:not([data-preintro="1"]) #preintro{display:none}
     </div>
     <div class="form-card fx">
       <div class="field"><label for="fname">Nome e cognome</label><input id="fname" type="text" autocomplete="name" placeholder="Mario Rossi"></div>
-      <div class="field"><label for="fphone">Telefono</label><input id="fphone" type="tel" autocomplete="tel" placeholder="333 123 4567"></div>
-      <div class="field"><label for="fcity">Comune dell'immobile</label><input id="fcity" type="text" placeholder="Brescia"></div>
+      <div class="field"><label for="fphone">Telefono</label><input id="fphone" type="tel" inputmode="tel" autocomplete="tel" placeholder="333 123 4567"></div>
+      <div class="field"><label for="fcity">Comune dell'immobile</label><input id="fcity" type="text" autocomplete="address-level2" placeholder="Brescia"></div>
       <div class="field"><label for="fint">Cosa ti interessa</label>
         <select id="fint">
           <option>Fotovoltaico</option><option>Fotovoltaico + pompa di calore</option><option>Ristrutturazione / infissi</option><option>Casa da zero</option>
@@ -2722,7 +2776,7 @@ html:not([data-preintro="1"]) #preintro{display:none}
         <input id="fvuoto" type="text" tabindex="-1" autocomplete="off">
       </div>
       <input id="fts" type="hidden" value="">
-      <button class="btn btn-ink" style="width:100%" onclick="submitLead()"><span>Voglio il preventivo gratuito</span></button>
+      <button type="button" class="btn btn-ink" style="width:100%" onclick="submitLead()"><span>Voglio il preventivo gratuito</span></button>
       <div class="form-ok" id="formOk">✓ Richiesta inviata! Ti ricontatteremo entro 24 ore.</div>
       <!-- V80 — pannello di contatto diretto. Si apre in due casi: quando il
            form non ha un endpoint (hosting statico) e quando l'invio reale
@@ -2742,6 +2796,7 @@ html:not([data-preintro="1"]) #preintro{display:none}
     </div>
   </div>
 </section>
+</main>
 <footer data-theme="notte">
   <div class="foot-sky" aria-hidden="true">
     <span class="fstar" style="top:18%;left:12%"></span><span class="fstar" style="top:30%;left:28%"></span>
@@ -2789,11 +2844,11 @@ html:not([data-preintro="1"]) #preintro{display:none}
           <span class="word">REAL<b>HOME</b></span>
         </div>
         <p class="foot-mission">Case efficienti chiavi in mano: fotovoltaico, accumulo e pratiche GSE. Progettiamo la tua indipendenza energetica, dal primo sopralluogo all'ultimo bonifico.</p>
-        <div class="foot-social" aria-label="Social">
+        <div class="foot-social" aria-hidden="true">
           
-          <a href="#" aria-label="Instagram" title="Instagram (da collegare)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor"/></svg></a>
-          <a href="#" aria-label="LinkedIn" title="LinkedIn (da collegare)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="4" stroke="currentColor" stroke-width="1.8"/><path d="M7 10v7M7 7v.01M11 17v-4a2 2 0 0 1 4 0v4M11 17v-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></a>
-          <a href="#" aria-label="Facebook" title="Facebook (da collegare)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M14 8h2M14 8a2 2 0 0 1 2-2h1V3h-3a3 3 0 0 0-3 3v3H8v3h3v9h3v-9h2l1-3h-3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          <a title="Instagram (da collegare)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor"/></svg></a>
+          <a title="LinkedIn (da collegare)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="4" stroke="currentColor" stroke-width="1.8"/><path d="M7 10v7M7 7v.01M11 17v-4a2 2 0 0 1 4 0v4M11 17v-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></a>
+          <a title="Facebook (da collegare)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M14 8h2M14 8a2 2 0 0 1 2-2h1V3h-3a3 3 0 0 0-3 3v3H8v3h3v9h3v-9h2l1-3h-3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         </div>
       </div>
       <nav class="foot-col" aria-label="Servizi">
@@ -2831,7 +2886,7 @@ html:not([data-preintro="1"]) #preintro{display:none}
       <p class="disclaimer">Le percentuali di detrazione fiscale indicate sono soggette alla normativa vigente e possono variare in base alla tipologia di immobile e alle leggi di bilancio. Risparmi, dimensionamenti ed equivalenze ambientali sono stime indicative: il calcolo preciso viene fornito con il preventivo personalizzato. Per i contratti conclusi fuori dai locali commerciali il consumatore ha diritto di recesso entro 14 giorni (artt. 52 ss. Codice del Consumo). Per le controversie &egrave; disponibile la piattaforma europea ODR: <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener">ec.europa.eu/consumers/odr</a>.</p>
     </div>
   </div>
-  <button class="sunrise" id="sunrise" aria-label="Torna all'inizio — fai sorgere il sole">
+  <button type="button" class="sunrise" id="sunrise" aria-label="Torna all'inizio — fai sorgere il sole">
     <span class="sunrise-lbl">Fai sorgere il sole</span>
     <svg class="sunrise-svg" viewBox="0 0 220 90" fill="none" aria-hidden="true">
       <defs>
@@ -2852,9 +2907,9 @@ html:not([data-preintro="1"]) #preintro{display:none}
   </button>
 </footer>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/lenis@1.3.24/dist/lenis.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" integrity="sha384-HOvlOYPIs/zjoIkWUGXkVmXsjr8GuZLV+Q+rcPwmJOVZVpvTSXQChiN4t9Euv9Vc" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" integrity="sha384-P8VzCVnT9NBUkMrpcIZrJbA7EBjJvh/fJS6PmP+4nLIM284DtsImIv8D0fFjIkeh" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.3.24/dist/lenis.min.js" integrity="sha384-yzJ1wGsoXtHzKJv3tg0UnqsPEpAlqpluXD60bZ5AwK0vR+n8nnsS0SkcrxL9Sgz7" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
 /* ============================================================
    REALHOME — Engine v6 "Una giornata di sole"
@@ -3190,9 +3245,36 @@ if (FX){
   if(!FX){split.classList.add('static');return;}
   const mobile=window.matchMedia('(max-width:980px)').matches;
   if(mobile){
-    lis.forEach((li,i)=>{
-      gsap.from(li,{y:36,opacity:0,duration:.6,ease:'power3.out',scrollTrigger:{trigger:li,start:'top 85%',once:true}});
-      gsap.to(mks[i],{scaleY:1,duration:.5,ease:'power2.out',scrollTrigger:{trigger:li,start:'top 70%',once:true}});
+    /* V86 — la rotaia che avanza. Su mobile l'archivio non c'e': la stessa
+       storia diventa verticale. Un solo ScrollTrigger porta il progresso
+       (0..1) in una variabile CSS; le classi .gse-done / .gse-now accendono
+       pallino, icona e scheda. Nessun pin, nessuna misura fragile, e tutto
+       reversibile scorrendo indietro. Il ramo desktop, sotto, e' intatto. */
+    const ol=split.querySelector('.gse-list');
+    lis.forEach(li=>{
+      gsap.from(li,{y:28,opacity:0,duration:.55,ease:'power3.out',
+        scrollTrigger:{trigger:li,start:'top 88%',once:true}});
+    });
+    if(reduceMotion){
+      ol.style.setProperty('--gse-p','1');
+      lis.forEach(li=>li.classList.add('gse-done'));
+      return;
+    }
+    const N=lis.length;
+    const paintGSE=p=>{
+      ol.style.setProperty('--gse-p',p.toFixed(4));
+      const testa=p*N;                        /* dove e' arrivata la testa: 0..4 */
+      lis.forEach((li,i)=>{
+        li.classList.toggle('gse-done', testa >= i+0.5);
+        li.classList.toggle('gse-now',  testa >= i+0.5 && testa < i+1.5);
+      });
+    };
+    paintGSE(0);
+    ScrollTrigger.create({
+      trigger:ol, start:'top 80%', end:'bottom 60%',
+      invalidateOnRefresh:true,
+      onUpdate:self=>paintGSE(self.progress),
+      onRefresh:self=>paintGSE(self.progress)
     });
     return;
   }
@@ -3942,7 +4024,7 @@ setEnergy(((120-50)/450));
     document.body.classList.toggle('menu-open',o);
     btn.setAttribute('aria-expanded',o);
     btn.setAttribute('aria-label',o?'Chiudi il menu':'Apri il menu');
-    menu.setAttribute('aria-hidden',!o);
+    menu.setAttribute('aria-hidden',!o); menu.toggleAttribute('inert',!o);
   }
   btn.addEventListener('click',()=>set(!open));
   scrim.addEventListener('click',()=>set(false));
@@ -4992,6 +5074,9 @@ window.addEventListener('resize',()=>{
     partenze.forEach(function(f){ try{ f(); }catch(e){} });
   };
 })();
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"LocalBusiness","name":"RealHome S.r.l.","description":"Fotovoltaico, accumulo, pompe di calore e ristrutturazioni chiavi in mano, con pratica GSE inclusa.","url":"https://drugobi.github.io/RealHome/","telephone":"+393508943428","email":"realhomesrl2026@gmail.com","areaServed":{"@type":"AdministrativeArea","name":"Italia"},"knowsAbout":["impianti fotovoltaici","sistemi di accumulo","pompe di calore","pratiche GSE","detrazioni fiscali edilizie"]}
 </script>
 </body>
 </html>
