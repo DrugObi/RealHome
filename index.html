@@ -248,10 +248,40 @@ footer{content-visibility:auto;contain-intrinsic-size:auto 520px}
 .how-grid{display:grid;grid-template-columns:.9fr 1.4fr;gap:56px;align-items:center}
 .steps{display:flex;flex-direction:column;gap:8px}
 .step{padding:22px 24px;border-left:2px solid var(--line-d);opacity:.34;transition:opacity .5s var(--ease),border-color .5s var(--ease),background .5s var(--ease)}
-.step.active{opacity:1;border-color:var(--sole);background:rgba(245,166,35,.05)}
 .step .n{font-size:.72rem;letter-spacing:.2em;color:var(--sole);font-weight:600}
 .step h3{font-size:1.28rem;margin:8px 0 6px;color:#F6F1E6;font-weight:700}
 .step p{font-size:.94rem;color:var(--muted-d)}
+/* ═══ V90 — SCHEMA ISPEZIONABILE ════════════════════════════════════
+   Tre livelli di stato invece di due. Prima era .step/.step.active con
+   k<=i: le card si accendevano e restavano accese, quindi in fondo alla
+   sequenza erano tutte e tre attive e nessuna era "quella corrente".
+   Ora: niente = da fare, .done = fatta (leggibile, senza accento),
+   .cur = corrente (l'unica col bordo sole). */
+.step{cursor:pointer}
+.step.done{opacity:.72}
+.step.cur{opacity:1;border-color:var(--sole);background:rgba(245,166,35,.05)}
+.step:focus-visible{outline:2px solid var(--sole);outline-offset:2px}
+.step-stat{display:block;margin-top:11px;font-size:.8rem;color:var(--sole);
+  font-variant-numeric:tabular-nums;letter-spacing:.01em}
+.step-stat s{text-decoration:none;color:var(--muted-d)}
+/* Ispezione: card <-> componente, nei due sensi. Il numero sta comunque
+   nella card (sempre leggibile, anche da tastiera e da telefono); nel
+   disegno e' un'eco, posizionata dove sta la cosa. */
+.how-grid.inspecting .step{opacity:.3}
+.how-grid.inspecting .step.sel{opacity:1;border-color:var(--sole);background:rgba(245,166,35,.07)}
+.diagram g[data-comp]{cursor:pointer;transition:opacity .35s var(--ease),transform .35s var(--ease)}
+.how-grid.inspecting .diagram g[data-comp]{opacity:.26}
+.how-grid.inspecting .diagram g[data-comp].sel{opacity:1;transform:translate(0,-5px)}
+.diagram .anno{opacity:0;transition:opacity .3s var(--ease);pointer-events:none}
+.diagram .anno.on{opacity:1}
+.diagram .anno-v{font-family:'Bricolage Grotesque',sans-serif;font-weight:750;
+  font-size:19px;fill:var(--sole);letter-spacing:-.01em}
+.diagram .anno-l{font-family:'Instrument Sans',sans-serif;font-size:11px;
+  letter-spacing:.14em;font-weight:600;fill:rgba(246,241,230,.62)}
+.diagram .anno-lead{stroke:rgba(245,166,35,.45);stroke-width:1;stroke-dasharray:2 4}
+@media (prefers-reduced-motion:reduce){
+  .diagram g[data-comp],.diagram .anno{transition:none}
+}
 .diagram{width:100%;height:auto;shape-rendering:geometricPrecision;text-rendering:geometricPrecision}
 .diagram .rail{fill:none;stroke:rgba(255,255,255,.10);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .diagram .energy{fill:none;stroke-width:2.6;stroke-linecap:round}
@@ -938,7 +968,7 @@ footer .wrap{position:relative;z-index:2;display:flex;flex-direction:column;gap:
 body.menu-open{overflow:hidden}
 .nav-scrim{position:fixed;inset:0;background:rgba(4,8,15,.5);z-index:100;opacity:0;pointer-events:none;transition:opacity .42s var(--ease)}
 .nav-scrim.show{opacity:1;pointer-events:auto}
-body::after{content:'VER-2026-07-26-V89';position:fixed;bottom:8px;left:8px;z-index:99999;font:600 11px/1 monospace;color:#fff;background:#c0392b;padding:4px 8px;border-radius:4px;pointer-events:none}
+body::after{content:'VER-2026-07-26-V90';position:fixed;bottom:8px;left:8px;z-index:99999;font:600 11px/1 monospace;color:#fff;background:#c0392b;padding:4px 8px;border-radius:4px;pointer-events:none}
 .gse-split{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:center;min-height:64vh}
 .gse-track{position:relative}
 @media (min-width:981px){
@@ -1839,20 +1869,23 @@ html:not([data-preintro="1"]) #preintro{display:none}
     <h2 class="tr">Dal sole alla tua<br><em>presa di corrente.</em></h2>
     <div class="how-grid">
       <div class="steps">
-        <div class="step" data-step="0">
+        <div class="step" data-step="0" data-comp="panel" role="button" aria-pressed="false">
           <span class="n">01 — IL SOLE</span>
           <h3>La luce colpisce il pannello</h3>
           <p>Le celle fotovoltaiche trasformano i fotoni in corrente continua. Funziona anche con il cielo velato.</p>
+          <span class="step-stat">4,2 kWp di picco <s>· impianto tipo da 10 moduli</s></span><span class="sr-only"> — premi per evidenziare questa fase nello schema</span>
         </div>
-        <div class="step" data-step="1">
+        <div class="step" data-step="1" data-comp="inv" role="button" aria-pressed="false">
           <span class="n">02 — L'INVERTER</span>
           <h3>L'energia viene convertita</h3>
           <p>L'inverter trasforma la corrente continua in alternata, pronta per gli elettrodomestici di casa.</p>
+          <span class="step-stat">4,07 kW in alternata <s>· il 97% di quello che entra</s></span><span class="sr-only"> — premi per evidenziare questa fase nello schema</span>
         </div>
-        <div class="step" data-step="2">
+        <div class="step" data-step="2" data-comp="batt house" role="button" aria-pressed="false">
           <span class="n">03 — CASA E BATTERIA</span>
           <h3>Consumi ora, accumuli per dopo</h3>
           <p>L'energia alimenta la casa in tempo reale; quella in eccesso carica la batteria per la sera e la notte.</p>
+          <span class="step-stat">10 kWh di accumulo <s>· contro 3.200 kWh l'anno di consumo</s></span><span class="sr-only"> — premi per evidenziare questa fase nello schema</span>
         </div>
       </div>
       <svg class="diagram" viewBox="0 0 760 470" xmlns="http://www.w3.org/2000/svg" aria-label="Schema del flusso di energia dal sole alla casa">
@@ -1961,7 +1994,7 @@ html:not([data-preintro="1"]) #preintro{display:none}
     <path d="M430 396 q2,-6 0,-9 M436 396 q3,-5 5,-7"/>
     <path d="M624 396 q-2,-6 -4,-8 M630 396 q2,-7 0,-10"/>
   </g>
-  <g id="panelG">
+  <g id="panelG" data-comp="panel">
     <polygon points="262,396 398,396 434,408 296,408" fill="#0A0F26" opacity=".5" filter="url(#shB)"/>
     <path d="M266 344 L258 394 M354 344 L366 394 M310 344 L312 394" stroke="#2A3A60" stroke-width="4" fill="none" stroke-linecap="round"/>
     <path d="M251 394 h14 M359 394 h14 M305 394 h14" stroke="#2A3A60" stroke-width="4" stroke-linecap="round"/>
@@ -1985,7 +2018,7 @@ html:not([data-preintro="1"]) #preintro{display:none}
   <path class="rail" d="M382 330 C 408 352, 430 354, 456 336" fill="none" stroke="rgba(255,255,255,.10)" stroke-width="2" stroke-linecap="round"/>
   <path id="flow1" class="energy" d="M382 330 C 408 352, 430 354, 456 336" fill="none" stroke="url(#flowDC)" stroke-width="3" stroke-linecap="round"/>
   <path class="stream" d="M382 330 C 408 352, 430 354, 456 336" fill="none" stroke="#FFD98A" stroke-width="1.6"/>
-  <g id="invG">
+  <g id="invG" data-comp="inv">
     <polygon points="468,396 528,396 552,406 492,406" fill="#0A0F26" opacity=".5" filter="url(#shB)"/>
     <polygon points="520,266 530,262 530,386 520,392" fill="#0B1428"/>
     <rect x="456" y="266" width="64" height="126" rx="6" fill="url(#bodyG)" stroke="#31406B" stroke-width="1.4"/>
@@ -2004,7 +2037,7 @@ html:not([data-preintro="1"]) #preintro{display:none}
   <path class="rail" d="M520 366 L540 366 Q554 366 554 354 L554 342" fill="none" stroke="rgba(255,255,255,.10)" stroke-width="2" stroke-linecap="round"/>
   <path id="flow3" class="energy" d="M520 366 L540 366 Q554 366 554 354 L554 342" fill="none" stroke="url(#flowBT)" stroke-width="3" stroke-linecap="round"/>
   <path class="stream" d="M520 366 L540 366 Q554 366 554 354 L554 342" fill="none" stroke="#9BE9C4" stroke-width="1.6"/>
-  <g id="battG">
+  <g id="battG" data-comp="batt">
     <polygon points="564,396 618,396 640,406 586,406" fill="#0A0F26" opacity=".5" filter="url(#shB)"/>
     <polygon points="610,298 618,294 618,390 610,396" fill="#0B1428"/>
     <rect x="554" y="298" width="56" height="100" rx="7" fill="url(#bodyG)" stroke="#31406B" stroke-width="1.4"/>
@@ -2021,7 +2054,7 @@ html:not([data-preintro="1"]) #preintro{display:none}
   <path class="rail" d="M520 300 C 564 278, 602 292, 642 322" fill="none" stroke="rgba(255,255,255,.10)" stroke-width="2" stroke-linecap="round"/>
   <path id="flow2" class="energy" d="M520 300 C 564 278, 602 292, 642 322" fill="none" stroke="url(#flowAC)" stroke-width="3" stroke-linecap="round"/>
   <path class="stream" d="M520 300 C 564 278, 602 292, 642 322" fill="none" stroke="#BFE4FF" stroke-width="1.6"/>
-  <g id="houseG">
+  <g id="houseG" data-comp="house">
     <polygon points="646,396 752,396 760,408 682,408" fill="#0A0F26" opacity=".5" filter="url(#shB)"/>
     <rect x="642" y="314" width="110" height="82" fill="#101B33"/>
     <path d="M632 314 L697 246 L762 314 Z" fill="#0D1830"/>
@@ -2049,6 +2082,26 @@ html:not([data-preintro="1"]) #preintro{display:none}
     <circle cx="554" cy="342" r="3.2"/>
   </g>
   <rect x="0" y="0" width="760" height="470" fill="url(#vin2G)"/>
+  <g class="anno" data-anno="panel" aria-hidden="true">
+    <line class="anno-lead" x1="300" y1="228" x2="300" y2="248"/>
+    <text class="anno-v" x="252" y="204">4,2 kWp</text>
+    <text class="anno-l" x="252" y="222">DI PICCO</text>
+  </g>
+  <g class="anno" data-anno="inv" aria-hidden="true">
+    <line class="anno-lead" x1="470" y1="242" x2="470" y2="262"/>
+    <text class="anno-v" x="426" y="218">4,07 kW AC</text>
+    <text class="anno-l" x="426" y="236">RENDIMENTO 97%</text>
+  </g>
+  <g class="anno" data-anno="batt" aria-hidden="true">
+    <line class="anno-lead" x1="566" y1="252" x2="566" y2="272"/>
+    <text class="anno-v" x="524" y="228">10 kWh</text>
+    <text class="anno-l" x="524" y="246">COPRE LA SERA</text>
+  </g>
+  <g class="anno" data-anno="house" aria-hidden="true">
+    <line class="anno-lead" x1="690" y1="222" x2="690" y2="242"/>
+    <text class="anno-v" x="622" y="198">3.200 kWh</text>
+    <text class="anno-l" x="622" y="216">CONSUMO ANNUO</text>
+  </g>
 </svg>
     </div>
   </div>
@@ -3480,7 +3533,10 @@ document.querySelectorAll('[data-theme]').forEach(sec=>{
   const paths=['#flow0','#flow1','#flow2','#flow3'].map(s=>document.querySelector(s));
   const streams=[...document.querySelectorAll('.diagram .stream')];
   const steps=[...document.querySelectorAll('.step')];
-  function setStep(i){steps.forEach((s,k)=>s.classList.toggle('active',k<=i))}
+  /* V90: tre livelli. .done = già passata, .cur = corrente (una sola). */
+  function setStep(i){steps.forEach((s,k)=>{
+    s.classList.toggle('done',k<i); s.classList.toggle('cur',k===i);
+  })}
   if(!FX){
     setStep(2);
     /* scena compiuta: senza animazioni la casa era spenta (CSS parte da opacity 0) */
@@ -3517,6 +3573,83 @@ document.querySelectorAll('[data-theme]').forEach(sec=>{
     cur+=(target-cur)*0.12;
     streams.forEach(s=>s.style.animationDuration=(1.15/cur).toFixed(3)+'s');
   });
+})();
+
+/* ---------- 7a. schema ispezionabile (V90) ----------
+   Le card e i quattro componenti del disegno sono lo stesso oggetto:
+   passi sopra una card e il componente si stacca dal fondo, e viceversa.
+   Il click "fissa" la selezione (indispensabile su telefono, dove non
+   esiste il passaggio del mouse); un secondo click la libera.
+   I numeri stanno anche nel testo delle card, quindi chi naviga da
+   tastiera o con uno screen reader non perde niente: l'annotazione nel
+   disegno è un'eco visiva ed è aria-hidden. */
+(function inspect(){
+  const grid=document.querySelector('.how-grid');
+  const svg=document.querySelector('.diagram');
+  if(!grid||!svg) return;
+  const steps=[...grid.querySelectorAll('.step')];
+  const comps=[...svg.querySelectorAll('g[data-comp]')];
+  const annos=[...svg.querySelectorAll('.anno')];
+  /* la griglia impila a 980px: sotto quella soglia il disegno non è mai
+     accanto alle card, quindi spegnere le card mentre si leggono sarebbe
+     solo fastidio. Da telefono resta il tocco sul disegno. */
+  const wide=window.matchMedia('(min-width:981px)');
+  const hover=window.matchMedia('(hover:hover) and (pointer:fine)');
+  let pinned=null;
+
+  const keysOf=el=>(el.dataset.comp||'').split(' ').filter(Boolean);
+
+  function paint(keys){
+    const on=!!(keys&&keys.length);
+    grid.classList.toggle('inspecting',on);
+    steps.forEach(s=>{
+      const hit=on&&keysOf(s).some(k=>keys.includes(k));
+      s.classList.toggle('sel',hit);
+      s.setAttribute('aria-pressed',String(pinned===s));
+    });
+    comps.forEach(g=>g.classList.toggle('sel',on&&keys.includes(g.dataset.comp)));
+    annos.forEach(a=>a.classList.toggle('on',on&&keys.includes(a.dataset.anno)));
+  }
+  const show =el=>{ if(!pinned) paint(keysOf(el)); };
+  const clear=()  =>{ if(!pinned) paint(null); };
+  function pin(el){
+    if(pinned===el){ pinned=null; paint(null); }
+    else { pinned=el; paint(keysOf(el)); }
+  }
+
+  steps.forEach((s,i)=>{
+    s.tabIndex=0;
+    if(hover.matches){
+      s.addEventListener('mouseenter',()=>show(s));
+      s.addEventListener('mouseleave',clear);
+    }
+    s.addEventListener('focus',()=>show(s));
+    s.addEventListener('blur',clear);
+    s.addEventListener('click',()=>{ if(wide.matches) pin(s); });
+    s.addEventListener('keydown',e=>{
+      if(e.key==='Enter'||e.key===' '){ e.preventDefault(); pin(s); return; }
+      const d=e.key==='ArrowDown'?1:e.key==='ArrowUp'?-1:0;
+      if(d){ e.preventDefault(); steps[(i+d+steps.length)%steps.length].focus(); }
+      if(e.key==='Escape'&&pinned){ pinned=null; paint(null); }
+    });
+  });
+
+  comps.forEach(g=>{
+    if(hover.matches){
+      g.addEventListener('mouseenter',()=>show(g));
+      g.addEventListener('mouseleave',clear);
+    }
+    g.addEventListener('click',e=>{ e.stopPropagation(); pin(g); });
+  });
+
+  /* un click nel vuoto della sezione libera la selezione fissata */
+  document.querySelector('.how').addEventListener('click',e=>{
+    if(pinned&&!e.target.closest('.step')&&!e.target.closest('g[data-comp]')){
+      pinned=null; paint(null);
+    }
+  });
+  /* se si passa da desktop a stretto con la finestra fissata, si libera */
+  wide.addEventListener('change',()=>{ if(!wide.matches&&pinned){ pinned=null; paint(null); } });
 })();
 
 /* ============ 7b. L'ALBA — il sole sorge con lo scroll ============
