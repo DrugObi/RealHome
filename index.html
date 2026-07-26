@@ -614,6 +614,74 @@ footer .wrap{position:relative;z-index:2;display:flex;flex-direction:column;gap:
 .sunrise:hover .sunrise-arrow{transform:translateY(-3px)}
 .sunrise.rising .sunrise-sun{transform:translateY(-40px);filter:drop-shadow(0 0 26px rgba(245,166,35,.85))}
 .sunrise.rising .sunrise-rays{opacity:1}
+
+#dawn{position:fixed;inset:0;z-index:100001;visibility:hidden;opacity:0;
+  pointer-events:none;overflow:hidden;background:var(--notte);
+  transform:translateY(0);transition:opacity .3s linear}
+#dawn.on{visibility:visible;opacity:1;pointer-events:auto;will-change:transform}
+#dawn .dawn-grad{position:absolute;inset:-1px;opacity:0;
+  transition:opacity 1.1s var(--ease);
+  background:linear-gradient(180deg,#070C16 0%,#0A1120 20%,#141329 38%,
+    #33203A 55%,#6B2E2B 70%,#A8481A 82%,#E1670E 92%,#F5A623 100%)}
+#dawn.d1 .dawn-grad{opacity:1}
+#dawn .dawn-star{position:absolute;left:50%;top:90%;width:0;height:0;
+  transform:translate(0,0);
+  transition:transform 1.2s cubic-bezier(.16,.78,.28,1)}
+#dawn.d1 .dawn-star{transform:translate(var(--dx,0px),var(--dy,-40vh))}
+#dawn .dawn-disc,#dawn .dawn-glow,#dawn .dawn-beams{position:absolute;
+  left:0;top:0;border-radius:50%;pointer-events:none}
+#dawn .dawn-disc{width:var(--d0,44px);height:var(--d0,44px);
+  margin:calc(var(--d0,44px)/-2) 0 0 calc(var(--d0,44px)/-2);
+  background:radial-gradient(circle at 50% 34%,#FFF8E6 0%,#FFE7A8 38%,
+    #F5A623 76%,#F4740B 100%);
+  box-shadow:0 0 50px rgba(245,166,35,.5),0 0 150px rgba(244,116,11,.3);
+  transform:scale(1);will-change:transform;
+  transition:transform 1.2s cubic-bezier(.16,.78,.28,1)}
+#dawn.d1 .dawn-disc{transform:scale(var(--k,9))}
+#dawn .dawn-glow{width:88vmax;height:88vmax;margin:-44vmax 0 0 -44vmax;
+  opacity:0;transform:scale(.1);will-change:transform,opacity;
+  background:radial-gradient(circle,rgba(255,246,224,.85) 0%,
+    rgba(245,166,35,.36) 18%,rgba(244,116,11,.12) 36%,rgba(244,116,11,0) 62%);
+  transition:transform 1.35s cubic-bezier(.16,.78,.28,1),opacity .7s var(--ease)}
+#dawn.d1 .dawn-glow{opacity:1;transform:scale(1)}
+#dawn .dawn-beams{width:92vmax;height:92vmax;margin:-46vmax 0 0 -46vmax;
+  opacity:0;mix-blend-mode:screen;transform:scale(.22) rotate(0deg);
+  background:repeating-conic-gradient(from 0deg,rgba(255,226,168,.20) 0deg 1.5deg,
+    rgba(255,226,168,0) 1.5deg 13deg);
+  -webkit-mask-image:radial-gradient(circle,#000 5%,rgba(0,0,0,.45) 28%,transparent 60%);
+          mask-image:radial-gradient(circle,#000 5%,rgba(0,0,0,.45) 28%,transparent 60%);
+  transition:transform 2.2s linear,opacity .9s var(--ease)}
+#dawn.d1 .dawn-beams{opacity:.42;transform:scale(1) rotate(10deg)}
+#dawn .dawn-flare{position:absolute;inset:0;opacity:0;pointer-events:none;
+  background:radial-gradient(circle at 50% 44%,rgba(255,251,240,.96) 0%,
+    rgba(255,229,176,.9) 24%,rgba(245,166,35,.66) 48%,
+    rgba(244,116,11,.3) 72%,rgba(244,116,11,0) 100%);
+  transition:opacity .6s var(--ease)}
+#dawn.d2 .dawn-flare{opacity:1}
+#dawn.d3 .dawn-flare{opacity:0;transition:opacity .85s var(--ease)}
+#dawn .dawn-clock{position:absolute;left:50%;bottom:15vh;
+  transform:translateX(-50%);display:flex;align-items:center;gap:.9em;
+  font-family:'Instrument Sans',sans-serif;font-weight:600;font-size:.78rem;
+  letter-spacing:.2em;text-transform:uppercase;white-space:nowrap;
+  color:rgba(26,11,2,.8);opacity:0;transition:opacity .55s var(--ease)}
+#dawn .dawn-clock i{display:block;width:26px;height:1px;background:currentColor;opacity:.45}
+#dawn .dawn-clock .dc-stack{display:grid}
+#dawn .dawn-clock b{grid-area:1/1;font-weight:600;font-variant-numeric:tabular-nums;
+  transition:opacity .5s var(--ease)}
+#dawn .dawn-clock .dc-b{opacity:0}
+#dawn.d1 .dawn-clock{opacity:1}
+#dawn.d2 .dc-a{opacity:0}
+#dawn.d2 .dc-b{opacity:1}
+#dawn.d3 .dawn-clock{opacity:0;transition:opacity .4s var(--ease)}
+#dawn.d3{transform:translateY(-101%);
+  transition:transform .95s cubic-bezier(.62,0,.16,1)}
+@media (max-width:980px){
+  #dawn .dawn-clock{bottom:12vh;font-size:.68rem;letter-spacing:.16em}
+  #dawn .dawn-clock i{width:18px}
+}
+@media (prefers-reduced-motion: reduce){
+  #dawn,#dawn *{transition-duration:.01ms!important;animation:none!important}
+}
 @media (max-width:980px){
   .wrap{padding:0 22px}
   .hero{padding-top:120px}
@@ -840,7 +908,7 @@ footer .wrap{position:relative;z-index:2;display:flex;flex-direction:column;gap:
 body.menu-open{overflow:hidden}
 .nav-scrim{position:fixed;inset:0;background:rgba(4,8,15,.5);z-index:100;opacity:0;pointer-events:none;transition:opacity .42s var(--ease)}
 .nav-scrim.show{opacity:1;pointer-events:auto}
-body::after{content:'VER-2026-07-26-V83';position:fixed;bottom:8px;left:8px;z-index:99999;font:600 11px/1 monospace;color:#fff;background:#c0392b;padding:4px 8px;border-radius:4px;pointer-events:none}
+body::after{content:'VER-2026-07-26-V84';position:fixed;bottom:8px;left:8px;z-index:99999;font:600 11px/1 monospace;color:#fff;background:#c0392b;padding:4px 8px;border-radius:4px;pointer-events:none}
 .gse-split{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:center;min-height:64vh}
 .gse-track{position:relative}
 @media (min-width:981px){
@@ -1631,6 +1699,17 @@ html:not([data-preintro="1"]) #preintro{display:none}
 
 <div id="cursor" aria-hidden="true"></div>
 <div id="curtain" aria-hidden="true"><div class="word">REAL<b>HOME</b></div></div>
+
+<div id="dawn" aria-hidden="true">
+  <div class="dawn-grad"></div>
+  <div class="dawn-star">
+    <div class="dawn-glow"></div>
+    <div class="dawn-beams"></div>
+    <div class="dawn-disc"></div>
+  </div>
+  <div class="dawn-flare"></div>
+  <div class="dawn-clock"><i></i><span class="dc-stack"><b class="dc-a">H 23:59</b><b class="dc-b">H 03:47</b></span><i></i></div>
+</div>
 
 <nav id="nav">
   <div class="wrap">
@@ -4024,26 +4103,115 @@ window.addEventListener('resize',()=>{
 <script>
 /* ---------- H 23:59 → di nuovo alba: il ciclo ricomincia ----------
    Blocco INDIPENDENTE: il "torna su" del footer non deve dipendere da
-   GSAP/Lenis. Se sono caricati usa lo scroll fluido di Lenis, altrimenti
-   ricade sullo scroll nativo. Così funziona sempre. */
+   GSAP/Lenis. Se ci sono li usa, altrimenti fa tutto da sé.
+
+   V84 — LA TRANSIZIONE. Fino alla V83 il click chiamava scrollTo(0) con
+   1,6s di durata: la pagina intera scorreva al contrario sotto gli occhi,
+   venti schermate, sezioni pinnate e orizzontali comprese. Oltre a essere
+   meccanico da vedere, obbligava ogni ScrollTrigger della pagina ad
+   attraversare tutti i suoi stati a velocità innaturale.
+   Ora il pulsante fa quello che dice: il sole del footer si stacca dal suo
+   posto (FLIP: parte dal rettangolo REALE del cerchio SVG) e sorge a tutto
+   schermo. Quando la luce ha coperto lo schermo si salta all'inizio in modo
+   ISTANTANEO — invisibile, perché il pannello #dawn è opaco dal primo
+   fotogramma e del colore esatto del footer — e infine il pannello si
+   solleva scoprendo la hero, con l'animazione del logo che riparte da zero.
+   Nessuna sezione intermedia viene attraversata: nessun pin da ricalcolare.
+
+   Tre reti di sicurezza, perché un overlay a schermo intero che resta su è
+   il peggior bug possibile: un timer finale che ripulisce SEMPRE, Escape
+   che chiude subito, e il ritorno da scheda in background (i setTimeout
+   vengono strozzati dal browser) che azzera tutto. */
 (function sunriseLoop(){
   const btn=document.getElementById('sunrise');
   if(!btn) return;
   const rm=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const yr=document.getElementById('footYear');
   if(yr) yr.textContent=new Date().getFullYear();
-  let busy=false;
-  const goTop=()=>{
-    if(window.lenisRef){window.lenisRef.scrollTo(0,{duration:rm?0:1.6});}
-    else{window.scrollTo({top:0,behavior:rm?'auto':'smooth'});}
+
+  const dawn=document.getElementById('dawn');
+  const star=dawn?dawn.querySelector('.dawn-star'):null;
+  const seed=btn.querySelector('.sunrise-sun');   /* il sole piccolo del footer */
+  let busy=false, timers=[];
+  const at=(ms,fn)=>timers.push(setTimeout(fn,ms));
+  const stopBlock=e=>{ if(busy) e.preventDefault(); };
+
+  /* il salto vero e proprio: istantaneo, dietro la luce */
+  const toTop=()=>{
+    const l=window.lenisRef;
+    if(l){
+      try{ l.scrollTo(0,{immediate:true,force:true}); l.animatedScroll=0; l.targetScroll=0; }catch(e){}
+    }
+    try{ window.scrollTo(0,0); }catch(e){}
+    if(window.ScrollTrigger){ try{ window.ScrollTrigger.update(); }catch(e){} }
   };
+
+  const reset=()=>{
+    timers.forEach(clearTimeout); timers=[];
+    if(dawn) dawn.classList.remove('on','d1','d2','d3');
+    btn.classList.remove('rising');
+    window.removeEventListener('wheel',stopBlock,{passive:false});
+    window.removeEventListener('touchmove',stopBlock,{passive:false});
+    if(window.lenisRef){ try{ window.lenisRef.start(); }catch(e){} }
+    busy=false;
+  };
+
   btn.addEventListener('click',()=>{
-    if(busy) return; busy=true;
-    btn.classList.add('rising');
-    if(rm){goTop();btn.classList.remove('rising');busy=false;return;}
-    setTimeout(goTop,650);
-    setTimeout(()=>{btn.classList.remove('rising');busy=false;},2400);
+    if(busy) return;
+
+    /* percorso semplice — meno movimento richiesto, oppure pannello assente:
+       salto secco, come si faceva prima della scena. */
+    if(rm||!dawn||!star){
+      btn.classList.add('rising');
+      toTop();
+      if(typeof window.heroReplay==='function'){ try{ window.heroReplay(); }catch(e){} }
+      setTimeout(()=>btn.classList.remove('rising'),600);
+      return;
+    }
+
+    try{
+      busy=true;
+      btn.classList.add('rising');
+
+      /* FLIP — il sole grande nasce esattamente dove sta quello del footer,
+         misurato adesso: non dipende da dove la pagina si trova né da come
+         il footer si è impaginato. */
+      const r=seed?seed.getBoundingClientRect():null;
+      const W=window.innerWidth, H=window.innerHeight;
+      const d0=(r&&r.width>6)?r.width:44;
+      const cx0=r?r.left+r.width/2:W/2;
+      const cy0=r?r.top+r.height/2:H*.86;
+      const dTarget=Math.max(170,Math.min(W*.62,H*.5,430));  /* quanto diventa grande */
+      const cy1=H*.44;                                        /* dove si ferma */
+      dawn.style.setProperty('--d0',d0.toFixed(1)+'px');
+      dawn.style.setProperty('--k',(dTarget/d0).toFixed(3));
+      dawn.style.setProperty('--dx',(W/2-cx0).toFixed(1)+'px');
+      dawn.style.setProperty('--dy',(cy1-cy0).toFixed(1)+'px');
+      star.style.left=cx0.toFixed(1)+'px';
+      star.style.top =cy0.toFixed(1)+'px';
+
+      /* da qui comanda l'animazione: lo scroll è fermo */
+      if(window.lenisRef){ try{ window.lenisRef.stop(); }catch(e){} }
+      window.addEventListener('wheel',stopBlock,{passive:false});
+      window.addEventListener('touchmove',stopBlock,{passive:false});
+
+      dawn.classList.add('on');              /* 0,3s di dissolvenza: il footer sfuma nel nero */
+      void dawn.offsetWidth;                 /* reflow: le transizioni partono da questo stato */
+
+      at(160,()=>dawn.classList.add('d1'));   /* il sole sorge */
+      at(1150,()=>dawn.classList.add('d2'));  /* la luce riempie lo schermo, l'ora gira */
+      at(1350,toTop);                         /* il salto — invisibile, siamo dentro la luce */
+      at(1850,()=>dawn.classList.add('d3'));  /* il pannello si solleva */
+      at(2050,()=>{                           /* il logo riparte mentre la hero si scopre */
+        if(typeof window.heroReplay==='function'){ try{ window.heroReplay(); }catch(e){} }
+      });
+      at(2950,reset);
+    }catch(e){ reset(); toTop(); }
   });
+
+  /* reti di sicurezza */
+  document.addEventListener('keydown',e=>{ if(busy&&e.key==='Escape'){ toTop(); reset(); } });
+  document.addEventListener('visibilitychange',()=>{ if(busy&&document.hidden){ toTop(); reset(); } });
 })();
 
 /* ---------- V40: player del brand film ----------
@@ -4808,6 +4976,19 @@ window.addEventListener('resize',()=>{
   window.heroStart=function(){
     if(!attesa) return;
     attesa=false;
+    partenze.forEach(function(f){ try{ f(); }catch(e){} });
+  };
+
+  /* V84 — RIMETTERE IN SCENA L'ANIMAZIONE. Il "fai sorgere il sole" del
+     footer riporta all'inizio: se la hero restasse sull'ultimo fotogramma
+     congelato, il ciclo ricomincerebbe solo a parole. heroReplay() riusa le
+     stesse funzioni di ripartenza del pre-intro, ma senza il vincolo
+     dell'attesa. Se il pre-intro e' ancora davanti non fa niente: in quel
+     caso il via lo da' heroStart(). In reduced-motion 'partenze' e' vuoto
+     (il ramo RM esce prima), quindi la chiamata e' un no-op: chi ha chiesto
+     meno movimento non se lo vede ripartire. */
+  window.heroReplay=function(){
+    if(attesa) return;
     partenze.forEach(function(f){ try{ f(); }catch(e){} });
   };
 })();
